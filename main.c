@@ -33,7 +33,7 @@ int menu2()
     {
         printf ("\nSelecione uma opcao: \n");
         printf ("1. Quero me cadastrar\n");
-        printf ("2. Já tenho cadastro\n");
+        printf ("2. Ja tenho cadastro\n");
         printf ("3. Voltar\n");
         printf ("0. Sair\n");
         printf ("Opcao: ");
@@ -52,9 +52,9 @@ int menu3()
         printf ("1. Mostrar todos os restaurantes\n");
         printf ("2. Filtrar por categoria\n");
         printf ("3. Procurar por nome\n");
-        printf ("4. Histórico de pedidos\n");
-        printf ("5. Cartões\n");
-        printf ("6. Endereços\n");
+        printf ("4. Historico de pedidos\n");
+        printf ("5. Cartoes\n");
+        printf ("6. Enderecos\n");
         printf ("7. Alterar e-mail\n");
         printf ("8. Alterar senha\n");
         printf ("9. Sair da conta\n");
@@ -80,6 +80,7 @@ int main ()
     char email[40];
     char senha[9];
     cartao novo_cartao;
+    endereco novo_endereco;
 
     // declarações gerais
     int option = -1;
@@ -90,7 +91,7 @@ int main ()
 
     strcpy (inicializados.nome, "Alan da Silva");
     strcpy (inicializados.cpf, "145756984121");
-    strcpy (inicializados.email, "alansilva123@gmail.com");
+    strcpy (inicializados.email, "alan@gmail.com");
     strcpy (inicializados.senha_8d, "12345678");
     inicializar_cliente(&inicializados);
     inserirInicioCliente(lista_principal_clientes, inicializados);
@@ -130,11 +131,11 @@ int main ()
                         setbuf (stdin, NULL);
                         scanf ("%[^\n]s", novo.email);
                         
-                        printf ("\nDigite seu CPF (somente números): ");
+                        printf ("\nDigite seu CPF (somente numeros): ");
                         setbuf (stdin, NULL);
                         scanf ("%[^\n]s", novo.cpf);
                         
-                        printf ("\nDigite sua senha (8 dígitos): ");
+                        printf ("\nDigite sua senha (8 digitos): ");
                         setbuf (stdin, NULL);
                         scanf ("%[^\n]s", novo.senha_8d);
                         inicializar_cliente(&novo);
@@ -149,7 +150,12 @@ int main ()
                             
                             while (verify != 0)
                             {
-                                printf ("\nDigite seu email: ");
+                                printf ("\nDigite 5 para voltar: ");
+                                scanf ("%d", &verify);
+
+                                if (verify == 5) break;
+
+                                printf ("\nDigite seu e-mail: ");
                                 setbuf (stdin, NULL);
                                 scanf ("%[^\n]s", &email);
 
@@ -161,7 +167,7 @@ int main ()
 
                                 if (verify != 0)
                                 {
-                                    printf ("\nLogin ou senha inválidos. Tente novamente!\n");
+                                    printf ("\nLogin ou senha invalidos. Tente novamente!\n");
                                 }
 
                                 if (verify == 0)
@@ -169,6 +175,8 @@ int main ()
                                     printf ("\nLogin efetuado com sucesso. Bem vindo(a) de volta %s!\n", logado.nome);
                                 }
                             }
+
+                            if (verify == 5) break;
 
                             while (option != 9)
                             {
@@ -181,20 +189,21 @@ int main ()
                                     break;
 
                                     case 5: 
-                                        printf ("\nVocê possui os seguintes cartões cadastrados: \n");
+                                        printf ("\nVoce possui os seguintes cartoes cadastrados: \n");
                                         buscarItemCliente (lista_principal_clientes, logado.codigo, &logado);
                                         mostrar_pagamentos (logado);
-                                        printf ("\nVocê deseja cadastrar um novo cartão? ");
-                                        printf ("\n1. Sim");
-                                        printf ("\n2. Voltar\n");
+                                        printf ("\nVoce deseja: ");
+                                        printf ("\n1. Cadastrar novo cartao");
+                                        printf ("\n2. Excluir cartao");
+                                        printf ("\n3. Voltar\n");
                                         scanf ("%d", &option);
 
                                         if (option == 1)
                                         {
                                             int temp = -1; 
-                                            printf ("\n\nVamos lá!\n");
+                                            printf ("\n\nVamos la!\n");
                                             
-                                            printf ("\nDigite o número do cartão(sem espaços): ");
+                                            printf ("\nDigite o numero do cartao(sem espacos): ");
                                             setbuf (stdin, NULL);
                                             scanf ("%[^\n]s", novo_cartao.numero);
                                             
@@ -208,15 +217,72 @@ int main ()
                                                 
                                             do 
                                             {
-                                                printf ("\nO cartão é de: \n1. Débito\n2.Crédito\n");
+                                                printf ("\nO cartao eh de: \n1. Debito\n2.Credito\n");
                                                 scanf ("%d", &temp);
                                             }while (temp < 1 || temp > 2);
 
-                                            if (temp == 1) strcpy (novo_cartao.tipo, "Débito"); else strcpy (novo_cartao.tipo, "Crédito");
+                                            if (temp == 1) strcpy (novo_cartao.tipo, "Debito"); else strcpy (novo_cartao.tipo, "Credito");
 
                                             temp = inserirCartaoCliente(lista_principal_clientes, logado.codigo, novo_cartao);
                                             
                                             if (temp == 0) printf ("\nCadastro realizado com sucesso!"); else printf ("\nAlgum erro inesperado aconteceu. Tente novamente!");
+                                        }
+
+                                        if (option == 2)
+                                        {
+                                            int temp = -1;
+
+                                            printf ("Digite qual o cartao que voce quer excluir (1, 2, 3...): ");
+                                            scanf ("%d", &temp);
+
+                                            temp = removerCartaoCliente(lista_principal_clientes, logado.codigo, temp);
+
+                                            if (temp == 0) printf ("\nExcluido com sucesso!"); else printf ("\nAlgum erro inesperado aconteceu. Tente novamente!");
+                                        }
+                                    break;
+
+                                    case 6: 
+                                        printf ("\nVoce possui os seguintes enderecos cadastrados: \n");
+                                        buscarItemCliente (lista_principal_clientes, logado.codigo, &logado);
+                                        mostrar_enderecos (logado);
+                                        printf ("\nVoce deseja: ");
+                                        printf ("\n1. Cadastrar novo endereco");
+                                        printf ("\n2. Excluir endereco");
+                                        printf ("\n3. Voltar\n");
+                                        scanf ("%d", &option);
+
+                                        if (option == 1)
+                                        {
+                                            int temp = -1; 
+                                            printf ("\n\nVamos la!\n");
+                                            
+                                            printf ("\nDigite a rua: ");
+                                            setbuf (stdin, NULL);
+                                            scanf ("%[^\n]s", novo_endereco.rua);
+
+                                            printf ("\nDigite o numero: ");
+                                            setbuf (stdin, NULL);
+                                            scanf ("%[^\n]s", novo_endereco.numero);
+
+                                            printf ("\nDigite o CEP: ");
+                                            setbuf (stdin, NULL);
+                                            scanf ("%[^\n]s", novo_endereco.cep);
+
+                                            temp = inserirEnderecoCliente(lista_principal_clientes, logado.codigo, novo_endereco);
+                                            
+                                            if (temp == 0) printf ("\nCadastro realizado com sucesso!"); else printf ("\nAlgum erro inesperado aconteceu. Tente novamente!");
+                                        }
+
+                                        if (option == 2)
+                                        {
+                                            int temp = -1;
+
+                                            printf ("Digite qual o endereco que voce quer excluir (1, 2, 3...): ");
+                                            scanf ("%d", &temp);
+
+                                            temp = removerEnderecoCliente(lista_principal_clientes, logado.codigo, temp);
+
+                                            if (temp == 0) printf ("\nExcluido com sucesso!"); else printf ("\nAlgum erro inesperado aconteceu. Tente novamente!");
                                         }
                                     break;
 

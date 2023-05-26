@@ -343,16 +343,16 @@ void mostrar_cliente (Lista_cliente *l) // mostra as principais informações de
 void mostrar_pagamentos (Cliente item)
 {
     int i = 0;
-    printf (" ( ");
+    printf ("( ");
     for (i = 0; i < item.quantidade_cartoes; i++)
     {
-        printf ("{%s, ", item.pagamentos[i].tipo);
+        printf ("%d. {%s, ", i+1, item.pagamentos[i].tipo);
         printf ("%c%c%c%c %c%c%c%c", item.pagamentos[i].numero[0], item.pagamentos[i].numero[1], item.pagamentos[i].numero[2], item.pagamentos[i].numero[3], item.pagamentos[i].numero[4], item.pagamentos[i].numero[5], item.pagamentos[i].numero[6], item.pagamentos[i].numero[7]);
         printf (" %c%c%c%c %c%c%c%c, ", item.pagamentos[i].numero[8], item.pagamentos[i].numero[9], item.pagamentos[i].numero[10], item.pagamentos[i].numero[11], item.pagamentos[i].numero[12], item.pagamentos[i].numero[13], item.pagamentos[i].numero[14], item.pagamentos[i].numero[15]);
         printf ("%c%c/%c%c, ", item.pagamentos[i].validade[0], item.pagamentos[i].validade[1], item.pagamentos[i].validade[2], item.pagamentos[i].validade[3]);
         printf ("%d} ", item.pagamentos[i].cvv);
     }
-    printf (") ");
+    printf (")");
 }
 
 void mostrar_pedidos (Cliente item)
@@ -371,14 +371,14 @@ void mostrar_pedidos (Cliente item)
 void mostrar_enderecos (Cliente item)
 {
     int i = 0;
-    printf (" ( ");
+    printf ("( ");
     for (i = 0; i < item.quant_enderecos; i++)
     {
-        printf ("{%s, ", item.enderecos[i].rua);
+        printf ("%d. {%s, ", i+1, item.enderecos[i].rua);
         printf ("%s, ", item.enderecos[i].numero);
         printf ("%s} ", item.enderecos[i].cep);
     }
-    printf (") ");
+    printf (")");
 }
 
 void mostrar_tudo_cliente (Lista_cliente *l) // mostra TODAS as informações do entregador
@@ -484,6 +484,7 @@ void copiarCliente (Cliente *A, Cliente *B) // função de auxílio. copia todas
     B->valor_gasto = A->valor_gasto;
     B->codigo = A->codigo;
     B->quantidade_cartoes = A->quantidade_cartoes;
+    B->quant_enderecos = A->quant_enderecos;
     strcpy (B->cpf, A->cpf);
     strcpy (B->email, A->email);
     strcpy (B->nome, A->nome);
@@ -533,4 +534,69 @@ int buscarItemCliente (Lista_cliente *l, int codigo, Cliente *item) // busca o e
         return 0;
     }
     else return 1;
+}
+
+int removerCartaoCliente (Lista_cliente *l, int codigo, int posicao)
+{
+    if (l == NULL) return NULL_LIST;
+    if (listaVaziaCliente(l) == 0) return EMPTY_LIST;
+
+    int i;
+
+    No_cliente *aux = l->inicio;
+    
+    while ((aux != NULL) && (aux->valor.codigo != codigo))
+    {
+        aux = aux->prox;
+    }
+    
+    if (aux->valor.codigo == codigo)
+    {
+        for (i = posicao-1; i < aux->valor.quantidade_cartoes-1; i++)
+        {
+            aux->valor.pagamentos[i].cvv = aux->valor.pagamentos[i+1].cvv;
+            strcpy(aux->valor.pagamentos[i].numero, aux->valor.pagamentos[i+1].numero);
+            strcpy(aux->valor.pagamentos[i].tipo, aux->valor.pagamentos[i+1].tipo);
+            strcpy(aux->valor.pagamentos[i].validade, aux->valor.pagamentos[i+1].validade);
+        }
+
+        aux->valor.quantidade_cartoes--;
+        aux->valor.pagamentos = realloc (aux->valor.pagamentos, aux->valor.quantidade_cartoes*sizeof(cartao));
+
+        return 0;
+    } 
+
+    return 1;
+}
+
+int removerEnderecoCliente (Lista_cliente *l, int codigo, int posicao)
+{
+    if (l == NULL) return NULL_LIST;
+    if (listaVaziaCliente(l) == 0) return EMPTY_LIST;
+
+    int i;
+
+    No_cliente *aux = l->inicio;
+    
+    while ((aux != NULL) && (aux->valor.codigo != codigo))
+    {
+        aux = aux->prox;
+    }
+    
+    if (aux->valor.codigo == codigo)
+    {
+        for (i = posicao-1; i < aux->valor.quant_enderecos-1; i++)
+        {
+            strcpy(aux->valor.enderecos[i].rua, aux->valor.enderecos[i+1].rua);
+            strcpy(aux->valor.enderecos[i].numero, aux->valor.enderecos[i+1].numero);
+            strcpy(aux->valor.enderecos[i].cep, aux->valor.enderecos[i+1].cep);
+        }
+
+        aux->valor.quant_enderecos--;
+        aux->valor.enderecos = realloc (aux->valor.enderecos, aux->valor.quant_enderecos*sizeof(endereco));
+
+        return 0;
+    } 
+
+    return 1;
 }

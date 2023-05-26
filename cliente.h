@@ -77,3 +77,5 @@ void copiarCliente (Cliente *A, Cliente *B); // função de auxílio. copia toda
 int buscarItemCliente (Lista_cliente *l, int codigo, Cliente *item); // busca o entregador correspondente ao codigo e retorna ele por parametro
 int inserirEnderecoCliente (Lista_cliente *l, int codigo, endereco novo_end);
 void mostrar_enderecos (Cliente item);
+int removerCartaoCliente (Lista_cliente *l, int codigo, int posicao);
+int removerEnderecoCliente (Lista_cliente *l, int codigo, int posicao);
