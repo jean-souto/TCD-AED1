@@ -61,8 +61,8 @@ int menu3()
         printf ("0. Sair do app\n");
         printf ("Opcao: ");
         scanf ("%d", &op);
-        if (op < 0 || op > 8) printf ("\nDigite uma opcao valida\n\n");
-    }while (op < 0 || op > 8);
+        if (op < 0 || op > 9) printf ("\nDigite uma opcao valida\n\n");
+    }while (op < 0 || op > 9);
     return op;
 }
 
@@ -70,7 +70,6 @@ int menu3()
 
 int main ()
 {
-    setlocale(LC_ALL, "Portuguese");
     srand(time(NULL));
 
     // declarações relacionadas aos clientes
@@ -175,8 +174,6 @@ int main ()
                                     printf ("\nLogin efetuado com sucesso. Bem vindo(a) de volta %s!\n", logado.nome);
                                 }
                             }
-
-                            if (verify == 5) break;
 
                             while (option != 9)
                             {
