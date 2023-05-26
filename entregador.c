@@ -301,7 +301,7 @@ int inicializar_entregador (entregador *item) // usada ao criar um novo cadastro
 int limparEntregador (Lista_entregadores *l) // limpa a lista
 {
     if (l == NULL) return NULL_LIST;
-    if (listaVaziaEntregador == 0) return 0;
+    if (listaVaziaEntregador(l) == 0) return 0;
     while (l->inicio != NULL)
     {
         removerFimEntregador(l);
