@@ -1,12 +1,21 @@
 #define NULL_LIST 3
 #define EMPTY_LIST 2
 
-typedef struct ped
-{
-    char nome_rest[30];
-    char nome_prato[40];
-    float valor;
-}hist_pedidosClientes;
+typedef struct plate // aqui
+{ 
+    char nome[40]; 
+    char descricao[100]; 
+    float valor; 
+} pratos; 
+
+typedef struct ped // aqui
+{ 
+    int codigo; 
+    float valorTotal; 
+    char nome_rest[40]; 
+    pratos *ped; 
+    int qtdPed; 
+} pedidos;
 
 typedef struct card
 {
@@ -32,7 +41,7 @@ typedef struct cliente
     int codigo;
     cartao *pagamentos;
     int quantidade_cartoes;
-    hist_pedidosClientes *historico;
+    pedidos *historico; // aqui
     int quant_pedidos;
     float valor_gasto;
     endereco *enderecos;
@@ -61,7 +70,7 @@ int removerFimCliente (Lista_cliente *l); // remove no fim da lista
 int removerPosiCliente (Lista_cliente *l, int pos); // remove uma posicao X da lista, se pos >= tamanho da lista ela remove o último elemento
 int removerItemCliente (Lista_cliente *l, int codigo); // remove o item correspondente ao código passado 
 int inserirCartaoCliente (Lista_cliente *l, int codigo, cartao novo_cartao);
-int inserirPedidoHistorico (Lista_cliente *l, int codigo, hist_pedidosClientes novo_pedido);
+int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidos novo_pedido);
 int inicializar_cliente (Cliente *item); // usada ao criar um novo cadastro de entregador (zera todas as informações para evitar lixo e erros) 
 int limparCliente (Lista_cliente *l); // limpa a lista
 int tamanhoCliente (Lista_cliente *l); // retorna o tamanho da lista 
