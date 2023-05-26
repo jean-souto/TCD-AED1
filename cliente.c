@@ -255,12 +255,13 @@ int inserirCartaoCliente (Lista_cliente *l, int codigo, cartao novo_cartao)
     return 1;
 }
 
-int inserirPedidoHistorico (Lista_cliente *l, int codigo, hist_pedidosClientes novo_pedido)
+int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidos novo_pedido)
 {
     if (l == NULL) return NULL_LIST;
     if (listaVaziaCliente(l) == 0) return EMPTY_LIST;
 
     No_cliente *aux = l->inicio;
+    int i;
 
     while ((aux != NULL) && (aux->valor.codigo != codigo))
     {
@@ -270,15 +271,22 @@ int inserirPedidoHistorico (Lista_cliente *l, int codigo, hist_pedidosClientes n
     if (aux->valor.codigo == codigo)
     {  
         aux->valor.quant_pedidos++;
-        aux->valor.historico = realloc (aux->valor.historico, aux->valor.quant_pedidos*sizeof(hist_pedidosClientes));
+        aux->valor.historico = realloc (aux->valor.historico, aux->valor.quant_pedidos*sizeof(pedidos));
         
-        strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].nome_prato, novo_pedido.nome_prato);
+        aux->valor.historico[aux->valor.quant_pedidos-1].codigo = novo_pedido.codigo;
+        aux->valor.historico[aux->valor.quant_pedidos-1].valorTotal = novo_pedido.valorTotal;
+        aux->valor.historico[aux->valor.quant_pedidos-1].qtdPed = novo_pedido.qtdPed;
         strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].nome_rest, novo_pedido.nome_rest);
-        aux->valor.historico[aux->valor.quant_pedidos-1].valor = novo_pedido.valor;
 
+        for (i = 0; i < novo_pedido.qtdPed; i++)
+        {
+            aux->valor.historico->ped = (pedidos*) realloc (aux->valor.historico->ped, novo_pedido.qtdPed*sizeof(pedidos));
+            strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].nome, novo_pedido.ped[i].nome);
+            strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].descricao, novo_pedido.ped[i].descricao);
+            aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].valor = novo_pedido.ped[i].valor;
+        }
         return 0;
     } 
-    
     return 1;
 }
 
@@ -358,12 +366,20 @@ void mostrar_pagamentos (Cliente item)
 void mostrar_pedidos (Cliente item)
 {
     int i = 0;
+    int j = 0;
     printf (" ( ");
     for (i = 0; i < item.quant_pedidos; i++)
     {
-        printf ("{%s, ", item.historico[i].nome_rest);
-        printf ("%s, ", item.historico[i].nome_prato);
-        printf ("R$%.2f} ", item.historico[i].valor);
+        printf ("[%d, ", item.historico->codigo);
+        printf ("%s, ", item.historico->nome_rest);
+        printf ("%.2f, ", item.historico->valorTotal);
+
+        for (j = 0; j < item.historico->qtdPed; j++)
+        {
+            printf ("%s, ", item.historico->ped[j].nome);
+            printf ("%.2f", item.historico->ped[j].valor);
+        }
+        printf ("] ");
     }
     printf (") ");
 }
@@ -479,7 +495,7 @@ int loginCliente (Lista_cliente *l, char *email, char *senha, Cliente *item)
 
 void copiarCliente (Cliente *A, Cliente *B) // função de auxílio. copia todas as informações de um elemento para outro
 {
-    int i;
+    int i, j;
     B->quant_pedidos = A->quant_pedidos;
     B->valor_gasto = A->valor_gasto;
     B->codigo = A->codigo;
@@ -499,12 +515,22 @@ void copiarCliente (Cliente *A, Cliente *B) // função de auxílio. copia todas
         strcpy(B->pagamentos[i].validade, A->pagamentos[i].validade);
     }
 
-    B->historico = (hist_pedidosClientes*) realloc (B->historico, A->quant_pedidos*sizeof(hist_pedidosClientes));
+    B->historico = (pedidos*) realloc (B->historico, A->quant_pedidos*sizeof(pedidos));
     for (i = 0; i < A->quant_pedidos; i++)
     {
-        B->historico[i].valor = A->historico[i].valor;
-        strcpy(B->historico[i].nome_prato, A->historico[i].nome_prato);
+        B->historico[i].valorTotal = A->historico[i].valorTotal;
         strcpy(B->historico[i].nome_rest, A->historico[i].nome_rest);
+        B->historico[i].codigo = A->historico[i].codigo;
+        B->historico[i].qtdPed = A->historico[i].qtdPed;
+
+        B->historico[i].ped = (pedidos*) realloc (B->historico[i].ped, A->historico[i].qtdPed*sizeof(pedidos));
+
+        for (j = 0; j < A->historico[i].qtdPed; j++)
+        {
+            B->historico[i].ped[j].valor = A->historico[i].ped[j].valor;
+            strcpy(B->historico[i].ped[j].nome, A->historico[i].ped[j].nome);
+            strcpy(B->historico[i].ped[j].descricao, A->historico[i].ped[j].descricao);
+        }
     }
 
     B->enderecos = (endereco*) realloc (B->enderecos, A->quant_enderecos*sizeof(endereco));
@@ -565,7 +591,6 @@ int removerCartaoCliente (Lista_cliente *l, int codigo, int posicao)
 
         return 0;
     } 
-
     return 1;
 }
 
@@ -597,6 +622,5 @@ int removerEnderecoCliente (Lista_cliente *l, int codigo, int posicao)
 
         return 0;
     } 
-
     return 1;
 }
