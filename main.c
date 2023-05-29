@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <locale.h>
 #include "entregador.h"
 #include "cliente.h"
 
@@ -18,11 +17,12 @@ int menu1()
         printf ("1. Sou cliente\n");
         printf ("2. Sou restaurante\n");
         printf ("3. Sou entregador\n");
+        printf ("4. Sou administrador\n");
         printf ("0. Sair\n");
         printf ("Opcao: ");
         scanf ("%d", &op);
-        if (op < 0 || op > 3) printf ("\nDigite uma opcao valida\n\n");
-    }while (op < 0 || op > 3);
+        if (op < 0 || op > 4) printf ("\nDigite uma opcao valida\n\n");
+    }while (op < 0 || op > 4);
     return op;
 }
 
@@ -55,10 +55,33 @@ int menu3()
         printf ("4. Historico de pedidos\n");
         printf ("5. Cartoes\n");
         printf ("6. Enderecos\n");
-        printf ("7. Alterar e-mail\n");
-        printf ("8. Alterar senha\n");
+        printf ("7. Alterar senha\n");
+        printf ("8. Alterar e-mail\n");
         printf ("9. Sair da conta\n");
         printf ("0. Sair do app\n");
+        printf ("Opcao: ");
+        scanf ("%d", &op);
+        if (op < 0 || op > 9) printf ("\nDigite uma opcao valida\n\n");
+    }while (op < 0 || op > 9);
+    return op;
+}
+
+int menu4() // do adm
+{
+    int op = -1;
+    do
+    {
+        printf ("\nSelecione uma opcao: \n");
+        printf ("1. \n");
+        printf ("2. \n");
+        printf ("3. \n");
+        printf ("4. \n");
+        printf ("5. \n");
+        printf ("6. \n");
+        printf ("7. \n");
+        printf ("8. \n");
+        printf ("9. \n");
+        printf ("0. \n");
         printf ("Opcao: ");
         scanf ("%d", &op);
         if (op < 0 || op > 9) printf ("\nDigite uma opcao valida\n\n");
@@ -74,26 +97,36 @@ int main ()
 
     // declarações relacionadas aos clientes
     Lista_cliente *lista_principal_clientes;
-    Cliente logado;
+    Cliente logado, esqueceu_senha;
     Cliente novo, inicializados;
     char email[40];
-    char senha[9];
+    char senha[15];
+    char cpf[12];
     cartao novo_cartao;
     endereco novo_endereco;
+
+    // declarações adm
+    char loginADM[15];
+    char senhaADM[15];
 
     // declarações gerais
     int option = -1;
 
-    lista_principal_clientes = criarCliente();
-
     // inicializações
 
-    strcpy (inicializados.nome, "Alan da Silva");
+    lista_principal_clientes = criarCliente();
+
+    strcpy (loginADM, "souADM");
+    strcpy (senhaADM, "123ADM");
+
+    inicializar_cliente(&esqueceu_senha);
+
+    /*strcpy (inicializados.nome, "Alan da Silva");
     strcpy (inicializados.cpf, "145756984121");
     strcpy (inicializados.email, "alan@gmail.com");
     strcpy (inicializados.senha_8d, "12345678");
     inicializar_cliente(&inicializados);
-    inserirInicioCliente(lista_principal_clientes, inicializados);
+    inserirInicioCliente(lista_principal_clientes, inicializados);*/
 
     while (option != 0)
     {
@@ -149,10 +182,50 @@ int main ()
                             
                             while (verify != 0)
                             {
-                                printf ("\nDigite 5 para voltar: ");
+                                printf ("\nDigite 5 para voltar ou 6 se esqueceu a senha ou 0 para logar: ");
                                 scanf ("%d", &verify);
 
                                 if (verify == 5) break;
+                                if (verify == 6)
+                                {
+                                    while (verify != 0)
+                                    {
+                                        printf ("\nDigite seu email: ");
+                                        setbuf (stdin, NULL);
+                                        scanf ("%[^\n]s", &email);
+
+                                        printf ("\nDigite seu CPF: ");
+                                        setbuf (stdin, NULL);
+                                        scanf ("%[^\n]s", &cpf);
+
+                                        verify = buscarClienteEmailCPF(lista_principal_clientes, &(*email), &(*cpf), &esqueceu_senha);
+
+                                        if (verify == 0)
+                                        {
+                                            verify = -1;
+                                            char senha1[15];
+                                            char senha2[15];
+
+                                            while (verify != 0)
+                                            {
+                                                if (verify != 1) printf ("\nTe encontramos!");
+                                                printf ("\nDigite sua nova senha: ");
+                                                setbuf (stdin, NULL);
+                                                scanf ("%[^\n]s", &senha1);
+
+                                                printf ("\nDigite sua nova senha novamente: ");
+                                                setbuf (stdin, NULL);
+                                                scanf ("%[^\n]s", &senha2);
+
+                                                verify = alterarSenha(lista_principal_clientes, esqueceu_senha.codigo, senha1, senha2);
+
+                                                if (verify == 0) printf ("Senha alterada com sucesso!");
+                                                if (verify != 0) printf ("Senhas diferentes. Tente novamente!");
+                                            }
+                                        } else printf ("\nAlgo deu errado. Tente novamente!");
+                                    }
+
+                                }
 
                                 printf ("\nDigite seu e-mail: ");
                                 setbuf (stdin, NULL);
@@ -179,13 +252,25 @@ int main ()
                             {
                                 option = menu3();
 
-                                switch (option)
+                                switch (option) // opções do cliente após logar
                                 {
-                                    case 0:
+                                    case 0: // sair
                                         return 0;
                                     break;
 
-                                    case 5: 
+                                    case 1: // mostrar todos os restaurantes
+                                    break;
+
+                                    case 2: // filtrar por categoria
+                                    break;
+
+                                    case 3: //procurar por nome
+                                    break;
+
+                                    case 4: // histórico
+                                    break;
+
+                                    case 5: // cartões
                                         printf ("\nVoce possui os seguintes cartoes cadastrados: \n");
                                         buscarItemCliente (lista_principal_clientes, logado.codigo, &logado);
                                         mostrar_pagamentos (logado);
@@ -238,7 +323,7 @@ int main ()
                                         }
                                     break;
 
-                                    case 6: 
+                                    case 6: // endereços
                                         printf ("\nVoce possui os seguintes enderecos cadastrados: \n");
                                         buscarItemCliente (lista_principal_clientes, logado.codigo, &logado);
                                         mostrar_enderecos (logado);
@@ -283,7 +368,95 @@ int main ()
                                         }
                                     break;
 
-                                    case 9:
+                                    case 7:; // alterar senha
+
+                                        int verify = -1;
+                                        char senha_atual[15];
+                                        
+                                        while (verify != 0)
+                                        {
+                                            printf ("\nDigite sua senha atual: ");
+                                            setbuf(stdin, NULL);
+                                            scanf ("%[^\n]s", &senha_atual);
+
+                                            verify = strcmp(logado.senha_8d, senha_atual);
+
+                                            if (verify != 0) 
+                                            {
+                                                printf ("\nSenha atual incorreta! Digite 1 para continuar ou 2 para voltar: ");
+                                                scanf ("%d", &verify);
+                                            }
+
+                                            if (verify == 2) break;
+                                        }
+
+                                        if (verify == 2) break;
+                                        
+                                        verify = -1;
+                                        
+                                        while (verify != 0)
+                                        {
+                                            char senha1[15]; 
+                                            char senha2[15];
+
+                                            printf ("\nDigite sua nova senha: ");
+                                            setbuf (stdin, NULL);
+                                            scanf ("%[^\n]s", &senha1);
+
+                                            printf ("\nDigite sua nova senha novamente: ");
+                                            setbuf (stdin, NULL);
+                                            scanf ("%[^\n]s", &senha2);
+
+                                            verify = alterarSenha(lista_principal_clientes, logado.codigo, senha1, senha2);
+
+                                            if (verify == 0) printf ("\nSenha alterada com sucesso!\n");
+                                            if (verify != 0) printf ("\nSenhas diferentes. Tente novamente!\n");
+                                        }
+
+                                    break;
+
+                                    case 8:; // alterar email
+
+                                        verify = -1;
+                                        
+                                        while (verify != 0)
+                                        {
+                                            printf ("\nDigite sua senha atual: ");
+                                            setbuf(stdin, NULL);
+                                            scanf ("%[^\n]s", &senha_atual);
+
+                                            verify = strcmp(logado.senha_8d, senha_atual);
+
+                                            if (verify != 0) 
+                                            {
+                                                printf ("\nSenha atual incorreta! Digite 1 para continuar ou 2 para voltar: ");
+                                                scanf ("%d", &verify);
+                                            }
+
+                                            if (verify == 2) break;
+                                        }
+
+                                        if (verify == 2) break;
+                                        
+                                        verify = -1;
+                                        
+                                        char novo_email[40]; 
+
+                                        printf ("\nDigite seu novo e-mail: ");
+                                        setbuf (stdin, NULL);
+                                        scanf ("%[^\n]s", &novo_email);
+
+                                        verify = alterarEmail(lista_principal_clientes, logado.codigo, novo_email);
+
+                                        if (verify == 0) printf ("\nE-mail alterado com sucesso!\n");
+                                        if (verify != 0) printf ("\nAlgo deu errado. Tente novamente!\n");
+                                        
+                                    break;
+
+                                    case 9: // sair da conta (voltar)
+                                    break;
+
+                                    default:
                                     break;
                                 }
                             }
@@ -303,7 +476,48 @@ int main ()
             case 3: // sou entregador 
 
             break;
+
+            case 4:; // sou adm
+
+                char teste_login[15];
+                char teste_senha[15];
+
+                printf ("\nDigite o login de administrador: ");
+                setbuf(stdin, NULL);
+                scanf ("%[^\n]s", &teste_login);
+
+                printf ("\nDigite a senha de administrador: ");
+                setbuf(stdin, NULL);
+                scanf ("%[^\n]s", &teste_senha);
+
+                if ((strcmp(teste_login, loginADM) == 0) && strcmp(teste_senha, senhaADM) == 0) 
+                {
+                    printf ("\nBem-vindo, ADM!\n");
+
+                    while (option != 9)
+                    {
+                        option = menu4();
+
+                        switch (option)
+                        {
+
+                        }
+                    }
+                }
+                else
+                {
+                    printf ("\nLogin ou senha incorretos!\n");
+                }
+
+            break;
+
+            default:
+            break;
         }
     }
+
+    limparCliente(lista_principal_clientes);
+    free(lista_principal_clientes);
+    
     return 0;
 }
