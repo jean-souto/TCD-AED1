@@ -88,3 +88,4 @@ int inserirEnderecoCliente (Lista_cliente *l, int codigo, endereco novo_end);
 void mostrar_enderecos (Cliente item);
 int removerCartaoCliente (Lista_cliente *l, int codigo, int posicao);
 int removerEnderecoCliente (Lista_cliente *l, int codigo, int posicao);
+int buscarClienteEmailCPF (Lista_cliente *l, char *email, char *cpf, Cliente *item);
