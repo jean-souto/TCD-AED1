@@ -80,7 +80,6 @@ int removerEnderecoCliente (Lista_cliente *l, int codigo, int posicao);
 // auxiliares
 int listaVaziaCliente (Lista_cliente *l);
 int sortearCodigoCliente (Lista_cliente *l);
-int inicializar_cliente (Cliente *item); // usada ao criar um novo cadastro de entregador (zera todas as informações para evitar lixo e erros) 
 int limparCliente (Lista_cliente *l); // limpa a lista
 int tamanhoCliente (Lista_cliente *l); // retorna o tamanho da lista 
 
