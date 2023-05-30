@@ -106,15 +106,25 @@ int removerInicioCliente (Lista_cliente *l) // remove no inicio da lista
 
     No_cliente *aux = l->inicio;
     
-    if (l->inicio->prox == NULL)
+    if (aux->prox == NULL)
     {
+        //printf ("Caso 1");
         l->inicio = NULL;
+        /*free(aux->valor.enderecos);
+        free(aux->valor.pagamentos);
+        free(aux->valor.historico->ped);
+        free(aux->valor.historico);*/
         free(aux);
     }
     else
     {
+        //printf ("Caso 2");
         l->inicio = aux->prox;
         aux->prox->ant = NULL;
+        /*free(aux->valor.enderecos);
+        free(aux->valor.pagamentos);
+        free(aux->valor.historico->ped);
+        free(aux->valor.historico);*/
         free(aux);
     }
     return 0;
@@ -125,12 +135,19 @@ int removerFimCliente (Lista_cliente *l) // remove no fim da lista
     if (l == NULL) return NULL_LIST;
     if (listaVaziaCliente(l) == 0) return 0;
 
+    int i, j;
+
     No_cliente *aux = l->inicio;
 
     while (aux->prox != NULL)
     {
         aux = aux->prox;
     }
+
+    /*free(aux->valor.enderecos);
+    free(aux->valor.pagamentos);
+    free(aux->valor.historico->ped);
+    free(aux->valor.historico);*/
 
     if (l->inicio->prox != NULL) aux->ant->prox = NULL;
     else l->inicio = NULL;
@@ -177,10 +194,10 @@ int removerItemCliente (Lista_cliente *l, int codigo) // remove o item correspon
     aux = l->inicio;
     int pos = 0;
 
-    while ((aux != NULL) && (aux->valor.codigo != codigo))
+    while ((aux->prox != NULL) && (aux->valor.codigo != codigo))
     {
-        pos++;
         aux = aux->prox;
+        pos++;
     }
     if (aux->valor.codigo == codigo)
     {
@@ -288,18 +305,6 @@ int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidos novo_pedido)
         return 0;
     } 
     return 1;
-}
-
-int inicializar_cliente (Cliente *item) // usada ao criar um novo cadastro de entregador (zera todas as informações para evitar lixo e erros) 
-{
-    item->valor_gasto = 0;
-    item->quantidade_cartoes = 0;
-    item->quant_pedidos = 0;
-    item->quant_enderecos = 0;
-    item->historico = NULL;
-    item->pagamentos = NULL;
-    item->enderecos = NULL;
-    return 0;
 }
 
 int limparCliente (Lista_cliente *l) // limpa a lista
