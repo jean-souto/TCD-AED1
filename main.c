@@ -7,6 +7,28 @@
 #include "cliente.h"
 
 //FUNÇÕES EXTRAS
+int inicializar_cliente (Cliente *item) // usada ao criar um novo cadastro de entregador (zera todas as informações para evitar lixo e erros) 
+{
+    item->valor_gasto = 0;
+    item->quantidade_cartoes = 0;
+    item->quant_pedidos = 0;
+    item->quant_enderecos = 0;
+    item->historico = NULL;
+    item->pagamentos = NULL;
+    item->enderecos = NULL;
+    return 0;
+}
+
+int limpar_logado (Cliente *item)
+{
+    strcpy(item->cpf, "000");
+    strcpy(item->email, "000");
+    strcpy(item->nome, "000");
+    strcpy(item->senha_8d, "000");
+    item->codigo = -1;
+    inicializar_cliente(item);
+}
+
 int menu1()
 {
     int op = -1;
@@ -58,11 +80,12 @@ int menu3()
         printf ("7. Alterar senha\n");
         printf ("8. Alterar e-mail\n");
         printf ("9. Sair da conta\n");
+        printf ("10. Apagar conta\n");
         printf ("0. Sair do app\n");
         printf ("Opcao: ");
         scanf ("%d", &op);
-        if (op < 0 || op > 9) printf ("\nDigite uma opcao valida\n\n");
-    }while (op < 0 || op > 9);
+        if (op < 0 || op > 10) printf ("\nDigite uma opcao valida\n\n");
+    }while (op < 0 || op > 10);
     return op;
 }
 
@@ -72,16 +95,16 @@ int menu4() // do adm
     do
     {
         printf ("\nSelecione uma opcao: \n");
-        printf ("1. \n");
-        printf ("2. \n");
-        printf ("3. \n");
-        printf ("4. \n");
+        printf ("1. Mostrar lista de clientes\n");
+        printf ("2. Mostrar lista de entregadores\n");
+        printf ("3. Mostrar lista de restaurantes\n");
+        printf ("4. Mostrar fila de pedidos universal\n");
         printf ("5. \n");
         printf ("6. \n");
         printf ("7. \n");
         printf ("8. \n");
-        printf ("9. \n");
-        printf ("0. \n");
+        printf ("9. Sair da conta\n");
+        printf ("0. Sair\n");
         printf ("Opcao: ");
         scanf ("%d", &op);
         if (op < 0 || op > 9) printf ("\nDigite uma opcao valida\n\n");
@@ -244,11 +267,13 @@ int main ()
 
                                 if (verify == 0)
                                 {
-                                    printf ("\nLogin efetuado com sucesso. Bem vindo(a) de volta %s!\n", logado.nome);
+                                    printf ("\nLogin efetuado com sucesso. Bem vindo(a) de volta, %s!\n", logado.nome);
                                 }
                             }
 
-                            while (option != 9)
+                            if (verify == 5) break;
+
+                            while ((option != 9) && (option != 10))
                             {
                                 option = menu3();
 
@@ -409,7 +434,11 @@ int main ()
 
                                             verify = alterarSenha(lista_principal_clientes, logado.codigo, senha1, senha2);
 
-                                            if (verify == 0) printf ("\nSenha alterada com sucesso!\n");
+                                            if (verify == 0) 
+                                            {
+                                                printf ("\nSenha alterada com sucesso!\n");
+                                                buscarItemCliente (lista_principal_clientes, logado.codigo, &logado);
+                                            }
                                             if (verify != 0) printf ("\nSenhas diferentes. Tente novamente!\n");
                                         }
 
@@ -448,7 +477,11 @@ int main ()
 
                                         verify = alterarEmail(lista_principal_clientes, logado.codigo, novo_email);
 
-                                        if (verify == 0) printf ("\nE-mail alterado com sucesso!\n");
+                                        if (verify == 0)
+                                        {
+                                            printf ("\nE-mail alterado com sucesso!\n");
+                                            buscarItemCliente(lista_principal_clientes, logado.codigo, &logado);
+                                        }
                                         if (verify != 0) printf ("\nAlgo deu errado. Tente novamente!\n");
                                         
                                     break;
@@ -456,7 +489,45 @@ int main ()
                                     case 9: // sair da conta (voltar)
                                     break;
 
-                                    default:
+                                    case 10: // apagar conta
+                                        printf ("\nVoce esta prestes a apagar sua conta e tudo que esta contido nela. Voce tem certeza? ");
+                                        printf ("\nDigite 1 para sim e 2 para nao: ");
+                                        scanf ("%d", &verify);
+                        
+                                        if (verify == 1)
+                                        {
+                                            printf ("\nMuito bem. Digite sua senha: ");
+                                            setbuf(stdin, NULL);
+                                            scanf ("%[^\n]s", &senha_atual);
+
+                                            verify = strcmp(logado.senha_8d, senha_atual);
+
+                                            if (verify == 0)
+                                            {
+                                                verify = removerItemCliente(lista_principal_clientes, logado.codigo);
+
+                                                if (verify == 0)
+                                                {
+                                                    printf ("\nFoi um prazer ter voce conosco! Sua conta foi excluida com sucesso.");
+                                                    limpar_logado(&logado);
+                                                }
+                                                else
+                                                {
+                                                    printf ("\nHouve algum erro. Tente novamente.");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                printf ("\nSenha incorreta. Tente novamente.");
+                                            }
+                                            break;
+                                        }
+
+                                        if (verify == 2)
+                                        {
+                                            option = -1;
+                                            break;
+                                        }
                                     break;
                                 }
                             }
