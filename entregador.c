@@ -73,7 +73,7 @@ int inserirInicioEntregador (Lista_entregadores *l, entregador item) // insere n
     return 0;
 }
 
-int inserirFimEntregador (Lista_entregadores *l, entregador item) // insere no fim da lista
+int inserirFimEntregador (Lista_entregadores *l, entregador item, int *codig) // insere no fim da lista
 {
     if (l == NULL) return NULL_LIST;
 
@@ -83,6 +83,7 @@ int inserirFimEntregador (Lista_entregadores *l, entregador item) // insere no f
     noaux->valor = item;
     noaux->valor.codigo = sortearCodigoEntregador(l);
     noaux->prox = NULL;
+    *codig = noaux->valor.codigo;
 
     if (listaVaziaEntregador(l) != 0) 
     {   
