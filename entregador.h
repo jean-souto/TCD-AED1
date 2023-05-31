@@ -40,7 +40,7 @@ int sortearCodigoEntregador (Lista_entregadores *l); // ok
 
 //inserção
 int inserirInicioEntregador (Lista_entregadores *l, entregador item); // ok
-int inserirFimEntregador (Lista_entregadores *l, entregador item); // ok
+int inserirFimEntregador (Lista_entregadores *l, entregador item, int *codig); // ok
 
 //remoção
 int removerInicioEntregador (Lista_entregadores *l); // ok
