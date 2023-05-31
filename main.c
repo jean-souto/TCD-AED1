@@ -7,7 +7,7 @@
 #include "cliente.h"
 
 //FUNÇÕES EXTRAS
-int inicializar_cliente (Cliente *item) // usada ao criar um novo cadastro de entregador (zera todas as informações para evitar lixo e erros) 
+int inicializar_cliente (Cliente *item) // usada ao criar um novo_cliente cadastro de entregador (zera todas as informações para evitar lixo e erros) 
 {
     item->valor_gasto = 0;
     item->quantidade_cartoes = 0;
@@ -112,6 +112,23 @@ int menu4() // do adm
     return op;
 }
 
+int menu5()
+{
+    int op = -1;
+    do
+    {
+        printf ("\nSelecione uma opcao: \n");
+        printf ("1. Quero me cadastrar\n");
+        printf ("2. Ja tenho cadastro\n");
+        printf ("3. Voltar\n");
+        printf ("0. Sair\n");
+        printf ("Opcao: ");
+        scanf ("%d", &op);
+        if (op < 0 || op > 4) printf ("\nDigite uma opcao valida\n\n");
+    }while (op < 0 || op > 4);
+    return op;
+}
+
 // MAIN
 
 int main ()
@@ -120,13 +137,18 @@ int main ()
 
     // declarações relacionadas aos clientes
     Lista_cliente *lista_principal_clientes;
-    Cliente logado, esqueceu_senha;
-    Cliente novo, inicializados;
+    Cliente logado_cliente, novo_cliente;
+    Cliente esqueceu_senha_cliente, inicializados_cliente;
     char email[40];
     char senha[15];
     char cpf[12];
     cartao novo_cartao;
     endereco novo_endereco;
+
+    // declarações relacionadas aos entregadores
+    Lista_entregadores *lista_principal_entregadores;
+    entregador novo_entregador, logado_entregador;
+    int cod_novo = -1;
 
     // declarações adm
     char loginADM[15];
@@ -138,18 +160,19 @@ int main ()
     // inicializações
 
     lista_principal_clientes = criarCliente();
+    lista_principal_entregadores = criar_lista_entregadores();
 
     strcpy (loginADM, "souADM");
     strcpy (senhaADM, "123ADM");
 
-    inicializar_cliente(&esqueceu_senha);
+    inicializar_cliente(&esqueceu_senha_cliente);
 
-    /*strcpy (inicializados.nome, "Alan da Silva");
-    strcpy (inicializados.cpf, "145756984121");
-    strcpy (inicializados.email, "alan@gmail.com");
-    strcpy (inicializados.senha_8d, "12345678");
-    inicializar_cliente(&inicializados);
-    inserirInicioCliente(lista_principal_clientes, inicializados);*/
+    /*strcpy (inicializados_cliente.nome, "Alan da Silva");
+    strcpy (inicializados_cliente.cpf, "145756984121");
+    strcpy (inicializados_cliente.email, "alan@gmail.com");
+    strcpy (inicializados_cliente.senha_8d, "12345678");
+    inicializar_cliente(&inicializados_cliente);
+    inserirInicioCliente(lista_principal_clientes, inicializados_cliente);*/
 
     while (option != 0)
     {
@@ -180,22 +203,22 @@ int main ()
                         
                         printf ("\nDigite seu nome: ");
                         setbuf (stdin, NULL);
-                        scanf ("%[^\n]s", novo.nome);
+                        scanf ("%[^\n]s", novo_cliente.nome);
 
                         printf ("\nDigite seu e-mail: ");
                         setbuf (stdin, NULL);
-                        scanf ("%[^\n]s", novo.email);
+                        scanf ("%[^\n]s", novo_cliente.email);
                         
                         printf ("\nDigite seu CPF (somente numeros): ");
                         setbuf (stdin, NULL);
-                        scanf ("%[^\n]s", novo.cpf);
+                        scanf ("%[^\n]s", novo_cliente.cpf);
                         
                         printf ("\nDigite sua senha (8 digitos): ");
                         setbuf (stdin, NULL);
-                        scanf ("%[^\n]s", novo.senha_8d);
-                        inicializar_cliente(&novo);
+                        scanf ("%[^\n]s", novo_cliente.senha_8d);
+                        inicializar_cliente(&novo_cliente);
 
-                        if ((inserirInicioCliente (lista_principal_clientes, novo)) == 0) printf ("\nCadastro realizado com sucesso!\n");
+                        if ((inserirInicioCliente (lista_principal_clientes, novo_cliente)) == 0) printf ("\nCadastro realizado com sucesso!\n");
                         // mostrar_cliente(lista_principal_clientes);
                         break;
 
@@ -221,7 +244,7 @@ int main ()
                                         setbuf (stdin, NULL);
                                         scanf ("%[^\n]s", &cpf);
 
-                                        verify = buscarClienteEmailCPF(lista_principal_clientes, &(*email), &(*cpf), &esqueceu_senha);
+                                        verify = buscarClienteEmailCPF(lista_principal_clientes, &(*email), &(*cpf), &esqueceu_senha_cliente);
 
                                         if (verify == 0)
                                         {
@@ -240,7 +263,7 @@ int main ()
                                                 setbuf (stdin, NULL);
                                                 scanf ("%[^\n]s", &senha2);
 
-                                                verify = alterarSenha(lista_principal_clientes, esqueceu_senha.codigo, senha1, senha2);
+                                                verify = alterarSenha(lista_principal_clientes, esqueceu_senha_cliente.codigo, senha1, senha2);
 
                                                 if (verify == 0) printf ("Senha alterada com sucesso!");
                                                 if (verify != 0) printf ("Senhas diferentes. Tente novamente!");
@@ -258,7 +281,7 @@ int main ()
                                 setbuf (stdin, NULL);
                                 scanf ("%[^\n]s", &senha);
 
-                                verify = loginCliente(lista_principal_clientes, &(*email), &(*senha), &logado);
+                                verify = loginCliente(lista_principal_clientes, &(*email), &(*senha), &logado_cliente);
 
                                 if (verify != 0)
                                 {
@@ -267,7 +290,7 @@ int main ()
 
                                 if (verify == 0)
                                 {
-                                    printf ("\nLogin efetuado com sucesso. Bem vindo(a) de volta, %s!\n", logado.nome);
+                                    printf ("\nLogin efetuado com sucesso. Bem vindo(a) de volta, %s!\n", logado_cliente.nome);
                                 }
                             }
 
@@ -297,10 +320,10 @@ int main ()
 
                                     case 5: // cartões
                                         printf ("\nVoce possui os seguintes cartoes cadastrados: \n");
-                                        buscarItemCliente (lista_principal_clientes, logado.codigo, &logado);
-                                        mostrar_pagamentos (logado);
+                                        buscarItemCliente (lista_principal_clientes, logado_cliente.codigo, &logado_cliente);
+                                        mostrar_pagamentos (logado_cliente);
                                         printf ("\nVoce deseja: ");
-                                        printf ("\n1. Cadastrar novo cartao");
+                                        printf ("\n1. Cadastrar novo_cliente cartao");
                                         printf ("\n2. Excluir cartao");
                                         printf ("\n3. Voltar\n");
                                         scanf ("%d", &option);
@@ -330,7 +353,7 @@ int main ()
 
                                             if (temp == 1) strcpy (novo_cartao.tipo, "Debito"); else strcpy (novo_cartao.tipo, "Credito");
 
-                                            temp = inserirCartaoCliente(lista_principal_clientes, logado.codigo, novo_cartao);
+                                            temp = inserirCartaoCliente(lista_principal_clientes, logado_cliente.codigo, novo_cartao);
                                             
                                             if (temp == 0) printf ("\nCadastro realizado com sucesso!"); else printf ("\nAlgum erro inesperado aconteceu. Tente novamente!");
                                         }
@@ -342,7 +365,7 @@ int main ()
                                             printf ("Digite qual o cartao que voce quer excluir (1, 2, 3...): ");
                                             scanf ("%d", &temp);
 
-                                            temp = removerCartaoCliente(lista_principal_clientes, logado.codigo, temp);
+                                            temp = removerCartaoCliente(lista_principal_clientes, logado_cliente.codigo, temp);
 
                                             if (temp == 0) printf ("\nExcluido com sucesso!"); else printf ("\nAlgum erro inesperado aconteceu. Tente novamente!");
                                         }
@@ -350,10 +373,10 @@ int main ()
 
                                     case 6: // endereços
                                         printf ("\nVoce possui os seguintes enderecos cadastrados: \n");
-                                        buscarItemCliente (lista_principal_clientes, logado.codigo, &logado);
-                                        mostrar_enderecos (logado);
+                                        buscarItemCliente (lista_principal_clientes, logado_cliente.codigo, &logado_cliente);
+                                        mostrar_enderecos (logado_cliente);
                                         printf ("\nVoce deseja: ");
-                                        printf ("\n1. Cadastrar novo endereco");
+                                        printf ("\n1. Cadastrar novo_cliente endereco");
                                         printf ("\n2. Excluir endereco");
                                         printf ("\n3. Voltar\n");
                                         scanf ("%d", &option);
@@ -375,7 +398,7 @@ int main ()
                                             setbuf (stdin, NULL);
                                             scanf ("%[^\n]s", novo_endereco.cep);
 
-                                            temp = inserirEnderecoCliente(lista_principal_clientes, logado.codigo, novo_endereco);
+                                            temp = inserirEnderecoCliente(lista_principal_clientes, logado_cliente.codigo, novo_endereco);
                                             
                                             if (temp == 0) printf ("\nCadastro realizado com sucesso!"); else printf ("\nAlgum erro inesperado aconteceu. Tente novamente!");
                                         }
@@ -387,7 +410,7 @@ int main ()
                                             printf ("Digite qual o endereco que voce quer excluir (1, 2, 3...): ");
                                             scanf ("%d", &temp);
 
-                                            temp = removerEnderecoCliente(lista_principal_clientes, logado.codigo, temp);
+                                            temp = removerEnderecoCliente(lista_principal_clientes, logado_cliente.codigo, temp);
 
                                             if (temp == 0) printf ("\nExcluido com sucesso!"); else printf ("\nAlgum erro inesperado aconteceu. Tente novamente!");
                                         }
@@ -404,7 +427,7 @@ int main ()
                                             setbuf(stdin, NULL);
                                             scanf ("%[^\n]s", &senha_atual);
 
-                                            verify = strcmp(logado.senha_8d, senha_atual);
+                                            verify = strcmp(logado_cliente.senha_8d, senha_atual);
 
                                             if (verify != 0) 
                                             {
@@ -432,12 +455,12 @@ int main ()
                                             setbuf (stdin, NULL);
                                             scanf ("%[^\n]s", &senha2);
 
-                                            verify = alterarSenha(lista_principal_clientes, logado.codigo, senha1, senha2);
+                                            verify = alterarSenha(lista_principal_clientes, logado_cliente.codigo, senha1, senha2);
 
                                             if (verify == 0) 
                                             {
                                                 printf ("\nSenha alterada com sucesso!\n");
-                                                buscarItemCliente (lista_principal_clientes, logado.codigo, &logado);
+                                                buscarItemCliente (lista_principal_clientes, logado_cliente.codigo, &logado_cliente);
                                             }
                                             if (verify != 0) printf ("\nSenhas diferentes. Tente novamente!\n");
                                         }
@@ -454,7 +477,7 @@ int main ()
                                             setbuf(stdin, NULL);
                                             scanf ("%[^\n]s", &senha_atual);
 
-                                            verify = strcmp(logado.senha_8d, senha_atual);
+                                            verify = strcmp(logado_cliente.senha_8d, senha_atual);
 
                                             if (verify != 0) 
                                             {
@@ -471,16 +494,16 @@ int main ()
                                         
                                         char novo_email[40]; 
 
-                                        printf ("\nDigite seu novo e-mail: ");
+                                        printf ("\nDigite seu novo_cliente e-mail: ");
                                         setbuf (stdin, NULL);
                                         scanf ("%[^\n]s", &novo_email);
 
-                                        verify = alterarEmail(lista_principal_clientes, logado.codigo, novo_email);
+                                        verify = alterarEmail(lista_principal_clientes, logado_cliente.codigo, novo_email);
 
                                         if (verify == 0)
                                         {
                                             printf ("\nE-mail alterado com sucesso!\n");
-                                            buscarItemCliente(lista_principal_clientes, logado.codigo, &logado);
+                                            buscarItemCliente(lista_principal_clientes, logado_cliente.codigo, &logado_cliente);
                                         }
                                         if (verify != 0) printf ("\nAlgo deu errado. Tente novamente!\n");
                                         
@@ -500,16 +523,16 @@ int main ()
                                             setbuf(stdin, NULL);
                                             scanf ("%[^\n]s", &senha_atual);
 
-                                            verify = strcmp(logado.senha_8d, senha_atual);
+                                            verify = strcmp(logado_cliente.senha_8d, senha_atual);
 
                                             if (verify == 0)
                                             {
-                                                verify = removerItemCliente(lista_principal_clientes, logado.codigo);
+                                                verify = removerItemCliente(lista_principal_clientes, logado_cliente.codigo);
 
                                                 if (verify == 0)
                                                 {
                                                     printf ("\nFoi um prazer ter voce conosco! Sua conta foi excluida com sucesso.");
-                                                    limpar_logado(&logado);
+                                                    limpar_logado(&logado_cliente);
                                                 }
                                                 else
                                                 {
@@ -544,7 +567,48 @@ int main ()
 
             break;
 
-            case 3: // sou entregador 
+            case 3:; // sou entregador 
+
+                option = -1;
+                while (option != 3)
+                {
+                    option = menu5();
+                    int verify = -1;
+
+                    switch (option)
+                    {
+
+                    case 0: 
+                        return 0;
+                    break;
+
+                    case 1:
+                        printf ("\nMuito bem! Vamos te cadastrar: ");
+                        
+                        printf ("\nDigite seu nome: ");
+                        setbuf (stdin, NULL);
+                        scanf ("%[^\n]s", &novo_entregador.nome);
+
+                        printf ("\nDigite seu CPF (somente numeros): ");
+                        setbuf (stdin, NULL);
+                        scanf ("%[^\n]s", &novo_entregador.cpf);
+
+                        printf ("\nDigite seu e-mail: ");
+                        setbuf (stdin, NULL);
+                        scanf ("%[^\n]s", &novo_entregador.email);
+
+                        inicializar_entregador(&novo_entregador);
+
+                        verify = -1;
+
+                        if((inserirFimEntregador(lista_principal_entregadores, novo_entregador, &cod_novo)) == 0) printf ("\nCadastro realizado com sucesso! Bem vindo, %s! Seu novo codigo de acesso eh: %d.", novo_entregador.nome, cod_novo);
+                        
+                    break;
+                    
+                    case 3:
+                    break;
+                    }
+                }
 
             break;
 
