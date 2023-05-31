@@ -106,15 +106,25 @@ int removerInicioCliente (Lista_cliente *l) // remove no inicio da lista
 
     No_cliente *aux = l->inicio;
     
-    if (l->inicio->prox == NULL)
+    if (aux->prox == NULL)
     {
+        //printf ("Caso 1");
         l->inicio = NULL;
+        /*free(aux->valor.enderecos);
+        free(aux->valor.pagamentos);
+        free(aux->valor.historico->ped);
+        free(aux->valor.historico);*/
         free(aux);
     }
     else
     {
+        //printf ("Caso 2");
         l->inicio = aux->prox;
         aux->prox->ant = NULL;
+        /*free(aux->valor.enderecos);
+        free(aux->valor.pagamentos);
+        free(aux->valor.historico->ped);
+        free(aux->valor.historico);*/
         free(aux);
     }
     return 0;
@@ -125,12 +135,19 @@ int removerFimCliente (Lista_cliente *l) // remove no fim da lista
     if (l == NULL) return NULL_LIST;
     if (listaVaziaCliente(l) == 0) return 0;
 
+    int i, j;
+
     No_cliente *aux = l->inicio;
 
     while (aux->prox != NULL)
     {
         aux = aux->prox;
     }
+
+    /*free(aux->valor.enderecos);
+    free(aux->valor.pagamentos);
+    free(aux->valor.historico->ped);
+    free(aux->valor.historico);*/
 
     if (l->inicio->prox != NULL) aux->ant->prox = NULL;
     else l->inicio = NULL;
@@ -177,10 +194,10 @@ int removerItemCliente (Lista_cliente *l, int codigo) // remove o item correspon
     aux = l->inicio;
     int pos = 0;
 
-    while ((aux != NULL) && (aux->valor.codigo != codigo))
+    while ((aux->prox != NULL) && (aux->valor.codigo != codigo))
     {
-        pos++;
         aux = aux->prox;
+        pos++;
     }
     if (aux->valor.codigo == codigo)
     {
@@ -271,7 +288,7 @@ int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidos novo_pedido)
     if (aux->valor.codigo == codigo)
     {  
         aux->valor.quant_pedidos++;
-        aux->valor.historico = realloc (aux->valor.historico, aux->valor.quant_pedidos*sizeof(pedidos));
+        aux->valor.historico = (pedidos*) realloc (aux->valor.historico, aux->valor.quant_pedidos*sizeof(pedidos));
         
         aux->valor.historico[aux->valor.quant_pedidos-1].codigo = novo_pedido.codigo;
         aux->valor.historico[aux->valor.quant_pedidos-1].valorTotal = novo_pedido.valorTotal;
@@ -280,7 +297,7 @@ int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidos novo_pedido)
 
         for (i = 0; i < novo_pedido.qtdPed; i++)
         {
-            aux->valor.historico->ped = (pedidos*) realloc (aux->valor.historico->ped, novo_pedido.qtdPed*sizeof(pedidos));
+            aux->valor.historico->ped = (pratos*) realloc (aux->valor.historico->ped, novo_pedido.qtdPed*sizeof(pratos));
             strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].nome, novo_pedido.ped[i].nome);
             strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].descricao, novo_pedido.ped[i].descricao);
             aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].valor = novo_pedido.ped[i].valor;
@@ -288,18 +305,6 @@ int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidos novo_pedido)
         return 0;
     } 
     return 1;
-}
-
-int inicializar_cliente (Cliente *item) // usada ao criar um novo cadastro de entregador (zera todas as informações para evitar lixo e erros) 
-{
-    item->valor_gasto = 0;
-    item->quantidade_cartoes = 0;
-    item->quant_pedidos = 0;
-    item->quant_enderecos = 0;
-    item->historico = NULL;
-    item->pagamentos = NULL;
-    item->enderecos = NULL;
-    return 0;
 }
 
 int limparCliente (Lista_cliente *l) // limpa a lista
@@ -441,16 +446,10 @@ int alterarSenha (Lista_cliente *l, int codigo, char *nova_senha1, char *nova_se
         if (strcmp(nova_senha1, nova_senha2) == 0)
         {
             strcpy(aux->valor.senha_8d, nova_senha1);
+            return 0;
         }
-    } else return 1;
-    return 0;
-}
-
-int comparar_char (char *a, char *b)
-{
-    if (strlen(a) != strlen(b)) return 2;
-    if (strcmp(a, b) != 0) return 3;
-    return 0;
+    }
+    return 1;
 }
 
 int alterarEmail (Lista_cliente *l, int codigo, char *novo_email)
@@ -467,9 +466,10 @@ int alterarEmail (Lista_cliente *l, int codigo, char *novo_email)
 
     if (aux->valor.codigo == codigo)
     {
-        strcpy(aux->valor.senha_8d, novo_email);
-    } else return 1;
-    return 0;
+        strcpy(aux->valor.email, novo_email);
+        return 0;
+    }
+    return 1;
 }
 
 int loginCliente (Lista_cliente *l, char *email, char *senha, Cliente *item)
@@ -523,7 +523,7 @@ void copiarCliente (Cliente *A, Cliente *B) // função de auxílio. copia todas
         B->historico[i].codigo = A->historico[i].codigo;
         B->historico[i].qtdPed = A->historico[i].qtdPed;
 
-        B->historico[i].ped = (pedidos*) realloc (B->historico[i].ped, A->historico[i].qtdPed*sizeof(pedidos));
+        B->historico[i].ped = (pratos*) realloc (B->historico[i].ped, A->historico[i].qtdPed*sizeof(pratos));
 
         for (j = 0; j < A->historico[i].qtdPed; j++)
         {
@@ -622,5 +622,26 @@ int removerEnderecoCliente (Lista_cliente *l, int codigo, int posicao)
 
         return 0;
     } 
+    return 1;
+}
+
+int buscarClienteEmailCPF (Lista_cliente *l, char *email, char *cpf, Cliente *item)
+{
+    if (l == NULL) return NULL_LIST;
+    if (listaVaziaCliente(l) == 0) return EMPTY_LIST;
+
+    No_cliente *aux = l->inicio;
+
+    while (aux->prox != NULL && (strcmp(aux->valor.email, email) != 0))
+    {
+        aux = aux->prox;
+    }
+
+    if (strcmp(aux->valor.email, email) != 0) return 1;
+    if ((strcmp(aux->valor.email, email) == 0) && (strcmp(aux->valor.cpf, cpf) == 0))
+    {
+        copiarCliente(&aux->valor, &(*item));
+        return 0;
+    }
     return 1;
 }
