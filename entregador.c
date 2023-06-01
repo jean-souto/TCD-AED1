@@ -379,3 +379,23 @@ void copiarEntregador (entregador *A, entregador *B) // função de auxílio. co
     strcpy (B->email, A->email);
     strcpy (B->nome, A->nome);
 }
+
+int loginCodigo (Lista_entregadores *l, char *email, int codigo, entregador *item)
+{
+    if (l == NULL) return NULL_LIST;
+    if (listaVaziaEntregador(l) == 0) return EMPTY_LIST;
+
+    No_entregador *aux = l->inicio;
+
+    while (aux->prox != NULL && (strcmp(aux->valor.email, email) != 0))
+    {
+        aux = aux->prox;
+    }
+
+    if ((strcmp(aux->valor.email, email) == 0) && (aux->valor.codigo == codigo))
+    {
+        copiarEntregador(&aux->valor, &(*item));
+        return 0;
+    }
+    return 1;
+}
