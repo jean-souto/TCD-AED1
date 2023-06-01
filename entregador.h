@@ -7,13 +7,13 @@ typedef struct plateE // aqui
 { 
     char nome[40]; 
     char descricao[100]; 
-    float valor; 
+    float preco; 
 } pratosE; 
 
 typedef struct pedE // aqui
 { 
     int codigo; 
-    float valorTotal; 
+    float precoTotal; 
     char nome_rest[40]; 
     pratosE *ped; 
     int qtdPed; 

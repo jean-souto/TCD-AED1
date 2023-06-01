@@ -290,7 +290,7 @@ int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidosC novo_pedido)
         aux->valor.historico = (pedidosC*) realloc (aux->valor.historico, aux->valor.quant_pedidos*sizeof(pedidosC));
         
         aux->valor.historico[aux->valor.quant_pedidos-1].codigo = novo_pedido.codigo;
-        aux->valor.historico[aux->valor.quant_pedidos-1].valorTotal = novo_pedido.valorTotal;
+        aux->valor.historico[aux->valor.quant_pedidos-1].precoTotal = novo_pedido.precoTotal;
         aux->valor.historico[aux->valor.quant_pedidos-1].qtdPed = novo_pedido.qtdPed;
         strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].nome_rest, novo_pedido.nome_rest);
 
@@ -299,7 +299,7 @@ int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidosC novo_pedido)
             aux->valor.historico->ped = (pratosC*) realloc (aux->valor.historico->ped, novo_pedido.qtdPed*sizeof(pratosC));
             strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].nome, novo_pedido.ped[i].nome);
             strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].descricao, novo_pedido.ped[i].descricao);
-            aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].valor = novo_pedido.ped[i].valor;
+            aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].preco = novo_pedido.ped[i].preco;
         }
         return 0;
     } 
@@ -344,7 +344,7 @@ void mostrar_cliente (Lista_cliente *l) // mostra as principais informações de
                 printf(" {%s, ", aux->valor.nome);
                 printf("%s, ", aux->valor.email);
                 printf("%d, ", aux->valor.codigo);
-                printf("%.2f, ", aux->valor.valor_gasto);
+                printf("%.2f, ", aux->valor.gasto_total);
                 printf("%d} ", aux->valor.quant_pedidos);
                 aux = aux->prox;
             }while(aux != NULL);
@@ -376,12 +376,12 @@ void mostrar_pedidos (Cliente item)
     {
         printf ("[%d, ", item.historico->codigo);
         printf ("%s, ", item.historico->nome_rest);
-        printf ("%.2f, ", item.historico->valorTotal);
+        printf ("%.2f, ", item.historico->precoTotal);
 
         for (j = 0; j < item.historico->qtdPed; j++)
         {
             printf ("%s, ", item.historico->ped[j].nome);
-            printf ("%.2f", item.historico->ped[j].valor);
+            printf ("%.2f", item.historico->ped[j].preco);
         }
         printf ("] ");
     }
@@ -415,7 +415,7 @@ void mostrar_tudo_cliente (Lista_cliente *l) // mostra TODAS as informações do
                 printf("%s, ", aux->valor.email);
                 printf("%s, ", aux->valor.cpf);
                 printf("%d, ", aux->valor.codigo);
-                printf("%.2f, ", aux->valor.valor_gasto);
+                printf("%.2f, ", aux->valor.gasto_total);
                 printf("%d} ", aux->valor.quant_pedidos);
                 mostrar_pagamentos(aux->valor);
                 mostrar_pedidos(aux->valor);
@@ -496,7 +496,7 @@ void copiarCliente (Cliente *A, Cliente *B) // função de auxílio. copia todas
 {
     int i, j;
     B->quant_pedidos = A->quant_pedidos;
-    B->valor_gasto = A->valor_gasto;
+    B->gasto_total = A->gasto_total;
     B->codigo = A->codigo;
     B->quantidade_cartoes = A->quantidade_cartoes;
     B->quant_enderecos = A->quant_enderecos;
@@ -517,7 +517,7 @@ void copiarCliente (Cliente *A, Cliente *B) // função de auxílio. copia todas
     B->historico = (pedidosC*) realloc (B->historico, A->quant_pedidos*sizeof(pedidosC));
     for (i = 0; i < A->quant_pedidos; i++)
     {
-        B->historico[i].valorTotal = A->historico[i].valorTotal;
+        B->historico[i].precoTotal = A->historico[i].precoTotal;
         strcpy(B->historico[i].nome_rest, A->historico[i].nome_rest);
         B->historico[i].codigo = A->historico[i].codigo;
         B->historico[i].qtdPed = A->historico[i].qtdPed;
@@ -526,7 +526,7 @@ void copiarCliente (Cliente *A, Cliente *B) // função de auxílio. copia todas
 
         for (j = 0; j < A->historico[i].qtdPed; j++)
         {
-            B->historico[i].ped[j].valor = A->historico[i].ped[j].valor;
+            B->historico[i].ped[j].preco = A->historico[i].ped[j].preco;
             strcpy(B->historico[i].ped[j].nome, A->historico[i].ped[j].nome);
             strcpy(B->historico[i].ped[j].descricao, A->historico[i].ped[j].descricao);
         }
