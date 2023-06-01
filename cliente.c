@@ -24,18 +24,18 @@ int sortearCodigoCliente (Lista_cliente *l)
 
     while (codigo == 0)
     {
-        codigo = rand()%9999;
+        codigo = rand() % 9999;
     }
 
     if (l == NULL || listaVaziaCliente(l) == 0) return codigo;
 
     No_cliente *aux = l->inicio;
     
-    while (aux != NULL)
+    while (aux->prox != NULL)
     {
         if (codigo == aux->valor.codigo)
         {
-            codigo = rand()%9999;
+            codigo = rand() % 9999;
             aux = l->inicio;
         }
         aux = aux->prox;
@@ -53,7 +53,7 @@ int inserirInicioCliente (Lista_cliente *l, Cliente item) // insere no inicio da
     if (listaVaziaCliente(l) != 0)
     {
         noaux->valor = item;
-        //noaux->valor.codigo = sortearCodigoCliente(l);
+        noaux->valor.codigo = sortearCodigoCliente(l);
         l->inicio->ant = noaux;
         noaux->prox = l->inicio;
         noaux->ant = NULL;
@@ -62,7 +62,7 @@ int inserirInicioCliente (Lista_cliente *l, Cliente item) // insere no inicio da
     else
     {
         noaux->valor = item;
-        //noaux->valor.codigo = sortearCodigoCliente(l);
+        noaux->valor.codigo = sortearCodigoCliente(l);
         l->inicio = noaux;
         noaux->prox = NULL;
         noaux->ant = NULL;
@@ -79,7 +79,7 @@ int inserirFimCliente (Lista_cliente *l, Cliente item) // insere no fim da lista
     No_cliente *nofim = l->inicio;
     
     noaux->valor = item;
-    //noaux->valor.codigo = sortearCodigoCliente(l);
+    noaux->valor.codigo = sortearCodigoCliente(l);
     noaux->prox = NULL;
 
     if (listaVaziaCliente(l) != 0) 
@@ -110,10 +110,9 @@ int removerInicioCliente (Lista_cliente *l) // remove no inicio da lista
     {
         //printf ("Caso 1");
         l->inicio = NULL;
-        /*free(aux->valor.enderecos);
+        free(aux->valor.enderecos);
         free(aux->valor.pagamentos);
-        free(aux->valor.historico->ped);
-        free(aux->valor.historico);*/
+        free(aux->valor.historico);
         free(aux);
     }
     else
@@ -121,10 +120,9 @@ int removerInicioCliente (Lista_cliente *l) // remove no inicio da lista
         //printf ("Caso 2");
         l->inicio = aux->prox;
         aux->prox->ant = NULL;
-        /*free(aux->valor.enderecos);
+        free(aux->valor.enderecos);
         free(aux->valor.pagamentos);
-        free(aux->valor.historico->ped);
-        free(aux->valor.historico);*/
+        free(aux->valor.historico);
         free(aux);
     }
     return 0;
@@ -144,13 +142,11 @@ int removerFimCliente (Lista_cliente *l) // remove no fim da lista
         aux = aux->prox;
     }
 
-    /*free(aux->valor.enderecos);
-    free(aux->valor.pagamentos);
-    free(aux->valor.historico->ped);
-    free(aux->valor.historico);*/
-
     if (l->inicio->prox != NULL) aux->ant->prox = NULL;
     else l->inicio = NULL;
+    free(aux->valor.enderecos);
+    free(aux->valor.pagamentos);
+    free(aux->valor.historico);
     free(aux);
     return 0;
 }
@@ -180,6 +176,9 @@ int removerPosiCliente (Lista_cliente *l, int pos) // remove uma posicao X da li
     
     aux->prox->ant = aux->ant;
     aux->ant->prox = aux->prox;
+    free(aux->valor.enderecos);
+    free(aux->valor.pagamentos);
+    free(aux->valor.historico);
     free(aux);
 
     return 0;
@@ -272,7 +271,7 @@ int inserirCartaoCliente (Lista_cliente *l, int codigo, cartao novo_cartao)
     return 1;
 }
 
-int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidos novo_pedido)
+int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidosC novo_pedido)
 {
     if (l == NULL) return NULL_LIST;
     if (listaVaziaCliente(l) == 0) return EMPTY_LIST;
@@ -288,7 +287,7 @@ int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidos novo_pedido)
     if (aux->valor.codigo == codigo)
     {  
         aux->valor.quant_pedidos++;
-        aux->valor.historico = (pedidos*) realloc (aux->valor.historico, aux->valor.quant_pedidos*sizeof(pedidos));
+        aux->valor.historico = (pedidosC*) realloc (aux->valor.historico, aux->valor.quant_pedidos*sizeof(pedidosC));
         
         aux->valor.historico[aux->valor.quant_pedidos-1].codigo = novo_pedido.codigo;
         aux->valor.historico[aux->valor.quant_pedidos-1].valorTotal = novo_pedido.valorTotal;
@@ -297,7 +296,7 @@ int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidos novo_pedido)
 
         for (i = 0; i < novo_pedido.qtdPed; i++)
         {
-            aux->valor.historico->ped = (pratos*) realloc (aux->valor.historico->ped, novo_pedido.qtdPed*sizeof(pratos));
+            aux->valor.historico->ped = (pratosC*) realloc (aux->valor.historico->ped, novo_pedido.qtdPed*sizeof(pratosC));
             strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].nome, novo_pedido.ped[i].nome);
             strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].descricao, novo_pedido.ped[i].descricao);
             aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].valor = novo_pedido.ped[i].valor;
@@ -424,7 +423,7 @@ void mostrar_tudo_cliente (Lista_cliente *l) // mostra TODAS as informações do
                 printf("\n");
                 aux = aux->prox;
             }while(aux != NULL);
-            printf (" ]\n");
+            printf ("]\n");
         }
     }
 }
@@ -515,7 +514,7 @@ void copiarCliente (Cliente *A, Cliente *B) // função de auxílio. copia todas
         strcpy(B->pagamentos[i].validade, A->pagamentos[i].validade);
     }
 
-    B->historico = (pedidos*) realloc (B->historico, A->quant_pedidos*sizeof(pedidos));
+    B->historico = (pedidosC*) realloc (B->historico, A->quant_pedidos*sizeof(pedidosC));
     for (i = 0; i < A->quant_pedidos; i++)
     {
         B->historico[i].valorTotal = A->historico[i].valorTotal;
@@ -523,7 +522,7 @@ void copiarCliente (Cliente *A, Cliente *B) // função de auxílio. copia todas
         B->historico[i].codigo = A->historico[i].codigo;
         B->historico[i].qtdPed = A->historico[i].qtdPed;
 
-        B->historico[i].ped = (pratos*) realloc (B->historico[i].ped, A->historico[i].qtdPed*sizeof(pratos));
+        B->historico[i].ped = (pratosC*) realloc (B->historico[i].ped, A->historico[i].qtdPed*sizeof(pratosC));
 
         for (j = 0; j < A->historico[i].qtdPed; j++)
         {
