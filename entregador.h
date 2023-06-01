@@ -35,7 +35,7 @@ typedef struct list // lista
 
 //basicas
 Lista_entregadores* criar_lista_entregadores (); // ok
-int listaVazia (Lista_entregadores *l); // ok 
+int listaVaziaEntregador (Lista_entregadores *l); // ok 
 int sortearCodigoEntregador (Lista_entregadores *l); // ok
 
 //inserção
@@ -62,3 +62,4 @@ int tamanhoEntregador (Lista_entregadores *l); // ok
 void mostrar_entregador (Lista_entregadores *l); // ok
 void mostrar_tudo_entregador (Lista_entregadores *l); // ok
 void copiarEntregador (entregador *A, entregador *B); // ok
+int loginCodigo (Lista_entregadores *l, int codigo, entregador *item);
