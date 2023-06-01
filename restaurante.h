@@ -5,14 +5,22 @@
 #define EMPTY_LIST 2
 
 // structs
-typedef struct ped
+
+typedef struct plateR
+{
+    char nome[40];
+    char descricao[100];
+    float preco;
+} pratosR;
+
+typedef struct pedR
 {
     int codigo;
     float precoTotal;
     char nome_rest[40];
-    pratos *ped; // vetor em que cada elemento eh um prato e juntando todos os pratos que o cliente pediu torna-se o pedido completo
+    pratosR *ped; // vetor em que cada elemento eh um prato e juntando todos os pratos que o cliente pediu torna-se o pedido completo
     int qtdPed;  // tamanho do vetor
-} pedidos;
+} pedidosR;
 
 typedef struct card
 {
@@ -35,23 +43,16 @@ typedef struct client
     int quant_pedidos;
 } cliente;
 
-typedef struct plate
-{
-    char nome[40];
-    char descricao[100];
-    float preco;
-} pratos;
-
 typedef struct rest
 {
     char nome[40];
-    char login[15];
-    int senha;
-    int codigo;
+    char email[40];
+    char senha[15];
     char categoria[30];
-    pratos *menu;
-    pedidos *historico;
+    int codigo;
     int status; // se quer participar do programa de fidelidade
+    pratosR *menu;
+    pedidos *historico;
     Fila_PedidosPendentes *pedidosPendentes;
 } restaurante;
 
@@ -62,14 +63,14 @@ typedef struct no_restaurante
     struct no_restaurante *prox;
 } No_restaurante;
 
-typedef struct list // lista
+typedef struct lista // lista
 {
     No_restaurante *inicio;
 } Lista_restaurantes;
 
 // criar
 Lista_restaurantes *criar_listaRestaurantes(); // ok
-restaurante *criar_restaurante(char *nome, char *login, int senha, int codigo, char *categoria, pratos *menu, pedidos *historico, int status, Fila_PedidosPendentes *f);
+restaurante *criar_restaurante(char *nome, char *login, int senha, int codigo, char *categoria, pratosR *menu, pedidos *historico, int status, Fila_PedidosPendentes *f);
 int criar_listaCategoria(Lista_restaurantes *l1, Lista_restaurantes *l2, char *categoria); // ok
 
 // auxiliares
