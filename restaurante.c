@@ -122,7 +122,7 @@ int inserirFimRest(Lista_restaurantes *l, restaurante item)
     if (l == NULL)
         return NULL_LIST;
     if (listaVaziaRest(l) == EMPTY_LIST)
-        return inserirInicioRest(l, item);
+         inserirInicioRest(l, item);
 
     No_restaurante *noaux = l->inicio;
     while (noaux->prox != NULL)
@@ -184,16 +184,16 @@ int removerPosRest(Lista_restaurantes *l, int pos)
 {
     if (l == NULL)
         return 3;
-    if (listaVazia(l) == 0)
+    if (listaVaziaRest(l) == 0)
         return 0;
     if (pos == 0)
     {
-        removerInicio(l);
+        removerInicioRest(l);
         return 0;
     }
-    if (pos >= tamanho(l) - 1)
+    if (pos >= tamanhoRest(l) - 1)
     {
-        removerFim(l);
+        removerFimRest(l);
         return 0;
     }
 
@@ -231,7 +231,7 @@ int removerRest(Lista_restaurantes *l, int codigo)
     }
     if (aux->valor.codigo == codigo)
     {
-        removerPosi(l, pos);
+        removerPosRest(l, pos);
         return 0;
     }
     return 1;
@@ -308,14 +308,18 @@ void mostrarInfoRestaurante(Lista_restaurantes *l)
     }
 }
 
-// copia todas as informaÃ§Ãµes de um elemento para outro
-void copiar(restaurante *A, restaurante *B)
+// copia todas as informacoes de um elemento para outro
+void copiarRestaurante(restaurante *A, restaurante *B)
 {
-    B->codigo = A->codigo;
-    B->senha = A->senha;
-    B->status = A->status;
-    strcpy(B->login, A->login);
     strcpy(B->nome, A->nome);
+    strcpy(B->email, A->email);
+    strcpy(B->senha, A->senha);
     strcpy(B->categoria, A->categoria);
+    B->codigo = A->codigo;
+    B->status = A->status;
+    //copiar mennu
+    //copiar historico
+    //copiar fila pedidosPendentes
+    
 }
-
+gcc - o main.exe cliente.c entregador.c filaPedidosPendente.c main.c restaurante.c

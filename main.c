@@ -20,13 +20,13 @@ void copiarPedidoCC(pedidosC *A, pedidosC *B) // criar possivel funcao que copia
     int i;
     B->codigo = A->codigo;
     B->qtdPed = A->qtdPed;
-    B->valorTotal = A->valorTotal;
+    B->precoTotal = A->precoTotal;
     strcpy(B->nome_rest, A->nome_rest);
 
     B->ped = (pratosC *)realloc(B->ped, A->qtdPed * sizeof(pratosC));
     for (i = 0; i < A->qtdPed; i++)
     {
-        B->ped[i].valor = A->ped[i].valor;
+        B->ped[i].preco = A->ped[i].preco;
         strcpy(B->ped[i].descricao, A->ped[i].descricao);
         strcpy(B->ped[i].nome, A->ped[i].nome);
     }
@@ -173,6 +173,24 @@ int menu_cliente() // permite ao cliente escolher após logado
         if (op < 0 || op > 10)
             printf("\nDigite uma opcao valida\n\n");
     } while (op < 0 || op > 10);
+    return op;
+}
+
+int menu_inicial_restaurante() // permite ao restaurante escolher
+{
+    int op = -1;
+    do
+    {
+        printf("\nSelecione uma opcao: \n");
+        printf("1. Quero me cadastrar\n");
+        printf("2. Ja tenho cadastro\n");
+        printf("3. Voltar\n");
+        printf("0. Sair\n");
+        printf("Opcao: ");
+        scanf("%d", &op);
+        if (op < 0 || op > 4)
+            printf("\nDigite uma opcao valida\n\n");
+    } while (op < 0 || op > 4);
     return op;
 }
 
@@ -722,9 +740,10 @@ int main()
 
             while (option != 3)
             {
-                menuCadastro();
+                menu_inicial_restaurante();
+
                 /*
-                int menu2()
+                int menu_inicial_restaurante() // permite ao restaurante escolher
                 {
                     int op = -1;
                     do
