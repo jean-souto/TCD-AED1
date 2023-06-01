@@ -149,6 +149,7 @@ int main ()
     Lista_entregadores *lista_principal_entregadores;
     entregador novo_entregador, logado_entregador;
     int cod_novo = -1;
+    int codigo_loginE = -1;
 
     // declarações adm
     char loginADM[15];
@@ -582,8 +583,8 @@ int main ()
                         return 0;
                     break;
 
-                    case 1:
-                        printf ("\nMuito bem! Vamos te cadastrar: ");
+                    case 1: // cadastrar entregador
+                        printf ("\nMuito bem! Vamos te cadastrar como entregador: ");
                         
                         printf ("\nDigite seu nome: ");
                         setbuf (stdin, NULL);
@@ -603,6 +604,18 @@ int main ()
 
                         if((inserirFimEntregador(lista_principal_entregadores, novo_entregador, &cod_novo)) == 0) printf ("\nCadastro realizado com sucesso! Bem vindo, %s! Seu novo codigo de acesso eh: %d.", novo_entregador.nome, cod_novo);
                         
+                    break;
+
+                    case 2: 
+
+                        printf ("\nDigite o seu código de acesso: ");
+                        scanf ("%d", &codigo_loginE);
+
+                        loginCodigo(lista_principal_entregadores, codigo_loginE, &logado_entregador);
+
+                        printf ("\nBem vindo de volta, %s!", logado_entregador.nome);
+
+                        // menu do entregador agora
                     break;
                     
                     case 3:
