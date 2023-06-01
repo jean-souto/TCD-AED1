@@ -1,20 +1,20 @@
 #define NULL_LIST 3
 #define EMPTY_LIST 2
 
-typedef struct plate // aqui
-{ 
-    char nome[40]; 
-    char descricao[100]; 
-    float valor; 
-} pratos; 
+typedef struct plate
+{
+    char nome[40];
+    char descricao[100];
+    float preco;
+} pratos;
 
-typedef struct ped // aqui
-{ 
-    int codigo; 
-    float valorTotal; 
-    char nome_rest[40]; 
-    pratos *ped; 
-    int qtdPed; 
+typedef struct ped
+{
+    int codigo;
+    float precoTotal;
+    char nome_rest[40];
+    pratos *ped; // vetor em que cada elemento eh um prato e juntando todos os pratos que o cliente pediu torna-se o pedido completo
+    int qtdPed;  // tamanho do vetor
 } pedidos;
 
 typedef struct card
@@ -43,7 +43,7 @@ typedef struct cliente
     int quantidade_cartoes;
     pedidos *historico; // aqui
     int quant_pedidos;
-    float valor_gasto;
+    float gasto_total;
     endereco *enderecos;
     int quant_enderecos;
 }Cliente;

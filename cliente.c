@@ -291,7 +291,7 @@ int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidos novo_pedido)
         aux->valor.historico = (pedidos*) realloc (aux->valor.historico, aux->valor.quant_pedidos*sizeof(pedidos));
         
         aux->valor.historico[aux->valor.quant_pedidos-1].codigo = novo_pedido.codigo;
-        aux->valor.historico[aux->valor.quant_pedidos-1].valorTotal = novo_pedido.valorTotal;
+        aux->valor.historico[aux->valor.quant_pedidos-1].precoTotal = novo_pedido.precoTotal;
         aux->valor.historico[aux->valor.quant_pedidos-1].qtdPed = novo_pedido.qtdPed;
         strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].nome_rest, novo_pedido.nome_rest);
 
@@ -300,7 +300,7 @@ int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidos novo_pedido)
             aux->valor.historico->ped = (pratos*) realloc (aux->valor.historico->ped, novo_pedido.qtdPed*sizeof(pratos));
             strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].nome, novo_pedido.ped[i].nome);
             strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].descricao, novo_pedido.ped[i].descricao);
-            aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].valor = novo_pedido.ped[i].valor;
+            aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].preco = novo_pedido.ped[i].preco;
         }
         return 0;
     } 
@@ -377,12 +377,12 @@ void mostrar_pedidos (Cliente item)
     {
         printf ("[%d, ", item.historico->codigo);
         printf ("%s, ", item.historico->nome_rest);
-        printf ("%.2f, ", item.historico->valorTotal);
+        printf ("%.2f, ", item.historico->precoTotal);
 
         for (j = 0; j < item.historico->qtdPed; j++)
         {
             printf ("%s, ", item.historico->ped[j].nome);
-            printf ("%.2f", item.historico->ped[j].valor);
+            printf ("%.2f", item.historico->ped[j].preco);
         }
         printf ("] ");
     }
@@ -518,7 +518,7 @@ void copiarCliente (Cliente *A, Cliente *B) // função de auxílio. copia todas
     B->historico = (pedidos*) realloc (B->historico, A->quant_pedidos*sizeof(pedidos));
     for (i = 0; i < A->quant_pedidos; i++)
     {
-        B->historico[i].valorTotal = A->historico[i].valorTotal;
+        B->historico[i].precoTotal = A->historico[i].precoTotal;
         strcpy(B->historico[i].nome_rest, A->historico[i].nome_rest);
         B->historico[i].codigo = A->historico[i].codigo;
         B->historico[i].qtdPed = A->historico[i].qtdPed;
@@ -527,7 +527,7 @@ void copiarCliente (Cliente *A, Cliente *B) // função de auxílio. copia todas
 
         for (j = 0; j < A->historico[i].qtdPed; j++)
         {
-            B->historico[i].ped[j].valor = A->historico[i].ped[j].valor;
+            B->historico[i].ped[j].preco = A->historico[i].ped[j].preco;
             strcpy(B->historico[i].ped[j].nome, A->historico[i].ped[j].nome);
             strcpy(B->historico[i].ped[j].descricao, A->historico[i].ped[j].descricao);
         }
