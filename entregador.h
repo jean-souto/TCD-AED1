@@ -3,6 +3,22 @@
 #define EMPTY_LIST 2
 
 //structs
+typedef struct plateE // aqui
+{ 
+    char nome[40]; 
+    char descricao[100]; 
+    float preco; 
+} pratosE; 
+
+typedef struct pedE // aqui
+{ 
+    int codigo; 
+    float precoTotal; 
+    char nome_rest[40]; 
+    pratosE *ped; 
+    int qtdPed; 
+} pedidosE;
+
 typedef struct ranking // para garantir o bom funcionamento da nota do entregador
 {
     int quantidade;
@@ -19,6 +35,8 @@ typedef struct motoboy // o proprio motoboy
     int status;
     nota rank;
     int corridas;
+    int quant_pedidos;
+    pedidosE *historico;
 }entregador;
 
 typedef struct No_motoboy // no
@@ -35,7 +53,7 @@ typedef struct list // lista
 
 //basicas
 Lista_entregadores* criar_lista_entregadores (); // ok
-int listaVazia (Lista_entregadores *l); // ok 
+int listaVaziaEntregador (Lista_entregadores *l); // ok 
 int sortearCodigoEntregador (Lista_entregadores *l); // ok
 
 //inserção
@@ -54,7 +72,6 @@ int buscarEntregador (Lista_entregadores *l, entregador *item); // ok
 int liberarEntregador (Lista_entregadores *l, int codigo); // ok 
 int ocuparEntregador (Lista_entregadores *l, int codigo); // desnecessario, mas ok
 int adicionarCorridaNota (Lista_entregadores *l, int codigo, float nota); // ok
-int inicializar_entregador (entregador *item); // ok
 
 //auxiliares 2
 int limparEntregador (Lista_entregadores *l); // ok
@@ -62,3 +79,10 @@ int tamanhoEntregador (Lista_entregadores *l); // ok
 void mostrar_entregador (Lista_entregadores *l); // ok
 void mostrar_tudo_entregador (Lista_entregadores *l); // ok
 void copiarEntregador (entregador *A, entregador *B); // ok
+
+//auxiliares 3
+int loginCodigo (Lista_entregadores *l, char *email, int codigo, entregador *item);
+int alterarEmailEntregador (Lista_entregadores *l, int codigo, char *novo_email);
+int buscarEntregadorEmailCPF (Lista_entregadores *l, char *email, char *cpf, entregador *item);
+int inserirPedidoHistoricoEntregador (Lista_entregadores *l, int codigo, pedidosE novo_pedido);
+int trocaCodigo (Lista_entregadores *l, int codigo_atual, int *novo_codigo);

@@ -1,21 +1,21 @@
 #define NULL_LIST 3
 #define EMPTY_LIST 2
 
-typedef struct plate
+typedef struct plateC
 {
     char nome[40];
     char descricao[100];
     float preco;
-} pratos;
+} pratosC;
 
-typedef struct ped
+typedef struct pedC
 {
     int codigo;
     float precoTotal;
     char nome_rest[40];
-    pratos *ped; // vetor em que cada elemento eh um prato e juntando todos os pratos que o cliente pediu torna-se o pedido completo
+    pratosC *ped; // vetor em que cada elemento eh um prato e juntando todos os pratos que o cliente pediu torna-se o pedido completo
     int qtdPed;  // tamanho do vetor
-} pedidos;
+} pedidosC;
 
 typedef struct card
 {
@@ -41,7 +41,7 @@ typedef struct cliente
     int codigo;
     cartao *pagamentos;
     int quantidade_cartoes;
-    pedidos *historico; // aqui
+    pedidosC *historico; // aqui
     int quant_pedidos;
     float gasto_total;
     endereco *enderecos;
@@ -66,7 +66,7 @@ Lista_cliente *criarCliente (); // função criação
 int inserirInicioCliente (Lista_cliente *l, Cliente item); // insere no inicio da lista
 int inserirFimCliente (Lista_cliente *l, Cliente item); // insere no fim da lista
 int inserirCartaoCliente (Lista_cliente *l, int codigo, cartao novo_cartao);
-int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidos novo_pedido);
+int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidosC novo_pedido);
 int inserirEnderecoCliente (Lista_cliente *l, int codigo, endereco novo_end);
 
 // remoções

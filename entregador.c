@@ -289,16 +289,6 @@ int adicionarCorridaNota (Lista_entregadores *l, int codigo, float nota) // adic
     } else return 1;
 }
 
-int inicializar_entregador (entregador *item) // usada ao criar um novo cadastro de entregador (zera todas as informações para evitar lixo e erros) 
-{
-    item->corridas = 0;
-    item->status = 0;
-    item->rank.media = 0.0;
-    item->rank.quantidade = 0;
-    item->rank.total = 0;
-    return 0;
-}
-
 int limparEntregador (Lista_entregadores *l) // limpa a lista
 {
     if (l == NULL) return NULL_LIST;
@@ -369,6 +359,8 @@ void mostrar_tudo_entregador (Lista_entregadores *l) // mostra TODAS as informa�
 
 void copiarEntregador (entregador *A, entregador *B) // função de auxílio. copia todas as informações de um elemento para outro
 {
+    int i, j;
+
     B->codigo = A->codigo;
     B->corridas = A->corridas;
     B->status = A->status;
@@ -378,4 +370,140 @@ void copiarEntregador (entregador *A, entregador *B) // função de auxílio. co
     strcpy (B->cpf, A->cpf);
     strcpy (B->email, A->email);
     strcpy (B->nome, A->nome);
+
+    B->historico = (pedidosE*) realloc (B->historico, A->quant_pedidos*sizeof(pedidosE));
+    for (i = 0; i < A->quant_pedidos; i++)
+    {
+        B->historico[i].valorTotal = A->historico[i].valorTotal;
+        strcpy(B->historico[i].nome_rest, A->historico[i].nome_rest);
+        B->historico[i].codigo = A->historico[i].codigo;
+        B->historico[i].qtdPed = A->historico[i].qtdPed;
+
+        B->historico[i].ped = (pratosE*) realloc (B->historico[i].ped, A->historico[i].qtdPed*sizeof(pratosE));
+
+        for (j = 0; j < A->historico[i].qtdPed; j++)
+        {
+            B->historico[i].ped[j].valor = A->historico[i].ped[j].valor;
+            strcpy(B->historico[i].ped[j].nome, A->historico[i].ped[j].nome);
+            strcpy(B->historico[i].ped[j].descricao, A->historico[i].ped[j].descricao);
+        }
+    }
+}
+
+int loginCodigo (Lista_entregadores *l, char *email, int codigo, entregador *item)
+{
+    if (l == NULL) return NULL_LIST;
+    if (listaVaziaEntregador(l) == 0) return EMPTY_LIST;
+
+    No_entregador *aux = l->inicio;
+
+    while (aux->prox != NULL && (strcmp(aux->valor.email, email) != 0))
+    {
+        aux = aux->prox;
+    }
+
+    if ((strcmp(aux->valor.email, email) == 0) && (aux->valor.codigo == codigo))
+    {
+        copiarEntregador(&aux->valor, &(*item));
+        return 0;
+    }
+    return 1;
+}
+
+int alterarEmailEntregador (Lista_entregadores *l, int codigo, char *novo_email)
+{
+    if (l == NULL) return NULL_LIST;
+    if (listaVaziaEntregador(l) == 0) return EMPTY_LIST; 
+
+    No_entregador *aux = l->inicio;
+
+    while (aux != NULL && aux->valor.codigo != codigo)
+    {
+        aux = aux->prox;
+    }
+
+    if (aux->valor.codigo == codigo)
+    {
+        strcpy(aux->valor.email, novo_email);
+        return 0;
+    }
+    return 1;
+}
+
+int buscarEntregadorEmailCPF (Lista_entregadores *l, char *email, char *cpf, entregador *item)
+{
+    if (l == NULL) return NULL_LIST;
+    if (listaVaziaEntregador(l) == 0) return EMPTY_LIST;
+
+    No_entregador *aux = l->inicio;
+
+    while (aux->prox != NULL && (strcmp(aux->valor.email, email) != 0))
+    {
+        aux = aux->prox;
+    }
+
+    if (strcmp(aux->valor.email, email) != 0) return 1;
+    if ((strcmp(aux->valor.email, email) == 0) && (strcmp(aux->valor.cpf, cpf) == 0))
+    {
+        copiarEntregador(&aux->valor, &(*item));
+        return 0;
+    }
+    return 1;
+}
+
+int inserirPedidoHistoricoEntregador (Lista_entregadores *l, int codigo, pedidosE novo_pedido)
+{
+    if (l == NULL) return NULL_LIST;
+    if (listaVaziaEntregador(l) == 0) return EMPTY_LIST;
+
+    No_entregador *aux = l->inicio;
+    int i;
+
+    while ((aux != NULL) && (aux->valor.codigo != codigo))
+    {
+        aux = aux->prox;
+    }
+    
+    if (aux->valor.codigo == codigo)
+    {  
+        aux->valor.quant_pedidos++;
+        aux->valor.historico = (pedidosE*) realloc (aux->valor.historico, aux->valor.quant_pedidos*sizeof(pedidosE));
+        
+        aux->valor.historico[aux->valor.quant_pedidos-1].codigo = novo_pedido.codigo;
+        aux->valor.historico[aux->valor.quant_pedidos-1].valorTotal = novo_pedido.valorTotal;
+        aux->valor.historico[aux->valor.quant_pedidos-1].qtdPed = novo_pedido.qtdPed;
+        strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].nome_rest, novo_pedido.nome_rest);
+
+        for (i = 0; i < novo_pedido.qtdPed; i++)
+        {
+            aux->valor.historico->ped = (pratosE*) realloc (aux->valor.historico->ped, novo_pedido.qtdPed*sizeof(pratosE));
+            strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].nome, novo_pedido.ped[i].nome);
+            strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].descricao, novo_pedido.ped[i].descricao);
+            aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].valor = novo_pedido.ped[i].valor;
+        }
+        return 0;
+    } 
+    return 1;
+}
+
+int trocaCodigo (Lista_entregadores *l, int codigo_atual, int *novo_codigo)
+{
+    if (l == NULL) return NULL_LIST;
+    if (listaVaziaEntregador(l) == 0) return EMPTY_LIST;
+
+    No_entregador *aux = l->inicio;
+
+    while ((aux->prox != NULL) && (aux->valor.codigo != codigo_atual))
+    {
+        aux = aux->prox;
+    }
+
+    if (aux->valor.codigo == codigo_atual)
+    {
+        codigo_atual = sortearCodigoEntregador(l);
+        *novo_codigo = codigo_atual;
+        aux->valor.codigo = codigo_atual;
+        return 0;
+    }
+    return 1;
 }

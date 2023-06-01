@@ -6,7 +6,67 @@
 #include "entregador.h"
 #include "cliente.h"
 #include "restaurante.c"
+
+// STRUCTS EXTRAS
+typedef struct juncao
+{
+    entregador entregador_do_pedido;
+    pedidosC pedido_em_andamento;
+} pedidosglobais;
+
+// FUNÇÕES EXTRAS RELACIONADAS ÀS STRUCTS EXTRAS
+void copiarPedidoCC(pedidosC *A, pedidosC *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
+{
+    int i;
+    B->codigo = A->codigo;
+    B->qtdPed = A->qtdPed;
+    B->valorTotal = A->valorTotal;
+    strcpy(B->nome_rest, A->nome_rest);
+
+    B->ped = (pratosC *)realloc(B->ped, A->qtdPed * sizeof(pratosC));
+    for (i = 0; i < A->qtdPed; i++)
+    {
+        B->ped[i].valor = A->ped[i].valor;
+        strcpy(B->ped[i].descricao, A->ped[i].descricao);
+        strcpy(B->ped[i].nome, A->ped[i].nome);
+    }
+}
+
+int inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidosC pedido_atual, int *qtd)
+{
+    (*qtd)++;
+    pg = (pedidosglobais *)realloc(pg, (*qtd) * sizeof(pedidosglobais));
+
+    copiarEntregador(&entregador_atual, &pg->entregador_do_pedido);
+    copiarPedidoCC(&pedido_atual, &pg->pedido_em_andamento);
+}
+
+int removerControleGlobal() // deve remover do controle, pedir nota, liberar entregador e adicionar aos historicos
+{
+}
+
 // FUNÇÕES EXTRAS
+int inicializar_entregador(entregador *item) // usada ao criar um novo cadastro de entregador (zera todas as informações para evitar lixo e erros)
+{
+    item->corridas = 0;
+    item->status = 0;
+    item->rank.media = 0.0;
+    item->rank.quantidade = 0;
+    item->rank.total = 0;
+    item->quant_pedidos = 0;
+    item->historico = NULL;
+    return 0;
+}
+
+int limpar_variavel_entregador(entregador *item) // limpa a variavel para evitar erros ao sobrepor
+{
+    strcpy(item->cpf, "000");
+    strcpy(item->email, "000");
+    strcpy(item->nome, "000");
+    item->codigo = -1;
+    inicializar_entregador(item);
+}
+
 int inicializar_cliente(Cliente *item) // usada ao criar um novo_cliente cadastro de entregador (zera todas as informações para evitar lixo e erros)
 {
     item->gasto_total = 0;
@@ -22,7 +82,7 @@ int inicializar_cliente(Cliente *item) // usada ao criar um novo_cliente cadastr
 int inicializar_restaurante(restaurante *item)
 {
     item->codigo = rand() % 100;
-    //item->categoria = NULL;
+    // item->categoria = NULL;
     item->menu = NULL;
     item->historico = NULL;
     item->status = -1;
@@ -43,7 +103,7 @@ int confirmarSenha(char *str1, char *str2)
     return 0;
 }
 
-int limpar_logado(Cliente *item)
+int limpar_variavel_cliente(Cliente *item) // limpa a variavel para evitar erros ao sobrepor
 {
     strcpy(item->cpf, "000");
     strcpy(item->email, "000");
@@ -53,7 +113,7 @@ int limpar_logado(Cliente *item)
     inicializar_cliente(item);
 }
 
-int menu1()
+int menu_inicial() // permite a escolha entre os diferentes usuários
 {
     int op = -1;
     printf("Bem vindo!\n");
@@ -73,7 +133,7 @@ int menu1()
     return op;
 }
 
-int menu2()
+int menu_inicial_cliente() // permite ao cliente escolher
 {
     int op = -1;
     do
@@ -91,7 +151,7 @@ int menu2()
     return op;
 }
 
-int menu3()
+int menu_cliente() // permite ao cliente escolher após logado
 {
     int op = -1;
     do
@@ -116,7 +176,7 @@ int menu3()
     return op;
 }
 
-int menu4() // do adm
+int menu_adm() // permite ao adm escolher
 {
     int op = -1;
     do
@@ -140,7 +200,7 @@ int menu4() // do adm
     return op;
 }
 
-int menu5()
+int menu_inicial_entregador() // permite ao entregador escolher
 {
     int op = -1;
     do
@@ -158,18 +218,43 @@ int menu5()
     return op;
 }
 
-    // MAIN
+int menu_entregador() // permite ao entregador escolher após logar
+{
+    int op = -1;
+    do
+    {
+        printf("\nSelecione uma opcao: \n");
+        printf("1. Mostrar corrida atual\n");
+        printf("2. Mostrar dados pessoais\n");
+        printf("3. Mostrar nota\n");
+        printf("4. Mostrar historico de entregas\n");
+        printf("5. Alterar codigo de acesso\n");
+        printf("6. Alterar e-mail\n");
+        printf("7. Sair da conta\n");
+        printf("8. Apagar conta\n");
+        printf("0. Sair do app\n");
+        printf("Opcao: ");
+        scanf("%d", &op);
+        if (op < 0 || op > 8)
+            printf("\nDigite uma opcao valida\n\n");
+    } while (op < 0 || op > 8);
+    return op;
+}
 
-    int
-    main()
+// MAIN
+
+int main()
 {
     srand(time(NULL));
+
+    // declarações relacionadas ao gerenciador global de pedidos
+    pedidosglobais *controlePedidos;
+    int qtdPedidosAndamento = 0;
 
     // declarações relacionadas aos clientes
     Lista_cliente *lista_principal_clientes;
     Cliente logado_cliente, novo_cliente;
     Cliente esqueceu_senha_cliente, inicializados_cliente;
-    char cpf[12];
     cartao novo_cartao;
     endereco novo_endereco;
 
@@ -181,6 +266,7 @@ int menu5()
     Lista_entregadores *lista_principal_entregadores;
     entregador novo_entregador, logado_entregador;
     int cod_novo = -1;
+    int codigo_loginE = -1;
 
     // declarações adm
     char loginADM[15];
@@ -190,12 +276,13 @@ int menu5()
     int option = -1;
     char email[40];
     char senha[15];
+    char cpf[12];
     char confirmSenha[15];
 
     // inicializações
-
     lista_principal_clientes = criarCliente();
     lista_principal_entregadores = criar_lista_entregadores();
+    lista_principal_restaurantes = criar_listaRestaurantes();
 
     strcpy(loginADM, "souADM");
     strcpy(senhaADM, "123ADM");
@@ -209,9 +296,9 @@ int menu5()
     inicializar_cliente(&inicializados_cliente);
     inserirInicioCliente(lista_principal_clientes, inicializados_cliente);*/
 
-    while (option != 0)
+    while (option != 0) // mantém o programa rodando até que seja escolhido sair
     {
-        option = menu1();
+        option = menu_inicial();
 
         switch (option)
         {
@@ -224,7 +311,7 @@ int menu5()
 
             while (option != 3)
             {
-                option = menu2();
+                option = menu_inicial_cliente();
 
                 switch (option)
                 {
@@ -253,9 +340,10 @@ int menu5()
                     scanf("%[^\n]s", novo_cliente.senha_8d);
                     inicializar_cliente(&novo_cliente);
 
-                    if ((inserirInicioCliente(lista_principal_clientes, novo_cliente)) == 0)
+                    if ((inserirFimCliente(lista_principal_clientes, novo_cliente)) == 0)
                         printf("\nCadastro realizado com sucesso!\n");
-                    // mostrar_cliente(lista_principal_clientes);
+                    limpar_variavel_cliente(&novo_cliente);
+                    mostrar_cliente(lista_principal_clientes);
                     break;
 
                 case 2:; // ja tenho cadastro
@@ -324,6 +412,9 @@ int menu5()
 
                         verify = loginCliente(lista_principal_clientes, &(*email), &(*senha), &logado_cliente);
 
+                        strcpy(email, "000");
+                        strcpy(senha, "000");
+
                         if (verify != 0)
                         {
                             printf("\nLogin ou senha invalidos. Tente novamente!\n");
@@ -336,11 +427,11 @@ int menu5()
                     }
 
                     if (verify == 5)
-                        break;
+                        break; // sair e voltar ao menu anterior
 
-                    while ((option != 9) && (option != 10))
+                    while ((option != 9) && (option != 10)) // voltar após selecionar voltar ou excluir a conta
                     {
-                        option = menu3();
+                        option = menu_cliente();
 
                         switch (option) // opções do cliente após logar
                         {
@@ -360,12 +451,12 @@ int menu5()
                         case 4: // histórico
                             break;
 
-                        case 5: // cartões
+                        case 5: // cartões (cadastrar e excluir)
                             printf("\nVoce possui os seguintes cartoes cadastrados: \n");
                             buscarItemCliente(lista_principal_clientes, logado_cliente.codigo, &logado_cliente);
                             mostrar_pagamentos(logado_cliente);
                             printf("\nVoce deseja: ");
-                            printf("\n1. Cadastrar novo_cliente cartao");
+                            printf("\n1. Cadastrar novo cartao");
                             printf("\n2. Excluir cartao");
                             printf("\n3. Voltar\n");
                             scanf("%d", &option);
@@ -422,12 +513,12 @@ int menu5()
                             }
                             break;
 
-                        case 6: // endereços
+                        case 6: // endereços (cadastrar ou excluir)
                             printf("\nVoce possui os seguintes enderecos cadastrados: \n");
                             buscarItemCliente(lista_principal_clientes, logado_cliente.codigo, &logado_cliente);
                             mostrar_enderecos(logado_cliente);
                             printf("\nVoce deseja: ");
-                            printf("\n1. Cadastrar novo_cliente endereco");
+                            printf("\n1. Cadastrar novo endereco");
                             printf("\n2. Excluir endereco");
                             printf("\n3. Voltar\n");
                             scanf("%d", &option);
@@ -556,7 +647,7 @@ int menu5()
 
                             char novo_email[40];
 
-                            printf("\nDigite seu novo_cliente e-mail: ");
+                            printf("\nDigite seu novo e-mail: ");
                             setbuf(stdin, NULL);
                             scanf("%[^\n]s", &novo_email);
 
@@ -595,7 +686,7 @@ int menu5()
                                     if (verify == 0)
                                     {
                                         printf("\nFoi um prazer ter voce conosco! Sua conta foi excluida com sucesso.");
-                                        limpar_logado(&logado_cliente);
+                                        limpar_variavel_cliente(&logado_cliente);
                                     }
                                     else
                                     {
@@ -605,11 +696,12 @@ int menu5()
                                 else
                                 {
                                     printf("\nSenha incorreta. Tente novamente.");
+                                    option = -1;
                                 }
                                 break;
                             }
 
-                            if (verify == 2)
+                            if (verify != 1)
                             {
                                 option = -1;
                                 break;
@@ -630,7 +722,7 @@ int menu5()
 
             while (option != 3)
             {
-                menu2();
+                menuCadastro();
                 /*
                 int menu2()
                 {
@@ -704,20 +796,20 @@ int menu5()
         case 3:; // sou entregador
 
             option = -1;
-            while (option != 3)
+            while (option != 3) // voltar
             {
-                option = menu5();
+                option = menu_inicial_entregador();
                 int verify = -1;
 
                 switch (option)
                 {
 
-                case 0:
+                case 0: // sair
                     return 0;
                     break;
 
-                case 1:
-                    printf("\nMuito bem! Vamos te cadastrar: ");
+                case 1: // cadastrar entregador
+                    printf("\nMuito bem! Vamos te cadastrar como entregador: ");
 
                     printf("\nDigite seu nome: ");
                     setbuf(stdin, NULL);
@@ -737,7 +829,103 @@ int menu5()
 
                     if ((inserirFimEntregador(lista_principal_entregadores, novo_entregador, &cod_novo)) == 0)
                         printf("\nCadastro realizado com sucesso! Bem vindo, %s! Seu novo codigo de acesso eh: %d.", novo_entregador.nome, cod_novo);
+                    limpar_variavel_entregador(&novo_entregador);
 
+                    break;
+
+                case 2: // login entregador
+
+                    verify = -1;
+
+                    while (verify != 0)
+                    {
+                        printf("\nDigite 5 para voltar, 6 se esqueceu o codigo de acesso e 0 para continuar: ");
+                        scanf("%d", &verify);
+
+                        if (verify == 5)
+                            break;
+                        if (verify == 6)
+                        {
+                            while (verify != 0)
+                            {
+                                printf("\nDigite o seu e-mail:");
+                                setbuf(stdin, NULL);
+                                scanf("%[^\n]s", &email);
+
+                                printf("\nAgora digite o seu CPF (sem espaços): ");
+                                setbuf(stdin, NULL);
+                                scanf("%[^\n]s", &cpf);
+
+                                // verify = funçãologincomcpfeemail;
+
+                                if (verify == 0)
+                                {
+                                    printf("\nTe encontramos!");
+                                    // trocar o codigo
+                                }
+                            }
+                        }
+
+                        printf("\nDigite o seu e-mail: ");
+                        setbuf(stdin, NULL);
+                        scanf("%[^\n]s", &email);
+
+                        printf("\nDigite o seu codigo de acesso: ");
+                        scanf("%d", &codigo_loginE);
+
+                        verify = loginCodigo(lista_principal_entregadores, email, codigo_loginE, &logado_entregador);
+
+                        if (verify == 0)
+                            printf("\nBem vindo de volta, %s!", logado_entregador.nome);
+                        else
+                            printf("\nOcorreu algum erro. Tente novamente!");
+                    }
+
+                    if (verify == 5)
+                        break;
+
+                    while ((option != 7) && (option != 8))
+                    {
+                        option = menu_inicial_entregador();
+
+                        switch (option)
+                        {
+                        case 0: // sair
+                            return 0;
+                            break;
+
+                        case 1: // mostrar corrida atual (pedido em andamento)
+
+                            break;
+
+                        case 2: // mostrar dados pessoais
+
+                            break;
+
+                        case 3: // mostrar nota
+
+                            break;
+
+                        case 4: // mostrar historico
+
+                            break;
+
+                        case 5: // alterar codigo de acesso
+
+                            break;
+
+                        case 6: // alterar email
+
+                            break;
+
+                        case 7: // sair da conta
+                            break;
+
+                        case 8: // excluir conta
+
+                            break;
+                        }
+                    }
                     break;
 
                 case 3:
@@ -766,7 +954,7 @@ int menu5()
 
                 while (option != 9)
                 {
-                    option = menu4();
+                    option = menu_adm();
 
                     switch (option)
                     {
