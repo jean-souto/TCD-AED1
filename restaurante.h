@@ -1,4 +1,5 @@
 #include "filaPedidosPendentes.h"
+
 // defines de auxilio
 #define NULL_LIST 3
 #define EMPTY_LIST 2
@@ -53,12 +54,14 @@ int criar_listaCategoria(Lista_restaurantes *l1, Lista_restaurantes *l2, char *c
 
 // auxiliares
 int listaVaziaRest(Lista_restaurantes *l); // ok
+int listaCheiaRest(Lista_restaurantes *l);
 void limparRest(Lista_restaurantes *l);
 int tamanhoRest(Lista_restaurantes *l);
 
 // insercao
 int inserirInicioRest(Lista_restaurantes *l, restaurante item); // ok
 int inserirFimRest(Lista_restaurantes *l, restaurante item);    // ok
+int inserirPosicao(Lista_restaurantes *l, restaurante item, int pos);
 
 // remocao
 int removerInicioRest(Lista_restaurantes *l);
@@ -66,18 +69,18 @@ int removerFimRest(Lista_restaurantes *l);
 int removerPosRest(Lista_restaurantes *l, int pos);
 int removerRest(Lista_restaurantes *l, int codigo);
 
-// mostrar opcao do menuCliente
-//int buscarNome(Lista_restaurantes *l, restaurante *nome);
-//void mostrarCategoria(Lista_restaurantes *l);
-//void mostrarRestaurantes(Lista_restaurantes *l); // fer
+void copiarRest(restaurante *A, restaurante *B);
+int buscarCodigoRest(Lista_restaurantes *l, int codigo, restaurante *item);
+int buscarRest(Lista_restaurantes *l, restaurante *item);
+void mostrarInfoRest(Lista_restaurantes *l);
 
-// mostrar opcao do menuFuncionario
-//void mostrarHistoricoPedidos();
-//void mostrarPedidosPendentes(); // alice
-//int atualizarMenu();
-//int login();
+    // mostrar opcao do menuCliente
+    // int buscarNome(Lista_restaurantes *l, restaurante *nome);
+    // void mostrarCategoria(Lista_restaurantes *l);
+    // void mostrarRestaurantes(Lista_restaurantes *l); // fer
 
-
-void copiarRestaurante(restaurante *A, restaurante *B);
-
-
+    // mostrar opcao do menuFuncionario
+    // void mostrarHistoricoPedidos();
+    // void mostrarPedidosPendentes(); // alice
+    // int atualizarMenu();
+    // int login();
