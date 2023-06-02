@@ -1,5 +1,4 @@
 #include "filaPedidosPendentes.h"
-
 // defines de auxilio
 #define NULL_LIST 3
 #define EMPTY_LIST 2
@@ -22,27 +21,6 @@ typedef struct pedR
     int qtdPed;  // tamanho do vetor
 } pedidosR;
 
-typedef struct card
-{
-    char numero[17];
-    int cvv;
-    char validade[6];
-    char tipo[8];
-} cartao;
-
-typedef struct client
-{
-    char nome[40];
-    char email[40];
-    char cpf[12];
-    int senha_6d;
-    cartao *pagamentos;
-    int quantidade_cartoes;
-    pedidos *historico;
-    float valor_gasto;
-    int quant_pedidos;
-} cliente;
-
 typedef struct rest
 {
     char nome[40];
@@ -52,7 +30,7 @@ typedef struct rest
     int codigo;
     int status; // se quer participar do programa de fidelidade
     pratosR *menu;
-    pedidos *historico;
+    pedidosR *historico;
     Fila_PedidosPendentes *pedidosPendentes;
 } restaurante;
 
@@ -63,39 +41,43 @@ typedef struct no_restaurante
     struct no_restaurante *prox;
 } No_restaurante;
 
-typedef struct lista // lista
+typedef struct listaR // lista
 {
     No_restaurante *inicio;
 } Lista_restaurantes;
 
 // criar
 Lista_restaurantes *criar_listaRestaurantes(); // ok
-restaurante *criar_restaurante(char *nome, char *login, int senha, int codigo, char *categoria, pratosR *menu, pedidos *historico, int status, Fila_PedidosPendentes *f);
+//restaurante *criar_restaurante(char *nome, char *login, int senha, int codigo, char *categoria, pratosR *menu, pedidos *historico, int status, Fila_PedidosPendentes *f);
 int criar_listaCategoria(Lista_restaurantes *l1, Lista_restaurantes *l2, char *categoria); // ok
 
 // auxiliares
-int listaVazia(Lista_restaurantes *l); // ok
-int limpar(Lista_restaurantes *l);
-int tamanho(Lista_restaurantes *l);
+int listaVaziaRest(Lista_restaurantes *l); // ok
+void limparRest(Lista_restaurantes *l);
+int tamanhoRest(Lista_restaurantes *l);
 
 // insercao
-int inserirInicioRestaurante(Lista_restaurantes *l, restaurante item); // ok
-int inserirFimRestaurante(Lista_restaurantes *l, restaurante item);    // ok
+int inserirInicioRest(Lista_restaurantes *l, restaurante item); // ok
+int inserirFimRest(Lista_restaurantes *l, restaurante item);    // ok
 
 // remocao
-int removerInicio(Lista_restaurantes *l);
-int removerFim(Lista_restaurantes *l);
-int removerPosicao(Lista_restaurantes *l, int pos);
-int removerRestaurante(Lista_restaurantes *l, int codigo);
+int removerInicioRest(Lista_restaurantes *l);
+int removerFimRest(Lista_restaurantes *l);
+int removerPosRest(Lista_restaurantes *l, int pos);
+int removerRest(Lista_restaurantes *l, int codigo);
 
 // mostrar opcao do menuCliente
-int buscarNome(Lista_restaurantes *l, restaurante *nome);
-void mostrarCategoria(Lista_restaurantes *l);
-void mostrarRestaurantes(Lista_restaurantes *l); // fer
+//int buscarNome(Lista_restaurantes *l, restaurante *nome);
+//void mostrarCategoria(Lista_restaurantes *l);
+//void mostrarRestaurantes(Lista_restaurantes *l); // fer
 
 // mostrar opcao do menuFuncionario
-void mostrarHistoricoPedidos();
-void mostrarPedidosPendentes(); // alice
-int atualizarMenu();
-int login();
+//void mostrarHistoricoPedidos();
+//void mostrarPedidosPendentes(); // alice
+//int atualizarMenu();
+//int login();
+
+
+void copiarRestaurante(restaurante *A, restaurante *B);
+
 
