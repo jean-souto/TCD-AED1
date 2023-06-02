@@ -13,10 +13,12 @@ typedef struct juncao
 {
     entregador entregador_do_pedido;
     pedidosC pedido_em_andamento;
+    Cliente comprador;
 }pedidosglobais;
 
 // FUNÇÕES EXTRAS RELACIONADAS ÀS STRUCTS EXTRAS
-void copiarPedidoCC(pedidosC *A, pedidosC *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
+
+void copiarPedidoCpC(pedidosC *A, pedidosC *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
 {
     int i;
     B->codigo = A->codigo;
@@ -33,22 +35,59 @@ void copiarPedidoCC(pedidosC *A, pedidosC *B) // criar possivel funcao que copia
     }
 }
 
-int inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidosC pedido_atual, int *qtd)
+void copiarPedidoCpE(pedidosC *A, pedidosE *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
+{
+    int i;
+    B->codigo = A->codigo;
+    B->qtdPed = A->qtdPed;
+    B->precoTotal = A->precoTotal;
+    strcpy(B->nome_rest, A->nome_rest);
+
+    B->ped = (pratosE *)realloc(B->ped, A->qtdPed * sizeof(pratosE));
+    for (i = 0; i < A->qtdPed; i++)
+    {
+        B->ped[i].preco = A->ped[i].preco;
+        strcpy(B->ped[i].descricao, A->ped[i].descricao);
+        strcpy(B->ped[i].nome, A->ped[i].nome);
+    }
+}
+
+void copiarPedidoCpR(pedidosC *A, pedidosR *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
+{
+    int i;
+    B->codigo = A->codigo;
+    B->qtdPed = A->qtdPed;
+    B->precoTotal = A->precoTotal;
+    strcpy(B->nome_rest, A->nome_rest);
+
+    B->ped = (pratosR *)realloc(B->ped, A->qtdPed * sizeof(pratosR));
+    for (i = 0; i < A->qtdPed; i++)
+    {
+        B->ped[i].preco = A->ped[i].preco;
+        strcpy(B->ped[i].descricao, A->ped[i].descricao);
+        strcpy(B->ped[i].nome, A->ped[i].nome);
+    }
+}
+
+int inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidosC pedido_atual, Cliente cliente_atual, int *qtd)
 {
     (*qtd)++;
     pg = (pedidosglobais *)realloc(pg, (*qtd) * sizeof(pedidosglobais));
 
     copiarEntregador(&entregador_atual, &pg->entregador_do_pedido);
     copiarPedidoCC(&pedido_atual, &pg->pedido_em_andamento);
+    copiarCliente(&cliente_atual, &pg->comprador);
 
     return 0;
 }
 
 int removerControleGlobal() // deve remover do controle, pedir nota, liberar entregador e adicionar aos historicos
 {
+
 }
 
 // FUNÇÕES EXTRAS
+
 int inicializar_entregador(entregador *item) // usada ao criar um novo cadastro de entregador (zera todas as informações para evitar lixo e erros)
 {
     item->corridas = 0;
@@ -191,9 +230,9 @@ int menu_inicial_restaurante() // permite ao restaurante escolher
         printf("0. Sair\n");
         printf("Opcao: ");
         scanf("%d", &op);
-        if (op < 0 || op > 4)
+        if (op < 0 || op > 3)
             printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 4);
+    } while (op < 0 || op > 3);
     return op;
 }
 
@@ -743,7 +782,7 @@ int main()
 
             while (option != 3)
             {
-                menu_inicial_restaurante();
+                option = menu_inicial_restaurante();
 
                 /*
                 int menu_inicial_restaurante() // permite ao restaurante escolher
