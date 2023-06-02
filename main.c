@@ -5,14 +5,15 @@
 #include <time.h>
 #include "entregador.h"
 #include "cliente.h"
-#include "restaurante.c"
+#include "restaurante.h"
+#include "filaPedidosPendentes.h"
 
 // STRUCTS EXTRAS
 typedef struct juncao
 {
     entregador entregador_do_pedido;
     pedidosC pedido_em_andamento;
-} pedidosglobais;
+}pedidosglobais;
 
 // FUNÇÕES EXTRAS RELACIONADAS ÀS STRUCTS EXTRAS
 void copiarPedidoCC(pedidosC *A, pedidosC *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
@@ -39,6 +40,8 @@ int inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedid
 
     copiarEntregador(&entregador_atual, &pg->entregador_do_pedido);
     copiarPedidoCC(&pedido_atual, &pg->pedido_em_andamento);
+
+    return 0;
 }
 
 int removerControleGlobal() // deve remover do controle, pedir nota, liberar entregador e adicionar aos historicos
