@@ -4,41 +4,8 @@
 #include "filaPedidosPendentes.h"
 #include "restaurante.h"
 
-/*
-
-typedef struct rest
-{
-    char nome[40];
-    char email[40];
-    char senha[15];
-    int codigo;
-    char categoria[30];
-    pratos *menu;
-    pedidos *historico;
-    int status; // se quer participar do programa de fidelidade
-    Fila_PedidosPendentes *pedidosPendentes;
-} restaurante;
-
-typedef struct ped
-{
-    int codigo;
-    float precoTotal;
-    char nome_rest[40];
-    pratos *ped; // vetor em que cada elemento eh um prato e juntando todos os pratos que o cliente pediu torna-se o pedido completo
-    int qtdPed;  // tamanho do vetor
-} pedidos;
-
-typedef struct plate
-{
-    char nome[40];
-    char descricao[100];
-    float preco;
-} pratos;
-
-*/
-
 // funcao que cria a lista de restaurantes
-Lista_restaurantes *criar_lista_restaurantes()
+Lista_restaurantes *criar_listaRestaurantes()
 {
     Lista_restaurantes *l = (Lista_restaurantes *)malloc(sizeof(Lista_restaurantes));
     l->inicio = NULL;
@@ -48,15 +15,21 @@ Lista_restaurantes *criar_lista_restaurantes()
 // funcao que cria uma nova lista separada por categoria desejada do cliente
 int criar_listaCategoria(Lista_restaurantes *l1, Lista_restaurantes *l2, char *categoria)
 {
-    if (l2 == NULL)
-        l2 = criar_lista_restaurantes();
+    if (l2 == NULL) 
+    {
+        l2 = criar_listaRestaurantes(); 
+    }        
 
     No_restaurante *no = l1->inicio;
 
-    while (no->prox != NULL || no->valor.categoria != categoria)
+    while (no->prox != NULL)
+    {
         no = no->prox;
-    if (no->valor.categoria == categoria)
-        inserirFimRest(l2, no->valor);
+        if (no->valor.categoria == categoria)
+        {
+            inserirFimRest(l2, no->valor);
+        }
+    }
 
     return 0;
 }
@@ -75,7 +48,7 @@ int listaVaziaRest(Lista_restaurantes *l)
 // limpa a lista
 void limparRest(Lista_restaurantes *l)
 {
-    while (listaVazia(l) != 0)
+    while (listaVaziaRest(l) != 0)
         removerInicioRest(l);
     free(l);
     l = NULL;
@@ -159,7 +132,7 @@ int removerFimRest(Lista_restaurantes *l)
 {
     if (l == NULL)
         return NULL_LIST;
-    if (listaVazia(l) == 0)
+    if (listaVaziaRest(l) == 0)
         return EMPTY_LIST;
 
     No_restaurante *aux = l->inicio;
@@ -217,7 +190,7 @@ int removerRest(Lista_restaurantes *l, int codigo)
 {
     if (l == NULL)
         return NULL_LIST;
-    if (listaVazia(l) == 0)
+    if (listaVaziaRest(l) == 0)
         return EMPTY_LIST;
 
     No_restaurante *aux;
@@ -238,11 +211,11 @@ int removerRest(Lista_restaurantes *l, int codigo)
 }
 
 // busca o restaurante correspondente ao codigo e retorna ele por parametro
-int buscarCodigoRest(Lista_restaurantes *l, int codigo, restaurante *item)
+/*int buscarCodigoRest(Lista_restaurantes *l, int codigo, restaurante *item)
 {
     if (l == NULL)
         return NULL_LIST;
-    if (listaVazia(l) == 0)
+    if (listaVaziaRest(l) == 0)
         return EMPTY_LIST;
 
     No_restaurante *aux = l->inicio;
@@ -254,7 +227,7 @@ int buscarCodigoRest(Lista_restaurantes *l, int codigo, restaurante *item)
 
     if (aux->valor.codigo == codigo)
     {
-        copiar(&(aux->valor), &(*item));
+        copiarRestaurante(&(aux->valor), &(*item));
         return 0;
     }
     else
@@ -266,7 +239,7 @@ int buscarRest(Lista_restaurantes *l, restaurante *item)
 {
     if (l == NULL)
         return NULL_LIST;
-    if (listaVazia(l) == 0)
+    if (listaVaziaRest(l) == 0)
         return EMPTY_LIST;
 
     No_restaurante *aux;
@@ -277,7 +250,7 @@ int buscarRest(Lista_restaurantes *l, restaurante *item)
         if (aux->valor.status == 0)
         {
             aux->valor.status = 1;
-            copiar(&(aux->valor), &(*item));
+            copiarRestaurante(&(aux->valor), &(*item));
             return 0;
         }
         aux = aux->prox;
@@ -292,7 +265,7 @@ void mostrarInfoRestaurante(Lista_restaurantes *l)
     {
         printf("[");
 
-        if (listaVazia(l) != 0)
+        if (listaVaziaRest(l) != 0)
         {
             No_restaurante *aux = l->inicio;
             do
@@ -306,7 +279,7 @@ void mostrarInfoRestaurante(Lista_restaurantes *l)
         }
         printf(" ]\n");
     }
-}
+}*/
 
 // copia todas as informacoes de um elemento para outro
 void copiarRestaurante(restaurante *A, restaurante *B)
@@ -317,9 +290,8 @@ void copiarRestaurante(restaurante *A, restaurante *B)
     strcpy(B->categoria, A->categoria);
     B->codigo = A->codigo;
     B->status = A->status;
-    //copiar mennu
-    //copiar historico
-    //copiar fila pedidosPendentes
+    //copiarRestaurante mennu
+    //copiarRestaurante historico
+    //copiarRestaurante fila pedidosPendentes
     
 }
-gcc - o main.exe cliente.c entregador.c filaPedidosPendente.c main.c restaurante.c
