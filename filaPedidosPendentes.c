@@ -22,7 +22,7 @@ typedef struct ped
 typedef struct no_pedidosPendentes
 {
     pedidos valor;
-    struct no *proximo;
+    struct no_pedidosPendentes *proximo;
 } No_pedidosPendentes;
 
 typedef struct fila
@@ -66,13 +66,34 @@ int inserirP(Fila_PedidosPendentes *f, pedidos *x)
     if (filaVaziaP(f) == 0)
         f->inicio = no;
     else
-        f->fim->proximo = no;
+        f->fim->proximo = no->proximo;
     f->fim = no;
     f->qtd++;
     return 0;
 }
 
-int removerP(Fila_PedidosPendentes *f)
+int removerP (Fila_PedidosPendentes *f) // remove no inicio da lista
+{
+    if (f == NULL) return 3;
+    if (filaVaziaP(f) == 0) return 0;
+
+    No_pedidosPendentes *aux = f->inicio;
+    
+    if (f->inicio->proximo == NULL)
+    {
+        f->inicio = NULL;
+        f->fim = NULL;
+        free(aux);
+    }
+    else
+    {
+        f->inicio = aux->proximo;
+        free(aux);
+    }
+    return 0;
+}
+
+/*int removerP(Fila_PedidosPendentes *f)
 {
     if (f == NULL)
         return 2;
@@ -85,7 +106,7 @@ int removerP(Fila_PedidosPendentes *f)
         f->fim = NULL;
     f->qtd--;
     return 0;
-}
+}*/
 
 int consultarP(Fila_PedidosPendentes *f, pedidos **x)
 {
