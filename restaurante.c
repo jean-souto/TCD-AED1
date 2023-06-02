@@ -120,12 +120,12 @@ int inserirPosicao(Lista_restaurantes *l, restaurante item, int pos)
 {
     if (l == NULL)
         return NULL_LIST;
-    if (listaVazia(l) == 0)
-        return inserirInicio(l, item);
+    if (listaVaziaRest(l) == 0)
+        return inserirInicioRest(l, item);
     if (pos <= 1)
-        return inserirInicio(l, item);
-    if (pos > tamanho(l))
-        return inserirFim(l, item);
+        return inserirInicioRest(l, item);
+    if (pos > tamanhoRest(l))
+        return inserirFimRest(l, item);
 
     No_restaurante *no = l->inicio;
     No_restaurante *noaux = (No_restaurante *)malloc(sizeof(No_restaurante));
