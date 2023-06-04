@@ -71,7 +71,7 @@ int removerRest(Lista_restaurantes *l, int codigo);
 
 void copiarRest(restaurante *A, restaurante *B);
 int buscarCodigoRest(Lista_restaurantes *l, int codigo, restaurante *item);
-int buscarRest(Lista_restaurantes *l, restaurante *item);
+int buscarRestaurante(Lista_restaurantes *l, restaurante *item);
 void mostrarInfoRest(Lista_restaurantes *l);
 
     // mostrar opcao do menuCliente

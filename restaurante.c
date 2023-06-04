@@ -249,7 +249,7 @@ int removerRest(Lista_restaurantes *l, int codigo)
 }
 
 // copia todas as informacoes de um elemento para outro
-void copiarRest(restaurante *A, restaurante *B)
+void copiarRestaurante(restaurante *A, restaurante *B)
 {
     strcpy(B->nome, A->nome);
     strcpy(B->email, A->email);

@@ -324,7 +324,7 @@ int main()
 
     // declarações relacionadas aos entregadores
     Lista_entregadores *lista_principal_entregadores;
-    entregador novo_entregador, logado_entregador;
+    entregador novo_entregador, logado_entregador, esqueceu_senha_entregador;
     int cod_novo = -1;
     int codigo_loginE = -1;
 
@@ -347,7 +347,9 @@ int main()
     strcpy(loginADM, "souADM");
     strcpy(senhaADM, "123ADM");
 
-    inicializar_cliente(&esqueceu_senha_cliente);
+    inicializar_cliente (&esqueceu_senha_cliente);
+    inicializar_entregador (&esqueceu_senha_entregador);
+    limpar_variavel_entregador (&esqueceu_senha_entregador);
 
     /*strcpy (inicializados_cliente.nome, "Alan da Silva");
     strcpy (inicializados_cliente.cpf, "145756984121");
@@ -412,56 +414,6 @@ int main()
 
                     while (verify != 0)
                     {
-                        printf("\nDigite 5 para voltar ou 6 se esqueceu a senha ou 0 para logar: ");
-                        scanf("%d", &verify);
-
-                        if (verify == 5)
-                            break;
-                        if (verify == 6)
-                        {
-                            while (verify != 0)
-                            {
-                                printf("\nDigite seu email: ");
-                                setbuf(stdin, NULL);
-                                scanf("%[^\n]s", &email);
-
-                                printf("\nDigite seu CPF: ");
-                                setbuf(stdin, NULL);
-                                scanf("%[^\n]s", &cpf);
-
-                                verify = buscarClienteEmailCPF(lista_principal_clientes, &(*email), &(*cpf), &esqueceu_senha_cliente);
-
-                                if (verify == 0)
-                                {
-                                    verify = -1;
-                                    char senha1[15];
-                                    char senha2[15];
-
-                                    while (verify != 0)
-                                    {
-                                        if (verify != 1)
-                                            printf("\nTe encontramos!");
-                                        printf("\nDigite sua nova senha: ");
-                                        setbuf(stdin, NULL);
-                                        scanf("%[^\n]s", &senha1);
-
-                                        printf("\nDigite sua nova senha novamente: ");
-                                        setbuf(stdin, NULL);
-                                        scanf("%[^\n]s", &senha2);
-
-                                        verify = alterarSenha(lista_principal_clientes, esqueceu_senha_cliente.codigo, senha1, senha2);
-
-                                        if (verify == 0)
-                                            printf("Senha alterada com sucesso!");
-                                        if (verify != 0)
-                                            printf("Senhas diferentes. Tente novamente!");
-                                    }
-                                }
-                                else
-                                    printf("\nAlgo deu errado. Tente novamente!");
-                            }
-                        }
-
                         printf("\nDigite seu e-mail: ");
                         setbuf(stdin, NULL);
                         scanf("%[^\n]s", &email);
@@ -479,15 +431,64 @@ int main()
                         {
                             printf("\nLogin ou senha invalidos. Tente novamente!\n");
                         }
-
                         if (verify == 0)
                         {
                             printf("\nLogin efetuado com sucesso. Bem vindo(a) de volta, %s!\n", logado_cliente.nome);
+                            break;
                         }
+
+                        if (verify == 0) break;
+
+                        printf("\nDigite 5 para voltar ou 6 se esqueceu a senha ou 0 para logar: ");
+                        scanf("%d", &verify);
+
+                        if (verify == 5) break;
+                        if (verify == 6)
+                        {
+                            while (verify != 0)
+                            {
+                                printf("\nDigite seu email: ");
+                                setbuf(stdin, NULL);
+                                scanf("%[^\n]s", &email);
+
+                                printf("\nDigite seu CPF: ");
+                                setbuf(stdin, NULL);
+                                scanf("%[^\n]s", &cpf);
+
+                                verify = buscarClienteEmailCPF(lista_principal_clientes, &(*email), &(*cpf), &esqueceu_senha_cliente);
+
+                                if (verify == 0)
+                                {
+                                    verify = -1;
+
+                                    char senha1[15];
+                                    char senha2[15];
+
+                                    while (verify != 0)
+                                    {
+                                        if (verify != 1) printf("\nTe encontramos!");
+
+                                        printf("\nDigite sua nova senha: ");
+                                        setbuf(stdin, NULL);
+                                        scanf("%[^\n]s", &senha1);
+
+                                        printf("\nDigite sua nova senha novamente: ");
+                                        setbuf(stdin, NULL);
+                                        scanf("%[^\n]s", &senha2);
+
+                                        verify = alterarSenha(lista_principal_clientes, esqueceu_senha_cliente.codigo, senha1, senha2);
+
+                                        if (verify == 0) printf("\nSenha alterada com sucesso! ");
+                                        if (verify != 0) printf("\nSenhas diferentes. Tente novamente! ");
+                                    }
+                                }
+                                else printf("\nAlgo deu errado. Tente novamente!");
+                            }
+                        }
+                        if (verify == 0) verify = 1;
                     }
 
-                    if (verify == 5)
-                        break; // sair e voltar ao menu anterior
+                    if (verify == 5) break; // sair e voltar ao menu anterior
 
                     while ((option != 9) && (option != 10)) // voltar após selecionar voltar ou excluir a conta
                     {
@@ -900,33 +901,6 @@ int main()
 
                     while (verify != 0)
                     {
-                        printf("\nDigite 5 para voltar, 6 se esqueceu o codigo de acesso e 0 para continuar: ");
-                        scanf("%d", &verify);
-
-                        if (verify == 5)
-                            break;
-                        if (verify == 6)
-                        {
-                            while (verify != 0)
-                            {
-                                printf("\nDigite o seu e-mail:");
-                                setbuf(stdin, NULL);
-                                scanf("%[^\n]s", &email);
-
-                                printf("\nAgora digite o seu CPF (sem espaços): ");
-                                setbuf(stdin, NULL);
-                                scanf("%[^\n]s", &cpf);
-
-                                // verify = funçãologincomcpfeemail;
-
-                                if (verify == 0)
-                                {
-                                    printf("\nTe encontramos!");
-                                    // trocar o codigo
-                                }
-                            }
-                        }
-
                         printf("\nDigite o seu e-mail: ");
                         setbuf(stdin, NULL);
                         scanf("%[^\n]s", &email);
@@ -936,55 +910,131 @@ int main()
 
                         verify = loginCodigo(lista_principal_entregadores, email, codigo_loginE, &logado_entregador);
 
-                        if (verify == 0)
+                        if (verify == 0) 
+                        {
                             printf("\nBem vindo de volta, %s!", logado_entregador.nome);
-                        else
-                            printf("\nOcorreu algum erro. Tente novamente!");
+                            break;
+                        }
+                        else 
+                        {
+                            printf("\nOcorreu algum erro. Tente novamente! \n");
+                        }
+
+                        if (verify == 0) break;
+                        
+                        printf("\nDigite 5 para voltar, 6 se esqueceu o codigo de acesso e 0 para continuar: ");
+                        scanf("%d", &verify);
+
+                        if (verify == 5) break;
+                        if (verify == 6)
+                        {
+                            while (verify != 0)
+                            {
+                                printf("\nDigite o seu e-mail:");
+                                setbuf(stdin, NULL);
+                                scanf("%[^\n]s", &email);
+
+                                printf("\nAgora digite o seu CPF (sem espacos): ");
+                                setbuf(stdin, NULL);
+                                scanf("%[^\n]s", &cpf);
+
+                                verify = buscarEntregadorEmailCPF(lista_principal_entregadores, email, cpf, &esqueceu_senha_entregador);
+
+                                if (verify == 0)
+                                {
+                                    printf("\nTe encontramos!");
+                                    trocaCodigo(lista_principal_entregadores, esqueceu_senha_entregador.codigo, &cod_novo);
+                                    printf ("\nSeu novo codigo eh: %d.", cod_novo);
+                                }
+                                else
+                                {
+                                    printf ("\nAlgo esta errado. Tente novamente! ");
+                                }
+                            }
+                        }
+                        if (verify == 0) verify = 1;
                     }
 
-                    if (verify == 5)
-                        break;
+                    if (verify == 5) break;
 
                     while ((option != 7) && (option != 8))
                     {
-                        option = menu_inicial_entregador();
+                        option = menu_entregador();
 
                         switch (option)
                         {
                         case 0: // sair
                             return 0;
-                            break;
+                        break;
 
                         case 1: // mostrar corrida atual (pedido em andamento)
 
-                            break;
+                        break;
 
                         case 2: // mostrar dados pessoais
 
-                            break;
+                        break;
 
                         case 3: // mostrar nota
-
-                            break;
+                            buscarItemEntregador (lista_principal_entregadores, logado_entregador.codigo, &logado_entregador);
+                            printf ("\nVoce foi avaliado por %d clientes!", logado_entregador.rank.quantidade);
+                            printf ("\nSua nota eh %.1f!", logado_entregador.rank.media);
+                            if (logado_entregador.rank.media >= 4)
+                            {
+                                printf ("\nContinue o bom trabalho! ");
+                            }
+                            else
+                            {
+                                printf ("Talvez voce precise melhorar. ");
+                            }
+                        break;
 
                         case 4: // mostrar historico
 
-                            break;
+                        break;
 
                         case 5: // alterar codigo de acesso
 
-                            break;
+                            verify = -1;
+
+                            while (verify != 0)
+                            {
+                                printf ("\nDigite seu codigo de acesso atual: ");
+                                scanf ("%d", &cod_novo);
+
+                                if (cod_novo != logado_entregador.codigo)
+                                {
+                                    verify = 1;
+                                    printf ("\nCodigo incorreto. Tente novamente! ");
+                                }
+                                else
+                                {
+                                    //verify = 0;
+                                    printf ("\nCodigo reconhecido! ");
+                                    verify = trocaCodigo (lista_principal_entregadores, logado_entregador.codigo, &cod_novo);
+                                    buscarItemEntregador (lista_principal_entregadores, cod_novo, &logado_entregador);
+                                    printf ("\nSeu novo codigo eh %d. \n", cod_novo);
+                                }
+
+                                if (verify != 0)
+                                {
+                                    printf ("Digite 1 para continuar ou 0 para sair sem alterar: ");
+                                    scanf ("%d", &verify);
+                                }
+                            }
+                        break;
 
                         case 6: // alterar email
 
-                            break;
+                        break;
 
                         case 7: // sair da conta
-                            break;
+                        break;
 
                         case 8: // excluir conta
 
-                            break;
+                        break;
+
                         }
                     }
                     break;
