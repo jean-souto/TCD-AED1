@@ -75,7 +75,7 @@ int inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedid
     pg = (pedidosglobais *)realloc(pg, (*qtd) * sizeof(pedidosglobais));
 
     copiarEntregador(&entregador_atual, &pg->entregador_do_pedido);
-    copiarPedidoCC(&pedido_atual, &pg->pedido_em_andamento);
+    copiarPedidoCpC(&pedido_atual, &pg->pedido_em_andamento);
     copiarCliente(&cliente_atual, &pg->comprador);
 
     return 0;
