@@ -321,6 +321,7 @@ int main()
     // declarações relacionadas aos restaurantes
     Lista_restaurantes *lista_principal_restaurantes;
     restaurante login_restaurante, novo_restaurante;
+    int codigo_loginR;
 
     // declarações relacionadas aos entregadores
     Lista_entregadores *lista_principal_entregadores;
@@ -460,7 +461,6 @@ int main()
                                 if (verify == 0)
                                 {
                                     verify = -1;
-
                                     char senha1[15];
                                     char senha2[15];
 
@@ -486,7 +486,7 @@ int main()
                             }
                         }
                         if (verify == 0) verify = 1;
-                    }
+                        }
 
                     if (verify == 5) break; // sair e voltar ao menu anterior
 
@@ -831,18 +831,39 @@ int main()
                     setbuf(stdin, NULL);
                     scanf("%[^\n]s", confirmSenha);
 
-                    if (confirmarSenha(senha, confirmSenha) == 0)
+                    if (confirmarLogin(senha, confirmSenha) == 0)
                         strcpy(novo_restaurante.senha, senha);
 
                     inicializar_restaurante(&novo_restaurante);
 
-                    if ((inserirInicioRest(lista_principal_restaurantes, novo_restaurante)) == 0)
+                    if ((inserirInicioRest(lista_principal_restaurantes,
+                                           novo_restaurante)) == 0)
                         printf("\nCadastro realizado com sucesso!\n");
                     // mostrar_restaurante(lista_principal_restaurantes);
                     break;
 
                 case 2: // Ja tenho cadastro
-
+                    printf("Digite o email: ");
+                    setbuf(stdin, NULL);
+                    scanf("%[^\n]s", email);
+                    buscarRestauranteEmailCodigo(lista_principal_restaurantes, email, codigo_loginR, &login_restaurante);
+                    if (confirmarLogin(email, login_restaurante.email) == 0)
+                    {
+                        printf("Digite a senha: ");
+                        setbuf(stdin, NULL);
+                        scanf("%[^\n]s", senha);
+                        if (confirmarLogin(senha, login_restaurante.senha) == 0)
+                            printf("Bem-Vindo de volta %s!", login_restaurante.nome);
+                        // proximo menu
+                        else
+                        {
+                            printf("Senha incorreta!");
+                        }
+                    }
+                    else
+                    {
+                        printf("Email incorreto!");
+                    }
                     break;
 
                 case 3: // Voltar
@@ -889,8 +910,11 @@ int main()
 
                     verify = -1;
 
-                    if ((inserirFimEntregador(lista_principal_entregadores, novo_entregador, &cod_novo)) == 0)
-                        printf("\nCadastro realizado com sucesso! Bem vindo, %s! Seu novo codigo de acesso eh: %d.", novo_entregador.nome, cod_novo);
+                    if ((inserirFimEntregador(lista_principal_entregadores,
+                                              novo_entregador, &cod_novo)) == 0)
+                        printf("\nCadastro realizado com sucesso! Bem vindo, %s! Seu novo "
+                               "codigo de acesso eh: %d.",
+                               novo_entregador.nome, cod_novo);
                     limpar_variavel_entregador(&novo_entregador);
 
                     break;
@@ -949,31 +973,44 @@ int main()
                                 else
                                 {
                                     printf ("\nAlgo esta errado. Tente novamente! ");
-                                }
                             }
                         }
-                        if (verify == 0) verify = 1;
+
+                        printf("\nDigite o seu e-mail: ");
+                        setbuf(stdin, NULL);
+                        scanf("%[^\n]s", &email);
+
+                        printf("\nDigite o seu codigo de acesso: ");
+                        scanf("%d", &codigo_loginE);
+
+                        verify = loginCodigo(lista_principal_entregadores, email,
+                                             codigo_loginE, &logado_entregador);
+
+                        if (verify == 0)
+                            printf("\nBem vindo de volta, %s!", logado_entregador.nome);
+                        else
+                            printf("\nOcorreu algum erro. Tente novamente!");
                     }
 
                     if (verify == 5) break;
 
                     while ((option != 7) && (option != 8))
                     {
-                        option = menu_entregador();
+                        option = menu_inicial_entregador();
 
                         switch (option)
                         {
                         case 0: // sair
                             return 0;
-                        break;
+                            break;
 
                         case 1: // mostrar corrida atual (pedido em andamento)
 
-                        break;
+                            break;
 
                         case 2: // mostrar dados pessoais
 
-                        break;
+                            break;
 
                         case 3: // mostrar nota
                             buscarItemEntregador (lista_principal_entregadores, logado_entregador.codigo, &logado_entregador);
@@ -987,11 +1024,11 @@ int main()
                             {
                                 printf ("Talvez voce precise melhorar. ");
                             }
-                        break;
+                            break;
 
                         case 4: // mostrar historico
 
-                        break;
+                            break;
 
                         case 5: // alterar codigo de acesso
 
@@ -1022,19 +1059,18 @@ int main()
                                     scanf ("%d", &verify);
                                 }
                             }
-                        break;
+                            break;
 
                         case 6: // alterar email
 
-                        break;
+                            break;
 
                         case 7: // sair da conta
-                        break;
+                            break;
 
                         case 8: // excluir conta
 
-                        break;
-
+                            break;
                         }
                     }
                     break;
@@ -1059,7 +1095,8 @@ int main()
             setbuf(stdin, NULL);
             scanf("%[^\n]s", &teste_senha);
 
-            if ((strcmp(teste_login, loginADM) == 0) && strcmp(teste_senha, senhaADM) == 0)
+            if ((strcmp(teste_login, loginADM) == 0) &&
+                strcmp(teste_senha, senhaADM) == 0)
             {
                 printf("\nBem-vindo, ADM!\n");
 
