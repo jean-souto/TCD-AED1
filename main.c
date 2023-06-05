@@ -124,7 +124,7 @@ int inicializar_cliente(Cliente *item) // usada ao criar um novo_cliente cadastr
 int inicializar_restaurante(restaurante *item)
 {
     item->codigo = rand() % 100;
-    // item->categoria = NULL;
+    //item->categoria = NULL;
     item->menu = NULL;
     item->historico = NULL;
     item->status = -1;
@@ -836,35 +836,89 @@ int main()
 
                     inicializar_restaurante(&novo_restaurante);
 
-                    if ((inserirInicioRest(lista_principal_restaurantes,
-                                           novo_restaurante)) == 0)
+                    if ((inserirFimRest(lista_principal_restaurantes, novo_restaurante)) == 0)
                         printf("\nCadastro realizado com sucesso!\n");
                     // mostrar_restaurante(lista_principal_restaurantes);
                     break;
 
                 case 2: // Ja tenho cadastro
-                    printf("Digite o email: ");
-                    setbuf(stdin, NULL);
-                    scanf("%[^\n]s", email);
-                    buscarRestauranteEmailCodigo(lista_principal_restaurantes, email, codigo_loginR, &login_restaurante);
-                    if (confirmarLogin(email, login_restaurante.email) == 0)
+                    int verify = -1;
+
+                    while (verify != 0)
                     {
-                        printf("Digite a senha: ");
+                        printf("\nDigite o e-mail: ");
                         setbuf(stdin, NULL);
-                        scanf("%[^\n]s", senha);
-                        if (confirmarLogin(senha, login_restaurante.senha) == 0)
-                            printf("Bem-Vindo de volta %s!", login_restaurante.nome);
-                        // proximo menu
-                        else
+                        scanf("%[^\n]s", &email);
+
+                        printf("\nDigite a senha: ");
+                        setbuf(stdin, NULL);
+                        scanf("%[^\n]s", &senha);
+
+                        verify = loginRestaurante(lista_principal_restaurantes, email, senha, &login_restaurante);
+
+                        strcpy(email, " ");
+                        strcpy(senha, " ");
+
+                        if (verify != 0)
                         {
-                            printf("Senha incorreta!");
+                            printf("\nLogin ou senha invalidos. Tente novamente!\n");
                         }
+                        if (verify == 0)
+                        {
+                            printf("\nLogin efetuado com sucesso. Bem vindos de volta, %s!\n", login_restaurante.nome);
+                            break;
+                        }
+
+                        printf("Esqueceu a senha? (Digite 5)\n"
+                                "Voltar (Digite 6)\n");
+
+                        if (verify == 6)
+                            break;
+                        if (verify == 5)
+                        {
+                            while (verify != 0)
+                            {
+                                printf("\nDigite o email: ");
+                                setbuf(stdin, NULL);
+                                scanf("%[^\n]s", &email);
+
+                                printf("\nDigite o codigo do restaurante: ");
+                                setbuf(stdin, NULL);
+                                scanf("%[^\n]s", &codigo_loginR);
+
+                                verify = buscarRestEmailCodigo(lista_principal_restaurantes, email, codigo_loginR, &login_restaurante);
+
+                                if (verify == 0)
+                                {
+                                    verify = -1;
+
+                                    while (verify != 0)
+                                    {
+                                        if (verify != 1)
+                                            printf("\nTe encontramos!");
+
+                                        printf("\nDigite sua nova senha: ");
+                                        setbuf(stdin, NULL);
+                                        scanf("%[^\n]s", &senha);
+
+                                        printf("\nDigite sua nova senha novamente: ");
+                                        setbuf(stdin, NULL);
+                                        scanf("%[^\n]s", &confirmSenha);
+
+                                        verify = alterarSenhaRest(lista_principal_restaurantes, login_restaurante, senha, confirmSenha);
+
+                                        if (verify == 0)
+                                            printf("\nSenha alterada com sucesso! ");
+                                        if (verify != 0)
+                                            printf("\nSenhas diferentes. Tente novamente! ");
+                                    }
+                                }
+                                else
+                                    printf("\nAlgo deu errado. Tente novamente!");
+                            }
+                        }
+                        
                     }
-                    else
-                    {
-                        printf("Email incorreto!");
-                    }
-                    break;
 
                 case 3: // Voltar
                     break;

@@ -248,19 +248,7 @@ int removerRest(Lista_restaurantes *l, int codigo)
     return 1;
 }
 
-// copia todas as informacoes de um elemento para outro
-void copiarRestaurante(restaurante *A, restaurante *B)
-{
-    strcpy(B->nome, A->nome);
-    strcpy(B->email, A->email);
-    strcpy(B->senha, A->senha);
-    strcpy(B->categoria, A->categoria);
-    B->codigo = A->codigo;
-    B->status = A->status;
-    // copiarRestaurante mennu
-    // copiarRestaurante historico
-    // copiarRestaurante fila pedidosPendentes
-}
+
 
 // busca o restaurante correspondente ao codigo e retorna ele por parametro
 int buscarCodigoRest(Lista_restaurantes *l, int codigo, restaurante *item)
@@ -286,6 +274,7 @@ int buscarCodigoRest(Lista_restaurantes *l, int codigo, restaurante *item)
         return 1;
 }
 
+/*
 // busca um restaurante
 int buscarRest(Lista_restaurantes *l, restaurante *item)
 {
@@ -299,16 +288,16 @@ int buscarRest(Lista_restaurantes *l, restaurante *item)
 
     while (aux != NULL)
     {
-        if (aux->valor.status == 0)
+        if (aux->valor.email == 0)
         {
-            aux->valor.status = 1;
+            aux->valor.email = 1;
             copiarRestaurante(&(aux->valor), &(*item));
             return 0;
         }
         aux = aux->prox;
     }
     return 1;
-}
+}*/
 
 // mostra as principais informacoes de cada restaurante
 void mostrarInfoRest(Lista_restaurantes *l)
@@ -329,9 +318,23 @@ void mostrarInfoRest(Lista_restaurantes *l)
     }
 }
 
+// copia todas as informacoes de um elemento para outro
+void copiarRestaurante(restaurante *A, restaurante *B)
+{
+    strcpy(B->nome, A->nome);
+    strcpy(B->email, A->email);
+    strcpy(B->senha, A->senha);
+    strcpy(B->categoria, A->categoria);
+    B->codigo = A->codigo;
+    B->status = A->status;
+    // copiarRestaurante mennu
+    // copiarRestaurante historico
+    // copiarRestaurante fila pedidosPendentes
+}
+
 /*
 // função de auxílio. copia todas as informações de um elemento para outro
-void copiarRest(restaurante *A, restaurante *B)
+void copiarRestaurante(restaurante *A, restaurante *B)
 {
     int i, j;
 
@@ -372,3 +375,44 @@ void copiarRest(restaurante *A, restaurante *B)
     } 
 }
 */
+
+int buscarRestEmailCodigo(Lista_restaurantes *l, char *email, int codigo, restaurante *item){
+    if (l == NULL)
+        return NULL_LIST;
+    if (listaVaziaCliente(l) == 0)
+        return EMPTY_LIST;
+
+    No_restaurante *aux = l->inicio;
+
+    while (aux->prox != NULL && (strcmp(aux->valor.email, email) != 0))
+    {
+        aux = aux->prox;
+    }
+
+    if ((strcmp(aux->valor.email, email) == 0) && (strcmp(aux->valor.codigo, codigo) == 0))
+    {
+        copiarRestaurante(&aux->valor, &(*item));
+        return 0;
+    }
+    return 1;
+}
+
+int loginRestaurante(Lista_restaurantes *l, char *email, char *senha, restaurante *item){
+    if (l == NULL) return NULL_LIST;
+    if (listaVaziaRest(l) == 0) return EMPTY_LIST;
+
+    No_restaurante *no = l->inicio;
+
+    while (no->prox != NULL && (strcmp(no->valor.email, email) != 0))
+    {
+        no = no->prox;
+    }
+
+    if ((strcmp(no->valor.email, email) == 0) && (strcmp(no->valor.senha, senha) == 0))
+    {
+        copiarRestaurante(&no->valor, &(*item));
+        return 0;
+    }
+
+    return 1;
+}
