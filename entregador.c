@@ -507,3 +507,23 @@ int trocaCodigo (Lista_entregadores *l, int codigo_atual, int *novo_codigo)
     }
     return 1;
 }
+
+int trocaEmail (Lista_entregadores *l, int codigo, char *novo_email)
+{
+    if (l == NULL) return NULL_LIST;
+    if (listaVaziaEntregador(l) == 0) return EMPTY_LIST;
+
+    No_entregador *aux = l->inicio;
+
+    while ((aux->prox != NULL) && (aux->valor.codigo != codigo))
+    {
+        aux = aux->prox;
+    }
+
+    if (aux->valor.codigo == codigo)
+    {
+        strcpy(aux->valor.email, novo_email);
+        return 0;
+    }
+    return 1;
+}

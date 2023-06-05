@@ -379,7 +379,7 @@ void copiarRestaurante(restaurante *A, restaurante *B)
 int buscarRestEmailCodigo(Lista_restaurantes *l, char *email, int codigo, restaurante *item){
     if (l == NULL)
         return NULL_LIST;
-    if (listaVaziaCliente(l) == 0)
+    if (listaVaziaRest(l) == 0)
         return EMPTY_LIST;
 
     No_restaurante *aux = l->inicio;
@@ -389,7 +389,7 @@ int buscarRestEmailCodigo(Lista_restaurantes *l, char *email, int codigo, restau
         aux = aux->prox;
     }
 
-    if ((strcmp(aux->valor.email, email) == 0) && (strcmp(aux->valor.codigo, codigo) == 0))
+    if ((strcmp(aux->valor.email, email) == 0) && (aux->valor.codigo == codigo))
     {
         copiarRestaurante(&aux->valor, &(*item));
         return 0;

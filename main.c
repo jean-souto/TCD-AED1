@@ -816,7 +816,7 @@ int main()
                         setbuf(stdin, NULL);
                         scanf("%[^\n]s", confirmSenha);
 
-                        if (confirmarLogin(senha, confirmSenha) == 0)
+                        if (confirmarSenha(senha, confirmSenha) == 0)
                             strcpy(novo_restaurante.senha, senha);
 
                         inicializar_restaurante(&novo_restaurante);
@@ -826,7 +826,7 @@ int main()
                         // mostrar_restaurante(lista_principal_restaurantes);
                         break;
 
-                    case 2: // Ja tenho cadastro
+                    case 2:; // Ja tenho cadastro
                         int verify = -1;
 
                         while (verify != 0)
@@ -890,7 +890,7 @@ int main()
                                             setbuf(stdin, NULL);
                                             scanf("%[^\n]s", &confirmSenha);
 
-                                            verify = alterarSenhaRest(lista_principal_restaurantes, login_restaurante, senha, confirmSenha);
+                                            //verify = alterarSenhaRest(lista_principal_restaurantes, login_restaurante, senha, confirmSenha);
 
                                             if (verify == 0)
                                                 printf("\nSenha alterada com sucesso! ");
@@ -986,7 +986,7 @@ int main()
                                 scanf("%d", &verify);
 
                                 if (verify == 5) break;
-                                if (verify == 6)
+                                if (verify == 6) // preciso fazer verificação de status == 1 ou == 0
                                 {
                                     while (verify != 0)
                                     {
@@ -1013,12 +1013,13 @@ int main()
                                     }
                                 }
                                 if (verify == 0) verify = 1;
-                                if (verify == 5) break;
                             }
+
+                            if (verify == 5) break;
 
                             while ((option != 7) && (option != 8))
                             {
-                                option = menu_inicial_entregador();
+                                option = menu_entregador();
 
                                 switch (option)
                                 {
@@ -1037,14 +1038,14 @@ int main()
                                     case 3: // mostrar nota
                                         buscarItemEntregador (lista_principal_entregadores, logado_entregador.codigo, &logado_entregador);
                                         printf ("\nVoce foi avaliado por %d clientes!", logado_entregador.rank.quantidade);
-                                        printf ("\nSua nota eh %.1f!", logado_entregador.rank.media);
+                                        printf ("\nSua nota eh %.1f! ", logado_entregador.rank.media);
                                         if (logado_entregador.rank.media >= 4)
                                         {
                                             printf ("\nContinue o bom trabalho! ");
                                         }
                                         else
                                         {
-                                            printf ("Talvez voce precise melhorar. ");
+                                            printf ("\nTalvez voce precise melhorar. ");
                                         }
                                     break;
 
@@ -1052,7 +1053,7 @@ int main()
 
                                     break;
 
-                                    case 5: // alterar codigo de acesso
+                                    case 5: // alterar codigo de acesso // preciso fazer verificação de status == 1 ou == 0
 
                                         verify = -1;
 
@@ -1084,13 +1085,85 @@ int main()
                                     break;
 
                                     case 6: // alterar email
+                                        
+                                        verify = -1;
 
+                                        while (verify != 0)
+                                        {
+                                            printf ("\nDigite seu codigo de acesso atual: ");
+                                            scanf ("%d", &cod_novo);
+
+                                            if (cod_novo != logado_entregador.codigo)
+                                            {
+                                                verify = 1;
+                                                printf ("\nCodigo incorreto. Tente novamente! ");
+                                            }
+                                            else
+                                            {
+                                                //verify = 0;
+                                                printf ("\nCodigo reconhecido! ");
+
+                                                printf ("\nDigite seu novo e-mail: ");
+                                                setbuf (stdin, NULL);
+                                                scanf ("%[^\n]s", &email);
+
+                                                verify = trocaEmail(lista_principal_entregadores, logado_entregador.codigo, email);
+                                            }
+
+                                            if (verify != 0)
+                                            {
+                                                printf ("Digite 1 para continuar ou 0 para sair sem alterar: ");
+                                                scanf ("%d", &verify);
+                                            }
+                                            else printf ("\nE-mail alterado com sucesso! ");
+                                        }
                                     break;
 
                                     case 7: // sair da conta
                                     break;
 
-                                    case 8: // excluir conta
+                                    case 8: // excluir conta // preciso fazer verificação de status == 1 ou == 0
+
+                                        printf("\nVoce esta prestes a apagar sua conta e tudo que esta contido nela. Voce tem certeza? ");
+                                        printf("\nDigite 1 para sim e 2 para nao: ");
+                                        scanf("%d", &verify);
+
+                                        if (verify == 1)
+                                        {
+                                            codigo_loginE = 0;
+
+                                            printf("\nMuito bem. Digite seu codigo de acesso: ");
+                                            scanf("%d", &codigo_loginE);
+
+                                            if (logado_entregador.codigo == codigo_loginE) verify = 0;
+
+                                            if (verify == 0)
+                                            {
+                                                verify = removerItemEntregador (lista_principal_entregadores, codigo_loginE);
+
+                                                if (verify == 0)
+                                                {
+                                                    printf("\nFoi um prazer ter voce conosco! Sua conta foi excluida com sucesso.");
+                                                    limpar_variavel_entregador (&logado_entregador);
+                                                }
+                                                else
+                                                {
+                                                    printf("\nHouve algum erro. Tente novamente.");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                printf("\nCodigo incorreto. Tente novamente.");
+                                                option = -1;
+                                            }
+                                            break;
+                                        }
+
+                                        if (verify != 1)
+                                        {
+                                            option = -1;
+                                            break;
+                                        }
 
                                     break;
                                 }

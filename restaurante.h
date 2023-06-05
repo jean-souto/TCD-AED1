@@ -69,7 +69,7 @@ int removerFimRest(Lista_restaurantes *l);
 int removerPosRest(Lista_restaurantes *l, int pos);
 int removerRest(Lista_restaurantes *l, int codigo);
 
-void copiarRest(restaurante *A, restaurante *B);
+void copiarRestaurante(restaurante *A, restaurante *B);
 void mostrarInfoRest(Lista_restaurantes *l);
 void mostrarInfoRest(Lista_restaurantes *l);
 

@@ -86,3 +86,4 @@ int alterarEmailEntregador (Lista_entregadores *l, int codigo, char *novo_email)
 int buscarEntregadorEmailCPF (Lista_entregadores *l, char *email, char *cpf, entregador *item);
 int inserirPedidoHistoricoEntregador (Lista_entregadores *l, int codigo, pedidosE novo_pedido);
 int trocaCodigo (Lista_entregadores *l, int codigo_atual, int *novo_codigo);
+int trocaEmail (Lista_entregadores *l, int codigo, char *novo_email);
