@@ -70,17 +70,23 @@ int removerPosRest(Lista_restaurantes *l, int pos);
 int removerRest(Lista_restaurantes *l, int codigo);
 
 void copiarRest(restaurante *A, restaurante *B);
-int buscarCodigoRest(Lista_restaurantes *l, int codigo, restaurante *item);
-int buscarRestaurante(Lista_restaurantes *l, restaurante *item);
+void mostrarInfoRest(Lista_restaurantes *l);
 void mostrarInfoRest(Lista_restaurantes *l);
 
-    // mostrar opcao do menuCliente
-    // int buscarNome(Lista_restaurantes *l, restaurante *nome);
-    // void mostrarCategoria(Lista_restaurantes *l);
-    // void mostrarRestaurantes(Lista_restaurantes *l); // fer
+//busca
+int buscarCodigoRest(Lista_restaurantes *l, int codigo, restaurante *item);
+int buscarRestaurante(Lista_restaurantes *l, restaurante *item);
+int buscarRestEmailCodigo(Lista_restaurantes *l, char *email, int codigo, restaurante *item);
 
-    // mostrar opcao do menuFuncionario
-    // void mostrarHistoricoPedidos();
-    // void mostrarPedidosPendentes(); // alice
-    // int atualizarMenu();
-    // int login();
+// mostrar opcao do menuCliente
+// int buscarNome(Lista_restaurantes *l, restaurante *nome);
+// void mostrarCategoria(Lista_restaurantes *l);
+// void mostrarRestaurantes(Lista_restaurantes *l); // fer
+
+// mostrar opcao do menuFuncionario
+// void mostrarHistoricoPedidos();
+// void mostrarPedidosPendentes(); // alice
+// int atualizarMenu();
+ int loginRestaurante(Lista_restaurantes *l, char *email, char *senha, restaurante *item);
+
+
