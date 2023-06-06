@@ -1053,9 +1053,16 @@ int main()
 
                                     break;
 
-                                    case 5: // alterar codigo de acesso // preciso fazer verificação de status == 1 ou == 0
+                                    case 5: // alterar codigo de acesso // se estiver em corrida nao poderá alterar
 
                                         verify = -1;
+
+                                        buscarItemEntregador(lista_principal_entregadores, logado_entregador.codigo, &logado_entregador);
+                                        if (logado_entregador.status == 1)
+                                        {
+                                            printf ("\nInfelizmente voce nao pode alterar seu codigo durante uma corrida! Tente novamente mais tarde.\n ");
+                                            verify = 0;
+                                        }
 
                                         while (verify != 0)
                                         {
@@ -1122,7 +1129,22 @@ int main()
                                     case 7: // sair da conta
                                     break;
 
-                                    case 8: // excluir conta // preciso fazer verificação de status == 1 ou == 0
+                                    case 8: // excluir conta // se estiver em corrida não poderá excluir
+
+                                        verify = -1;
+                                        
+                                        buscarItemEntregador(lista_principal_entregadores, logado_entregador.codigo, &logado_entregador);
+                                        if (logado_entregador.status == 1)
+                                        {
+                                            printf ("\nInfelizmente voce nao pode excluir sua conta durante uma corrida! Tente novamente mais tarde.\n ");
+                                            verify = 0;
+                                        }
+
+                                        if (verify == 0)
+                                        {
+                                            option = -1;
+                                            break;
+                                        }
 
                                         printf("\nVoce esta prestes a apagar sua conta e tudo que esta contido nela. Voce tem certeza? ");
                                         printf("\nDigite 1 para sim e 2 para nao: ");
