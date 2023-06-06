@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "filaPedidosPendentes.h"
 #include "restaurante.h"
 
@@ -81,14 +82,17 @@ int inserirInicioRest(Lista_restaurantes *l, restaurante item)
         return NULL_LIST;
 
     No_restaurante *no = (No_restaurante *)malloc(sizeof(No_restaurante));
+
     no->valor = item;
-    no->prox = l->inicio;
+    no->valor.codigo = sortearCodigoRest(l);
     no->ant = NULL;
 
-    if (l->inicio != NULL)
+    if(listaVaziaRest(l) == 0)
     {
-        l->inicio->ant = no;
+        no->prox = NULL;
     }
+
+    no->prox = l->inicio;
     l->inicio = no;
 
     return 0;
@@ -97,26 +101,36 @@ int inserirInicioRest(Lista_restaurantes *l, restaurante item)
 // insere no fim da lista
 int inserirFimRest(Lista_restaurantes *l, restaurante item)
 {
-    if (l == NULL)
-        return NULL_LIST;
-    if (listaVaziaRest(l) == EMPTY_LIST)
-        inserirInicioRest(l, item);
-
-    No_restaurante *noaux = l->inicio;
-    while (noaux->prox != NULL)
-        noaux = noaux->prox;
+    if (l == NULL) return NULL_LIST;
 
     No_restaurante *no = (No_restaurante *)malloc(sizeof(No_restaurante));
+    No_restaurante *aux = l->inicio;
+
     no->valor = item;
+    no->valor.codigo = sortearCodigoRest(l);
+
+    if (listaVaziaRest(l) != 0)
+    {
+        while (aux->prox != NULL)
+        {
+            aux = aux->prox;
+        }
+        aux->prox = no;
+        no->ant = aux;
+    }
+    else
+    {
+        l->inicio = no;
+        no->ant = NULL;
+    }
+
     no->prox = NULL;
-    no->ant = noaux;
-    noaux->prox = no;
 
     return 0;
 }
 
 // insere posição desejada na lista
-int inserirPosicao(Lista_restaurantes *l, restaurante item, int pos)
+int inserirPosicao(Lista_restaurantes *l, restaurante item, int pos) //att essa bomba
 {
     if (l == NULL)
         return NULL_LIST;
@@ -299,7 +313,29 @@ int buscarRest(Lista_restaurantes *l, restaurante *item)
     return 1;
 }*/
 
-// mostra as principais informacoes de cada restaurante
+int buscarRestEmailCodigo(Lista_restaurantes *l, char *email, int codigo, restaurante *item) //revisar 
+{
+    if (l == NULL)
+        return NULL_LIST;
+    if (listaVaziaRest(l) == 0)
+        return EMPTY_LIST;
+
+    No_restaurante *aux = l->inicio;
+
+    while (aux->prox != NULL && (strcmp(aux->valor.email, email) != 0))
+    {
+        aux = aux->prox;
+    }
+
+    if ((strcmp(aux->valor.email, email) == 0) && (aux->valor.codigo == codigo))
+    {
+        copiarRestaurante(&aux->valor, &(*item));
+        return 0;
+    }
+    return 1;
+}
+
+// mostra as principais informacoes de cada restaurante para cliente
 void mostrarInfoRest(Lista_restaurantes *l)
 {
     if (l != NULL)
@@ -309,7 +345,7 @@ void mostrarInfoRest(Lista_restaurantes *l)
         while (no != NULL)
         {
             printf("%s\n", no->valor.nome);
-            printf("Codigo: %d\n", no->valor.codigo);
+            // printf("Codigo: %d\n", no->valor.codigo);
             printf("Categoria: %d\n", no->valor.categoria);
 
             printf("---------------------------------------------\n");
@@ -318,8 +354,55 @@ void mostrarInfoRest(Lista_restaurantes *l)
     }
 }
 
+void mostrarRest(Lista_restaurantes *l) // mostra as principais informações de cada restaurante para ADM
+{
+    if (l != NULL)
+    {
+        printf("[");
+
+        if (listaVaziaRest(l) != 0)
+        {
+            No_restaurante *no = l->inicio;
+
+            do
+            {
+                printf(" {%s, ", no->valor.nome);
+                printf("%s, ", no->valor.email);
+                printf("%s, ", no->valor.categoria);
+                printf("%d, ", no->valor.codigo);
+                printf("%d} ", no->valor.status);
+                no = no->prox;
+            } while (no != NULL);
+        }
+        printf(" ]\n");
+    }
+}
+
+int loginRestaurante(Lista_restaurantes * l, char *email, char *senha, restaurante *item)
+{
+    if (l == NULL)
+        return NULL_LIST;
+    if (listaVaziaRest(l) == 0)
+        return EMPTY_LIST;
+
+    No_restaurante *no = l->inicio;
+
+    while (no->prox != NULL && (strcmp(no->valor.email, email) != 0))
+    {
+        no = no->prox;
+    }
+
+    if ((strcmp(no->valor.email, email) == 0) && (strcmp(no->valor.senha, senha) == 0))
+    {
+        copiarRestaurante(&no->valor, &(*item));
+        return 0;
+    }
+
+    return 1;
+}
+
 // copia todas as informacoes de um elemento para outro
-void copiarRestaurante(restaurante *A, restaurante *B)
+void copiarRestaurante(restaurante * A, restaurante * B)
 {
     strcpy(B->nome, A->nome);
     strcpy(B->email, A->email);
@@ -330,6 +413,59 @@ void copiarRestaurante(restaurante *A, restaurante *B)
     // copiarRestaurante mennu
     // copiarRestaurante historico
     // copiarRestaurante fila pedidosPendentes
+}
+
+int alterarSenhaRest(Lista_restaurantes * l, int codigo, char *novaSenha, char *confirmNovaSenha)
+{
+    if (l == NULL)
+        return NULL_LIST;
+    if (listaVaziaRest(l) == 0)
+        return EMPTY_LIST;
+
+    No_restaurante *no = l->inicio;
+
+    while (no != NULL && no->valor.codigo != codigo)
+    {
+        no = no->prox;
+    }
+
+    if (no->valor.codigo == codigo)
+    {
+        if (strcmp(novaSenha, confirmNovaSenha) == 0)
+        {
+            strcmp(no->valor.senha, novaSenha);
+            return 0;
+         }
+    }
+    return 1;
+}
+
+int sortearCodigoRest(Lista_restaurantes *l)
+{
+    int codigo = 0;
+    srand(time(NULL));
+
+    while (codigo == 0)
+    {
+        codigo = rand() % 9999;
+    }
+
+    if (l == NULL || listaVaziaRest(l) == 0)
+        return codigo;
+
+    No_restaurante *no = l->inicio;
+
+    while (no->prox != NULL)
+    {
+        if (codigo == no->valor.codigo)
+        {
+            codigo = rand() % 9999;
+            no = l->inicio;
+        }
+        no = no->prox;
+    }
+
+    return codigo;
 }
 
 /*
@@ -375,44 +511,3 @@ void copiarRestaurante(restaurante *A, restaurante *B)
     } 
 }
 */
-
-int buscarRestEmailCodigo(Lista_restaurantes *l, char *email, int codigo, restaurante *item){
-    if (l == NULL)
-        return NULL_LIST;
-    if (listaVaziaRest(l) == 0)
-        return EMPTY_LIST;
-
-    No_restaurante *aux = l->inicio;
-
-    while (aux->prox != NULL && (strcmp(aux->valor.email, email) != 0))
-    {
-        aux = aux->prox;
-    }
-
-    if ((strcmp(aux->valor.email, email) == 0) && (aux->valor.codigo == codigo))
-    {
-        copiarRestaurante(&aux->valor, &(*item));
-        return 0;
-    }
-    return 1;
-}
-
-int loginRestaurante(Lista_restaurantes *l, char *email, char *senha, restaurante *item){
-    if (l == NULL) return NULL_LIST;
-    if (listaVaziaRest(l) == 0) return EMPTY_LIST;
-
-    No_restaurante *no = l->inicio;
-
-    while (no->prox != NULL && (strcmp(no->valor.email, email) != 0))
-    {
-        no = no->prox;
-    }
-
-    if ((strcmp(no->valor.email, email) == 0) && (strcmp(no->valor.senha, senha) == 0))
-    {
-        copiarRestaurante(&no->valor, &(*item));
-        return 0;
-    }
-
-    return 1;
-}

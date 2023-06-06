@@ -123,7 +123,6 @@ int inicializar_cliente(Cliente *item) // usada ao criar um novo_cliente cadastr
 
 int inicializar_restaurante(restaurante *item)
 {
-    item->codigo = rand() % 100;
     //item->categoria = NULL;
     item->menu = NULL;
     item->historico = NULL;
@@ -153,6 +152,15 @@ int limpar_variavel_cliente(Cliente *item) // limpa a variavel para evitar erros
     strcpy(item->senha_8d, "000");
     item->codigo = -1;
     inicializar_cliente(item);
+}
+
+int limpar_variavel_rest(restaurante *item) // limpa a variavel para evitar erros ao sobrepor
+{
+    strcpy(item->email, "000");
+    strcpy(item->nome, "000");
+    strcpy(item->senha, "000");
+    item->codigo = -1;
+    inicializar_restaurante(item);
 }
 
 int menu_inicial() // permite a escolha entre os diferentes usuários
@@ -770,26 +778,6 @@ int main()
                 {
                     option = menu_inicial_restaurante();
 
-                    /*
-                    int menu_inicial_restaurante() // permite ao restaurante escolher
-                    {
-                        int op = -1;
-                        do
-                        {
-                            printf("\nSelecione uma opcao: \n");
-                            printf("1. Quero me cadastrar\n");
-                            printf("2. Ja tenho cadastro\n");
-                            printf("3. Voltar\n");
-                            printf("0. Sair\n");
-                            printf("Opcao: ");
-                            scanf("%d", &op);
-                            if (op < 0 || op > 4)
-                                printf("\nDigite uma opcao valida\n\n");
-                        } while (op < 0 || op > 4);
-                        return op;
-                    }
-                    */
-
                     switch (option)
                     {
                     case 0: // Sair
@@ -798,9 +786,9 @@ int main()
 
                     case 1: // Quero me cadastrar
 
-                        printf("Muito bem! Vamos realizar o cadastro: \n");
+                        printf("\nMuito bem! Vamos realizar o cadastro: \n");
 
-                        printf("\nDigite o nome do Restaurante: ");
+                        printf("\nDigite o nome do restaurante: ");
                         setbuf(stdin, NULL);
                         scanf("%[^\n]s", novo_restaurante.nome);
 
@@ -808,22 +796,27 @@ int main()
                         setbuf(stdin, NULL);
                         scanf("%[^\n]s", novo_restaurante.email);
 
-                        printf("\nDigite a senha (14 digitos): ");
+                        printf("\nDigite a senha (ate 14 digitos): ");
                         setbuf(stdin, NULL);
                         scanf("%[^\n]s", senha);
 
-                        printf("\nDigite a senha novamente (14 digitos): ");
+                        printf("\nDigite a senha novamente (ate 14 digitos): ");
                         setbuf(stdin, NULL);
                         scanf("%[^\n]s", confirmSenha);
 
-                        if (confirmarSenha(senha, confirmSenha) == 0)
+                        if (strcmp(senha, confirmSenha) == 0) {
                             strcpy(novo_restaurante.senha, senha);
+                        } else {
+                            printf("Senha Incorreta!\n");
+                            break;
+                        }
 
                         inicializar_restaurante(&novo_restaurante);
 
                         if ((inserirFimRest(lista_principal_restaurantes, novo_restaurante)) == 0)
-                            printf("\nCadastro realizado com sucesso!\n");
-                        // mostrar_restaurante(lista_principal_restaurantes);
+                        printf("\nCadastro realizado com sucesso!\n");
+                        limpar_variavel_rest(&novo_restaurante);
+                        mostrarRest(lista_principal_restaurantes);
                         break;
 
                     case 2:; // Ja tenho cadastro
@@ -856,6 +849,7 @@ int main()
 
                             printf("Esqueceu a senha? (Digite 5)\n"
                                     "Voltar (Digite 6)\n");
+                            scanf("%d", &verify);
 
                             if (verify == 6)
                                 break;
@@ -879,10 +873,10 @@ int main()
 
                                         while (verify != 0)
                                         {
-                                            if (verify != 1)
+                                            if (verify != 1) 
                                                 printf("\nTe encontramos!");
 
-                                            printf("\nDigite sua nova senha: ");
+                                            printf("\nDigite sua nova senha: "); //PQ Q ESSA PORRA TA PULANDO DIRETO PRO ELSE
                                             setbuf(stdin, NULL);
                                             scanf("%[^\n]s", &senha);
 
@@ -890,10 +884,11 @@ int main()
                                             setbuf(stdin, NULL);
                                             scanf("%[^\n]s", &confirmSenha);
 
-                                            //verify = alterarSenhaRest(lista_principal_restaurantes, login_restaurante, senha, confirmSenha);
+                                            verify = alterarSenhaRest(lista_principal_restaurantes, codigo_loginR, senha, confirmSenha);
 
                                             if (verify == 0)
                                                 printf("\nSenha alterada com sucesso! ");
+
                                             if (verify != 0)
                                                 printf("\nSenhas diferentes. Tente novamente! ");
                                         }
