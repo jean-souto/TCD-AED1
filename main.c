@@ -166,9 +166,10 @@ int limpar_variavel_rest(restaurante *item) // limpa a variavel para evitar erro
 int menu_inicial() // permite a escolha entre os diferentes usuários
 {
     int op = -1;
-    printf("Bem vindo!\n");
     do
     {
+        //system ("cls");
+        printf("\nBem vindo!\n");
         printf("\nSelecione uma opcao: \n");
         printf("1. Sou cliente\n");
         printf("2. Sou restaurante\n");
@@ -188,7 +189,8 @@ int menu_inicial_cliente() // permite ao cliente escolher
     int op = -1;
     do
     {
-        printf("\nSelecione uma opcao: \n");
+        //system ("cls");
+        printf("\n\nSelecione uma opcao: \n");
         printf("1. Quero me cadastrar\n");
         printf("2. Ja tenho cadastro\n");
         printf("3. Voltar\n");
@@ -206,7 +208,8 @@ int menu_cliente() // permite ao cliente escolher após logado
     int op = -1;
     do
     {
-        printf("\nSelecione uma opcao: \n");
+        //system ("cls");
+        printf("\n\nSelecione uma opcao: \n");
         printf("1. Mostrar todos os restaurantes\n");
         printf("2. Filtrar por categoria\n");
         printf("3. Procurar por nome\n");
@@ -231,7 +234,8 @@ int menu_inicial_restaurante() // permite ao restaurante escolher
     int op = -1;
     do
     {
-        printf("\nSelecione uma opcao: \n");
+        //system ("cls");
+        printf("\n\nSelecione uma opcao: \n");
         printf("1. Quero me cadastrar\n");
         printf("2. Ja tenho cadastro\n");
         printf("3. Voltar\n");
@@ -249,7 +253,8 @@ int menu_adm() // permite ao adm escolher
     int op = -1;
     do
     {
-        printf("\nSelecione uma opcao: \n");
+        //system ("cls");
+        printf("\n\nSelecione uma opcao: \n");
         printf("1. Mostrar lista de clientes\n");
         printf("2. Mostrar lista de entregadores\n");
         printf("3. Mostrar lista de restaurantes\n");
@@ -273,7 +278,8 @@ int menu_inicial_entregador() // permite ao entregador escolher
     int op = -1;
     do
     {
-        printf("\nSelecione uma opcao: \n");
+        //system ("cls");
+        printf("\n\nSelecione uma opcao: \n");
         printf("1. Quero me cadastrar\n");
         printf("2. Ja tenho cadastro\n");
         printf("3. Voltar\n");
@@ -291,7 +297,8 @@ int menu_entregador() // permite ao entregador escolher após logar
     int op = -1;
     do
     {
-        printf("\nSelecione uma opcao: \n");
+        //system ("cls");
+        printf("\n\nSelecione uma opcao: \n");
         printf("1. Mostrar corrida atual\n");
         printf("2. Mostrar dados pessoais\n");
         printf("3. Mostrar nota\n");
@@ -392,7 +399,7 @@ int main()
 
                         case 1: // quero me cadastrar
 
-                            printf("Muito bem! Vamos realizar seu cadastro: \n");
+                            printf("\nMuito bem! Vamos realizar seu cadastro: \n");
 
                             printf("\nDigite seu nome: ");
                             setbuf(stdin, NULL);
@@ -998,16 +1005,30 @@ int main()
                                         if (verify == 0)
                                         {
                                             printf("\nTe encontramos!");
+                                            esqueceu_senha_entregador.status = 1;
+                                            if (esqueceu_senha_entregador.status == 1)
+                                            {
+                                                verify = 15;
+                                                printf ("\nInfelizmente voce esta em uma corrida e nao pode alterar seu codigo. Tente novamente mais tarde.\n");
+                                                break;
+                                            }
                                             trocaCodigo(lista_principal_entregadores, esqueceu_senha_entregador.codigo, &cod_novo);
                                             printf ("\nSeu novo codigo eh: %d.", cod_novo);
                                         }
                                         else
                                         {
                                             printf ("\nAlgo esta errado. Tente novamente! ");
+                                            printf ("\nDigite 0 para sair ou 1 para continuar: ");
+                                            scanf ("%d", &verify);
                                         }
                                     }
                                 }
                                 if (verify == 0) verify = 1;
+                                if (verify == 15)
+                                {
+                                    verify = 5;
+                                    break;
+                                }
                             }
 
                             if (verify == 5) break;
@@ -1027,7 +1048,20 @@ int main()
                                     break;
 
                                     case 2: // mostrar dados pessoais
-
+                                        buscarItemEntregador (lista_principal_entregadores, logado_entregador.codigo, &logado_entregador);
+                                        
+                                        printf ("\n\n-------------INFORMACOES-------------\n");
+                                        printf ("\nNome: %s", logado_entregador.nome);
+                                        printf ("\nCPF: %s", logado_entregador.cpf);
+                                        printf ("\nE-mail: %s", logado_entregador.email);
+                                        printf ("\nSeu codigo de acesso eh: %d.", logado_entregador.codigo);
+                                        
+                                        if (logado_entregador.status == 1) printf ("\nVoce esta em uma corrida atualmente!\n ");
+                                        else printf ("\nVoce nao esta em uma corrida!\n");
+                                        
+                                        printf ("\nAperte enter para continuar ");
+                                        setbuf (stdin, NULL);
+                                        getchar();
                                     break;
 
                                     case 3: // mostrar nota
