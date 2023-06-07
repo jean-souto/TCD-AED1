@@ -264,7 +264,7 @@ int menu_restaurante()
         */
         // system ("cls");
         printf("\n\nSelecione uma opcao: \n");
-        printf("1. Atualizar Menu\n"); //ir para outro menu que da opcao de add ou remover algum prato
+        printf("1. Atualizar Menu\n"); //(trocar por atualizar cardapio) ir para outro menu que da opcao de add ou remover algum prato
         printf("2. Pedidos Pendentes\n"); // ir para outro menu que mostra todos os pedidos ou apenas o proximo a ser executado
         printf("3. Historico de pedidos\n"); // ir para outro menu que mostra todos os pedidos ja feitos no restaurante, talvez implementar um filtro por mes, semana, codigo e prato
 
@@ -919,7 +919,7 @@ int main()
 
                                     verify = buscarRestEmailCodigo(lista_principal_restaurantes, email, codigo_loginR, &login_restaurante);
                                     printf("%d", verify);
-                                    
+
                                     if (verify == 0)
                                     {
                                         verify = -1;
@@ -953,6 +953,125 @@ int main()
                             if (verify == 0) verify = 1;
                         }
 
+                        while ((option != 4))
+                        {
+                            option = menu_restaurante();
+                            /* 
+                            "1.Atualizar Menu\n"
+                            "2.Cadastrar Cliente\n"
+                            "3.Pedidos Pendentes\n"
+                            "4.Histórico"
+                            "5.Programa de fidelidade\n"
+                            "6.Voltar\n"
+                            ""
+        
+                            // system ("cls");
+                            printf("\n\nSelecione uma opcao: \n");
+                            printf("1. Atualizar Menu\n");       // ir para outro menu que da opcao de add ou remover algum prato
+                            printf("2. Pedidos Pendentes\n");    // ir para outro menu que mostra todos os pedidos ou apenas o proximo a ser executado
+                            printf("3. Historico de pedidos\n"); // ir para outro menu que mostra todos os pedidos ja feitos no restaurante, talvez implementar um filtro por mes, semana, codigo e prato
+
+                            // configuracoes
+                            // alterar codigo de acesso
+                            printf("7. Alterar senha\n");
+                            printf("8. Alterar e-mail\n");
+                            printf("9. Sair da conta\n");
+                            printf("10. Apagar conta\n");
+                            printf("0. Sair do app\n");
+                            */
+
+                           switch (option)
+                           {
+                                case 1: // atualizar cardapio
+                                    /* while ((option != voltar))
+                                    {
+                                        option = menu_;
+
+                                        if(option == ) {
+                                            inserir prato no vetor
+
+                                        } else if(option == ){
+                                            remover prato do vetor
+
+                                        }
+                                    }
+                                    */
+                                    break;
+
+                                case 2: // pedidos pendentes
+                                    /*
+                                    while ((option != voltar))
+                                    {
+                                        option = menu_;
+
+                                        if(option == ) {
+                                            mostrar a fila toda
+
+                                        } else if(option == ){
+                                            mostrar apenas proximo da fila
+
+                                        }
+                                    }
+                                    */
+                                    break;
+
+                                case 3: // historico de pedidos
+                                    /*
+                                    while ((option != voltar))
+                                    {
+                                        option = menu_;
+
+                                        switch (expression)
+                                        {
+                                            case 1: // todos os pedidos ja feitos no restaurante
+                                                break;
+
+                                            case 2: // filtrar por mes
+                                                break;
+
+                                            case 3: // filtrar por semana
+                                                break;
+
+                                            case 4: // filtrar por nome do prato
+                                                break;
+
+                                            case 5: // buscar pedido por codigo
+                                                break;
+                                        }
+                                    }
+                                    */
+                                    break;
+
+                                case 4: // configuracoes
+                                    /*
+                                    while ((option != voltar))
+                                    {
+                                        option = menu_;
+
+                                        switch (expression)
+                                        {
+                                            case 1: // alterar codigo de acesso
+                                                break;
+
+                                            case 2: // alterar senha
+                                                break;
+
+                                            case 3: // alterar e-mail
+                                                break;
+
+                                            case 4: // sair da conta
+                                                break;
+
+                                            case 5: // apagar conta
+                                                break;
+                                        }
+                                    }
+                                    */
+                                    break;       
+                           }
+                           
+                        }
+                        
                     case 3: // Voltar
                         break;
 
@@ -1315,6 +1434,8 @@ int main()
 
     limparCliente(lista_principal_clientes);
     free(lista_principal_clientes);
+    limparRest(lista_principal_restaurantes);
+    free(lista_principal_restaurantes);
 
     return 0;
 }
