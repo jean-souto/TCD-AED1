@@ -8,7 +8,7 @@
 #include "restaurante.h"
 #include "filaPedidosPendentes.h"
 
-// STRUCTS EXTRAS
+// STRUCTS EXTRAS //
 typedef struct juncao
 {
     entregador entregador_do_pedido;
