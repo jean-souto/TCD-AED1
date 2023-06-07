@@ -82,7 +82,7 @@ int inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedid
     return 0;
 }
 
-int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador) // deve remover do controle, liberar entregador e adicionar aos historicos
+int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int cod_entregador, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador) // deve remover do controle, liberar entregador e adicionar aos historicos
 {
     int i, rem;
     pedidosE temp;
@@ -110,7 +110,6 @@ int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista
 
     (*qtd)--;
     pg = (pedidosglobais *)realloc(pg, (*qtd) * sizeof(pedidosglobais));
-
     return 0;
 }
 
@@ -818,6 +817,7 @@ int main()
                                     case 9: // procura os pedidos em andamento com o nome do cliente, se tiver algum pergunta se esta concluido e, se sim, pede a nota do entregador
                                         verify = 0;
                                         verify = buscarPedidoAndamento (controlePedidos, qtdPedidosAndamento, logado_cliente.nome, em_andamento);
+                                        int i, j;
 
                                         if (verify == 0)
                                         {
@@ -825,7 +825,28 @@ int main()
                                         }
                                         else
                                         {
-                                            // mostrar os pedidos em andamento armazenados no em_andamento
+                                            printf ("\nVoce possui %d pedidos em andamento!", verify);
+                                            for (i = 0; i < verify; i++)
+                                            {
+                                                printf ("\n%d: %s\n", i+1, em_andamento[i].nome_rest);
+                                                printf ("Total: %.2f\n", em_andamento[i].precoTotal);
+                                                for (j = 0; j < em_andamento[i].qtdPed; j++)
+                                                {
+                                                    printf ("%s: %.2f\n", em_andamento[i].ped[j].nome, em_andamento[i].ped[j].preco);
+                                                }
+                                            }
+
+                                            printf ("\nAlgum dos seus pedidos chegou? Digite 1 se sim e 0 se não: ");
+                                            scanf ("%d", &verify);
+
+                                            if (verify == 1)
+                                            {
+                                                i = 0;
+                                                printf ("Digite o numero do pedido que chegou: ");
+                                                scanf ("%d", &i);
+
+                                                // removerControleGlobal (controlePedidos, em_andamento[i-1].codigo); QUE INFERNO BUCETA CU CAPETA
+                                            }
                                         }
 
 
