@@ -1,4 +1,5 @@
 // BIBLIOTECAS, TADs E DEFINES
+//ve se o trem vai ai
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
