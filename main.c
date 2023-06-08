@@ -18,451 +18,38 @@ typedef struct juncao
     Cliente comprador;
 }pedidosglobais;
 
-// FUNÇÕES EXTRAS RELACIONADAS ÀS STRUCTS EXTRAS
+// funções para o gerenciador global de pedidos em andamento
 
-void copiarPedidoCpC(pedidosC *A, pedidosC *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
-{
-    int i;
-    B->codigo = A->codigo;
-    B->qtdPed = A->qtdPed;
-    B->precoTotal = A->precoTotal;
-    strcpy(B->nome_rest, A->nome_rest);
-
-    B->ped = (pratosC *)realloc(B->ped, A->qtdPed * sizeof(pratosC));
-    for (i = 0; i < A->qtdPed; i++)
-    {
-        B->ped[i].preco = A->ped[i].preco;
-        strcpy(B->ped[i].descricao, A->ped[i].descricao);
-        strcpy(B->ped[i].nome, A->ped[i].nome);
-    }
-}
-
-void copiarPedidoCpE(pedidosC *A, pedidosE *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
-{
-    int i;
-    B->codigo = A->codigo;
-    B->qtdPed = A->qtdPed;
-    B->precoTotal = A->precoTotal;
-    strcpy(B->nome_rest, A->nome_rest);
-
-    B->ped = (pratosE *)realloc(B->ped, A->qtdPed * sizeof(pratosE));
-    for (i = 0; i < A->qtdPed; i++)
-    {
-        B->ped[i].preco = A->ped[i].preco;
-        strcpy(B->ped[i].descricao, A->ped[i].descricao);
-        strcpy(B->ped[i].nome, A->ped[i].nome);
-    }
-}
-
-void copiarPedidoCpR(pedidosC *A, pedidosR *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
-{
-    int i;
-    B->codigo = A->codigo;
-    B->qtdPed = A->qtdPed;
-    B->precoTotal = A->precoTotal;
-    strcpy(B->nome_rest, A->nome_rest);
-
-    B->ped = (pratosR *)realloc(B->ped, A->qtdPed * sizeof(pratosR));
-    for (i = 0; i < A->qtdPed; i++)
-    {
-        B->ped[i].preco = A->ped[i].preco;
-        strcpy(B->ped[i].descricao, A->ped[i].descricao);
-        strcpy(B->ped[i].nome, A->ped[i].nome);
-    }
-}
-
-int inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidosC pedido_atual, Cliente cliente_atual, int *qtd)
-{
-    (*qtd)++;
-    pg = (pedidosglobais *)realloc(pg, (*qtd) * sizeof(pedidosglobais));
-
-    int i = (*qtd) - 1;
-    copiarEntregador(&entregador_atual, &pg[i].entregador_do_pedido);
-    copiarPedidoCpC(&pedido_atual, &pg[i].pedido_em_andamento);
-    copiarCliente(&cliente_atual, &pg[i].comprador);
-
-    return 0;
-}
-
-int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int cod_entregador, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador) // deve remover do controle, liberar entregador e adicionar aos historicos
-{
-    int i, rem;
-    pedidosE temp;
-    pedidosR temp2;
-    for (i = 0; i < *qtd; i++)
-    {
-        if (pg[i].pedido_em_andamento.codigo == numero_pedido)
-        {
-            rem = i;
-        }
-    }
-
-    inserirPedidoHistorico (l_cliente, pg[rem].comprador.codigo, pg[rem].pedido_em_andamento);
-    copiarPedidoCpE (&(pg[rem].pedido_em_andamento), &temp);
-    inserirPedidoHistoricoEntregador (l_entregador, pg[rem].entregador_do_pedido.codigo, temp);
-    copiarPedidoCpR (&(pg[rem].pedido_em_andamento), &temp2);
-    // inserir no historico do restaurante aqui 
-
-    for (i = rem; i < *qtd-1; i++)
-    {
-        copiarCliente(&(pg[i].comprador), &(pg[i+1].comprador));
-        copiarEntregador(&(pg[i].entregador_do_pedido), &(pg[i+1].entregador_do_pedido));
-        copiarPedidoCpC (&(pg[i].pedido_em_andamento), &(pg[i+1].pedido_em_andamento));
-    }
-
-    (*qtd)--;
-    pg = (pedidosglobais *)realloc(pg, (*qtd) * sizeof(pedidosglobais));
-    return 0;
-}
-
-int buscarPedidoAndamento (pedidosglobais *pg, int qtd, char *nome_cliente, pedidosC *em_andamento)
-{
-    int i = 0;
-    int num_pedidos = 0;
-    for (i = 0; i < qtd; i++)
-    {
-        if (strcmp (pg[i].comprador.nome, nome_cliente) == 0)
-        {
-            num_pedidos++;
-            em_andamento = (pedidosC*) realloc (em_andamento, num_pedidos * sizeof(pedidosC));
-            copiarPedidoCpC (&(pg[i].pedido_em_andamento), &em_andamento[num_pedidos-1]);
-        }
-    }
-    return num_pedidos;
-}
+void copiarPedidoCpC(pedidosC *A, pedidosC *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
+void copiarPedidoCpE(pedidosC *A, pedidosE *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
+void copiarPedidoCpR(pedidosC *A, pedidosR *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
+int inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidosC pedido_atual, Cliente cliente_atual, int *qtd);
+int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int cod_entregador, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador);
+int buscarPedidoAndamento (pedidosglobais *pg, int qtd, char *nome_cliente, pedidosC *em_andamento);
 
 // FUNÇÕES EXTRAS
 
-int inicializar_entregador(entregador *item) // usada ao criar um novo cadastro de entregador (zera todas as informações para evitar lixo e erros)
-{
-    item->corridas = 0;
-    item->status = 0;
-    item->rank.media = 0.0;
-    item->rank.quantidade = 0;
-    item->rank.total = 0;
-    item->quant_pedidos = 0;
-    item->historico = NULL;
-    return 0;
-}
+int inicializar_entregador(entregador *item); // usada ao criar um novo cadastro de entregador (zera todas as informações para evitar lixo e erros)
+int limpar_variavel_entregador(entregador *item); // limpa a variavel para evitar erros ao sobrepor
+int inicializar_cliente(Cliente *item); // usada ao criar um novo_cliente cadastro de entregador (zera todas as informações para evitar lixo e erros)
+int inicializar_restaurante(restaurante *item);
+int confirmarSenha(char *str1, char *str2);
+int limpar_variavel_cliente(Cliente *item); // limpa a variavel para evitar erros ao sobrepor
+int limpar_variavel_rest(restaurante *item); // limpa a variavel para evitar erros ao sobrepor
+void limpaBuffer();
+int inserirPrato(restaurante *rest, int *numPratos);
+int removerPrato(restaurante *rest, int *numPratos);
 
-int limpar_variavel_entregador(entregador *item) // limpa a variavel para evitar erros ao sobrepor
-{
-    strcpy(item->cpf, "000");
-    strcpy(item->email, "000");
-    strcpy(item->nome, "000");
-    item->codigo = -1;
-    inicializar_entregador(item);
-}
+// MENUS
 
-int inicializar_cliente(Cliente *item) // usada ao criar um novo_cliente cadastro de entregador (zera todas as informações para evitar lixo e erros)
-{
-    item->gasto_total = 0;
-    item->quantidade_cartoes = 0;
-    item->quant_pedidos = 0;
-    item->quant_enderecos = 0;
-    item->historico = NULL;
-    item->pagamentos = NULL;
-    item->enderecos = NULL;
-    return 0;
-}
-
-int inicializar_restaurante(restaurante *item)
-{
-    //item->categoria = NULL;
-    item->menu = NULL;
-    item->historico = NULL;
-    item->status = -1;
-    item->pedidosPendentes = NULL;
-    return 0;
-}
-
-int confirmarSenha(char *str1, char *str2)
-{
-    if (strlen(str1) != strlen(str2))
-        return 3;
-
-    int tam = strlen(str1);
-
-    for (int i = 0; i <= tam; i++)
-        if (str1[i] != str2[i])
-            return 1;
-    return 0;
-}
-
-int limpar_variavel_cliente(Cliente *item) // limpa a variavel para evitar erros ao sobrepor
-{
-    strcpy(item->cpf, "000");
-    strcpy(item->email, "000");
-    strcpy(item->nome, "000");
-    strcpy(item->senha_8d, "000");
-    item->codigo = -1;
-    inicializar_cliente(item);
-}
-
-int limpar_variavel_rest(restaurante *item) // limpa a variavel para evitar erros ao sobrepor
-{
-    strcpy(item->email, "000");
-    strcpy(item->nome, "000");
-    strcpy(item->senha, "000");
-    item->codigo = -1;
-    inicializar_restaurante(item);
-}
-
-void limpaBuffer()
-{
-    char meuchar;
-    while ((meuchar = getchar()) != EOF && meuchar != '\n');
-}
-
-int inserirPrato(restaurante *rest, int *numPratos)
-{
-    pratosR novoPrato;
-
-    printf("Digite o nome:\n(max 40 caracteres)\n");
-    limpaBuffer();
-    scanf("%[^\n]s", &novoPrato.nome);
-
-    printf("Descricao:\nEx.: Bedida, Ingredientes\n(max 100 caracteres): ");
-    limpaBuffer();
-    scanf("%[^\n]s", &novoPrato.descricao);
-
-    printf("Entre com o preco do prato: ");
-    limpaBuffer();
-    scanf("%[^\n]s", &novoPrato.preco);
-
-    rest->menu = (pratosR *)realloc(rest->menu, (*numPratos + 1) * sizeof(pratosR));
-
-    if(rest->menu != NULL) 
-    {
-        rest->menu[*numPratos] = novoPrato;
-        (*numPratos)++;
-        return 0;
-    }
-
-    return 1;
-
-}
-
-int removerPrato(restaurante *rest, int *numPratos)
-{
-    char nomePrato[40];
-    int i, j;
-
-    limpaBuffer();
-    printf("Nome do prato a ser removido: ");
-    fgets(nomePrato, 40, stdin);
-    nomePrato[strcspn(nomePrato, "\n")] = '\0';
-    limpaBuffer();
-
-    for (i = 0; i < *numPratos; i++)
-    {
-        if (strcmp(rest->menu[i].nome, nomePrato) == 0)
-        {
-            // Deslocar os pratos restantes para preencher o espaço
-            for (j = i; j < *numPratos - 1; j++)
-            {
-                rest->menu[j] = rest->menu[j + 1];
-            }
-
-            rest->menu = (pratosR *)realloc(rest->menu, (*numPratos - 1) * sizeof(pratosR));
-            (*numPratos)--;
-
-            return 0;
-        }
-    }
-
-    return 1;
-
-}
-
-int menu_inicial() // permite a escolha entre os diferentes usuários
-{
-    int op = -1;
-    do
-    {
-        //system ("cls");
-        printf("\nBem vindo!\n");
-        printf("\nSelecione uma opcao: \n");
-        printf("1. Sou cliente\n");
-        printf("2. Sou restaurante\n");
-        printf("3. Sou entregador\n");
-        printf("4. Sou administrador\n");
-        printf("0. Sair\n");
-        printf("Opcao: ");
-        scanf("%d", &op);
-        if (op < 0 || op > 4)
-            printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 4);
-    return op;
-}
-
-int menu_inicial_cliente() // permite ao cliente escolher
-{
-    int op = -1;
-    do
-    {
-        //system ("cls");
-        printf("\n\nSelecione uma opcao: \n");
-        printf("1. Quero me cadastrar\n");
-        printf("2. Ja tenho cadastro\n");
-        printf("3. Voltar\n");
-        printf("0. Sair\n");
-        printf("Opcao: ");
-        scanf("%d", &op);
-        if (op < 0 || op > 4)
-            printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 4);
-    return op;
-}
-
-int menu_cliente() // permite ao cliente escolher após logado
-{
-    int op = -1;
-    do
-    {
-        //system ("cls");
-        printf("\n\nSelecione uma opcao: \n");
-        printf("1. Mostrar todos os restaurantes\n");
-        printf("2. Filtrar por categoria\n");
-        printf("3. Procurar por nome\n");
-        printf("4. Historico de pedidos\n");
-        printf("5. Cartoes\n");
-        printf("6. Enderecos\n");
-        printf("7. Alterar senha\n");
-        printf("8. Alterar e-mail\n");
-        printf ("9. Confirmar entrega\n");
-        printf("10. Sair da conta\n");
-        printf("11. Apagar conta\n");
-        printf("0. Sair do app\n");
-        printf("Opcao: ");
-        scanf("%d", &op);
-        if (op < 0 || op > 11)
-            printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 11);
-    return op;
-}
-
-int menu_inicial_restaurante() // permite ao restaurante escolher
-{
-    int op = -1;
-    do
-    {
-        //system ("cls");
-        printf("\n\nSelecione uma opcao: \n");
-        printf("1. Quero me cadastrar\n");
-        printf("2. Ja tenho cadastro\n");
-        printf("3. Voltar\n");
-        printf("0. Sair\n");
-        printf("Opcao: ");
-        scanf("%d", &op);
-        if (op < 0 || op > 3)
-            printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 3);
-    return op;
-}
-
-int menu_restaurante()
-{
-    int op = -1;
-    do
-    {
-        /*
-        "1.Atualizar Menu\n"
-        "2.Cadastrar Cliente\n"
-        "3.Pedidos Pendentes\n"
-        "4.Histórico"
-        "5.Programa de fidelidade\n"
-        "6.Voltar\n"
-        ""
-        */
-        // system ("cls");
-        printf("\n\nSelecione uma opcao: \n");
-        printf("1. Atualizar Menu\n"); //(trocar por atualizar cardapio) ir para outro menu que da opcao de add ou remover algum prato
-        printf("2. Pedidos Pendentes\n"); // ir para outro menu que mostra todos os pedidos ou apenas o proximo a ser executado
-        printf("3. Historico de pedidos\n"); // ir para outro menu que mostra todos os pedidos ja feitos no restaurante, talvez implementar um filtro por mes, semana, codigo e prato
-
-        // configuracoes
-        //alterar codigo de acesso 
-        printf("7. Alterar senha\n");
-        printf("8. Alterar e-mail\n");
-        printf("9. Sair da conta\n");
-        printf("10. Apagar conta\n");
-        printf("0. Sair do app\n");
-        printf("Opcao: ");
-        scanf("%d", &op);
-        if (op < 0 || op > 10)
-            printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 10);
-    return op;
-}
-
-int menu_adm() // permite ao adm escolher
-{
-    int op = -1;
-    do
-    {
-        //system ("cls");
-        printf("\n\nSelecione uma opcao: \n");
-        printf("1. Mostrar lista de clientes\n");
-        printf("2. Mostrar lista de entregadores\n");
-        printf("3. Mostrar lista de restaurantes\n");
-        printf("4. Mostrar fila de pedidos universal\n");
-        printf("5. \n");
-        printf("6. \n");
-        printf("7. \n");
-        printf("8. \n");
-        printf("9. Sair da conta\n");
-        printf("0. Sair\n");
-        printf("Opcao: ");
-        scanf("%d", &op);
-        if (op < 0 || op > 9)
-            printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 9);
-    return op;
-}
-
-int menu_inicial_entregador() // permite ao entregador escolher
-{
-    int op = -1;
-    do
-    {
-        //system ("cls");
-        printf("\n\nSelecione uma opcao: \n");
-        printf("1. Quero me cadastrar\n");
-        printf("2. Ja tenho cadastro\n");
-        printf("3. Voltar\n");
-        printf("0. Sair\n");
-        printf("Opcao: ");
-        scanf("%d", &op);
-        if (op < 0 || op > 4)
-            printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 4);
-    return op;
-}
-
-int menu_entregador() // permite ao entregador escolher após logar
-{
-    int op = -1;
-    do
-    {
-        //system ("cls");
-        printf("\n\nSelecione uma opcao: \n");
-        printf("1. Mostrar corrida atual\n");
-        printf("2. Mostrar dados pessoais\n");
-        printf("3. Mostrar nota\n");
-        printf("4. Mostrar historico de entregas\n");
-        printf("5. Alterar codigo de acesso\n");
-        printf("6. Alterar e-mail\n");
-        printf("7. Sair da conta\n");
-        printf("8. Apagar conta\n");
-        printf("0. Sair do app\n");
-        printf("Opcao: ");
-        scanf("%d", &op);
-        if (op < 0 || op > 8)
-            printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 8);
-    return op;
-}
+int menu_inicial(); // permite a escolha entre os diferentes usuários
+int menu_inicial_cliente(); // permite ao cliente escolher
+int menu_cliente(); // permite ao cliente escolher após logado
+int menu_inicial_restaurante(); // permite ao restaurante escolher
+int menu_restaurante();
+int menu_adm(); // permite ao adm escolher
+int menu_inicial_entregador(); // permite ao entregador escolher
+int menu_entregador(); // permite ao entregador escolher após logar
 
 // MAIN
 
@@ -526,12 +113,7 @@ int main()
     inicializar_entregador (&esqueceu_senha_entregador);
     limpar_variavel_entregador (&esqueceu_senha_entregador);
 
-    /*strcpy (inicializados_cliente.nome, "Alan da Silva");
-    strcpy (inicializados_cliente.cpf, "145756984121");
-    strcpy (inicializados_cliente.email, "alan@gmail.com");
-    strcpy (inicializados_cliente.senha_8d, "12345678");
-    inicializar_cliente(&inicializados_cliente);
-    inserirInicioCliente(lista_principal_clientes, inicializados_cliente);*/
+    // AQUI COMEÇA O PROGRAMA EM SI
 
     while (option != 0) // mantém o programa rodando até que seja escolhido sair
     {
@@ -1613,4 +1195,452 @@ int main()
     free(lista_principal_restaurantes);
 
     return 0;
+}
+
+// FUNÇÕES EXTRAS RELACIONADAS ÀS STRUCTS EXTRAS
+
+void copiarPedidoCpC(pedidosC *A, pedidosC *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
+{
+    int i;
+    B->codigo = A->codigo;
+    B->qtdPed = A->qtdPed;
+    B->precoTotal = A->precoTotal;
+    strcpy(B->nome_rest, A->nome_rest);
+
+    B->ped = (pratosC *)realloc(B->ped, A->qtdPed * sizeof(pratosC));
+    for (i = 0; i < A->qtdPed; i++)
+    {
+        B->ped[i].preco = A->ped[i].preco;
+        strcpy(B->ped[i].descricao, A->ped[i].descricao);
+        strcpy(B->ped[i].nome, A->ped[i].nome);
+    }
+}
+
+void copiarPedidoCpE(pedidosC *A, pedidosE *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
+{
+    int i;
+    B->codigo = A->codigo;
+    B->qtdPed = A->qtdPed;
+    B->precoTotal = A->precoTotal;
+    strcpy(B->nome_rest, A->nome_rest);
+
+    B->ped = (pratosE *)realloc(B->ped, A->qtdPed * sizeof(pratosE));
+    for (i = 0; i < A->qtdPed; i++)
+    {
+        B->ped[i].preco = A->ped[i].preco;
+        strcpy(B->ped[i].descricao, A->ped[i].descricao);
+        strcpy(B->ped[i].nome, A->ped[i].nome);
+    }
+}
+
+void copiarPedidoCpR(pedidosC *A, pedidosR *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
+{
+    int i;
+    B->codigo = A->codigo;
+    B->qtdPed = A->qtdPed;
+    B->precoTotal = A->precoTotal;
+    strcpy(B->nome_rest, A->nome_rest);
+
+    B->ped = (pratosR *)realloc(B->ped, A->qtdPed * sizeof(pratosR));
+    for (i = 0; i < A->qtdPed; i++)
+    {
+        B->ped[i].preco = A->ped[i].preco;
+        strcpy(B->ped[i].descricao, A->ped[i].descricao);
+        strcpy(B->ped[i].nome, A->ped[i].nome);
+    }
+}
+
+int inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidosC pedido_atual, Cliente cliente_atual, int *qtd)
+{
+    (*qtd)++;
+    pg = (pedidosglobais *)realloc(pg, (*qtd) * sizeof(pedidosglobais));
+
+    int i = (*qtd) - 1;
+    copiarEntregador(&entregador_atual, &pg[i].entregador_do_pedido);
+    copiarPedidoCpC(&pedido_atual, &pg[i].pedido_em_andamento);
+    copiarCliente(&cliente_atual, &pg[i].comprador);
+
+    return 0;
+}
+
+int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int cod_entregador, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador) // deve remover do controle, liberar entregador e adicionar aos historicos
+{
+    int i, rem;
+    pedidosE temp;
+    pedidosR temp2;
+    for (i = 0; i < *qtd; i++)
+    {
+        if (pg[i].pedido_em_andamento.codigo == numero_pedido)
+        {
+            rem = i;
+        }
+    }
+
+    inserirPedidoHistorico (l_cliente, pg[rem].comprador.codigo, pg[rem].pedido_em_andamento);
+    copiarPedidoCpE (&(pg[rem].pedido_em_andamento), &temp);
+    inserirPedidoHistoricoEntregador (l_entregador, pg[rem].entregador_do_pedido.codigo, temp);
+    copiarPedidoCpR (&(pg[rem].pedido_em_andamento), &temp2);
+    // inserir no historico do restaurante aqui 
+
+    for (i = rem; i < *qtd-1; i++)
+    {
+        copiarCliente(&(pg[i].comprador), &(pg[i+1].comprador));
+        copiarEntregador(&(pg[i].entregador_do_pedido), &(pg[i+1].entregador_do_pedido));
+        copiarPedidoCpC (&(pg[i].pedido_em_andamento), &(pg[i+1].pedido_em_andamento));
+    }
+
+    (*qtd)--;
+    pg = (pedidosglobais *)realloc(pg, (*qtd) * sizeof(pedidosglobais));
+    return 0;
+}
+
+int buscarPedidoAndamento (pedidosglobais *pg, int qtd, char *nome_cliente, pedidosC *em_andamento)
+{
+    int i = 0;
+    int num_pedidos = 0;
+    for (i = 0; i < qtd; i++)
+    {
+        if (strcmp (pg[i].comprador.nome, nome_cliente) == 0)
+        {
+            num_pedidos++;
+            em_andamento = (pedidosC*) realloc (em_andamento, num_pedidos * sizeof(pedidosC));
+            copiarPedidoCpC (&(pg[i].pedido_em_andamento), &em_andamento[num_pedidos-1]);
+        }
+    }
+    return num_pedidos;
+}
+
+// funções extras
+
+int inicializar_entregador(entregador *item) // usada ao criar um novo cadastro de entregador (zera todas as informações para evitar lixo e erros)
+{
+    item->corridas = 0;
+    item->status = 0;
+    item->rank.media = 0.0;
+    item->rank.quantidade = 0;
+    item->rank.total = 0;
+    item->quant_pedidos = 0;
+    item->historico = NULL;
+    return 0;
+}
+
+int limpar_variavel_entregador(entregador *item) // limpa a variavel para evitar erros ao sobrepor
+{
+    strcpy(item->cpf, "000");
+    strcpy(item->email, "000");
+    strcpy(item->nome, "000");
+    item->codigo = -1;
+    inicializar_entregador(item);
+}
+
+int inicializar_cliente(Cliente *item) // usada ao criar um novo_cliente cadastro de entregador (zera todas as informações para evitar lixo e erros)
+{
+    item->gasto_total = 0;
+    item->quantidade_cartoes = 0;
+    item->quant_pedidos = 0;
+    item->quant_enderecos = 0;
+    item->historico = NULL;
+    item->pagamentos = NULL;
+    item->enderecos = NULL;
+    return 0;
+}
+
+int inicializar_restaurante(restaurante *item)
+{
+    //item->categoria = NULL;
+    item->menu = NULL;
+    item->historico = NULL;
+    item->status = -1;
+    item->pedidosPendentes = NULL;
+    return 0;
+}
+
+int confirmarSenha(char *str1, char *str2)
+{
+    if (strlen(str1) != strlen(str2))
+        return 3;
+
+    int tam = strlen(str1);
+
+    for (int i = 0; i <= tam; i++)
+        if (str1[i] != str2[i])
+            return 1;
+    return 0;
+}
+
+int limpar_variavel_cliente(Cliente *item) // limpa a variavel para evitar erros ao sobrepor
+{
+    strcpy(item->cpf, "000");
+    strcpy(item->email, "000");
+    strcpy(item->nome, "000");
+    strcpy(item->senha_8d, "000");
+    item->codigo = -1;
+    inicializar_cliente(item);
+}
+
+int limpar_variavel_rest(restaurante *item) // limpa a variavel para evitar erros ao sobrepor
+{
+    strcpy(item->email, "000");
+    strcpy(item->nome, "000");
+    strcpy(item->senha, "000");
+    item->codigo = -1;
+    inicializar_restaurante(item);
+}
+
+void limpaBuffer()
+{
+    char meuchar;
+    while ((meuchar = getchar()) != EOF && meuchar != '\n');
+}
+
+int inserirPrato(restaurante *rest, int *numPratos)
+{
+    pratosR novoPrato;
+
+    printf("Digite o nome:\n(max 40 caracteres)\n");
+    limpaBuffer();
+    scanf("%[^\n]s", &novoPrato.nome);
+
+    printf("Descricao:\nEx.: Bedida, Ingredientes\n(max 100 caracteres): ");
+    limpaBuffer();
+    scanf("%[^\n]s", &novoPrato.descricao);
+
+    printf("Entre com o preco do prato: ");
+    limpaBuffer();
+    scanf("%[^\n]s", &novoPrato.preco);
+
+    rest->menu = (pratosR *)realloc(rest->menu, (*numPratos + 1) * sizeof(pratosR));
+
+    if(rest->menu != NULL) 
+    {
+        rest->menu[*numPratos] = novoPrato;
+        (*numPratos)++;
+        return 0;
+    }
+
+    return 1;
+
+}
+
+int removerPrato(restaurante *rest, int *numPratos)
+{
+    char nomePrato[40];
+    int i, j;
+
+    limpaBuffer();
+    printf("Nome do prato a ser removido: ");
+    fgets(nomePrato, 40, stdin);
+    nomePrato[strcspn(nomePrato, "\n")] = '\0';
+    limpaBuffer();
+
+    for (i = 0; i < *numPratos; i++)
+    {
+        if (strcmp(rest->menu[i].nome, nomePrato) == 0)
+        {
+            // Deslocar os pratos restantes para preencher o espaço
+            for (j = i; j < *numPratos - 1; j++)
+            {
+                rest->menu[j] = rest->menu[j + 1];
+            }
+
+            rest->menu = (pratosR *)realloc(rest->menu, (*numPratos - 1) * sizeof(pratosR));
+            (*numPratos)--;
+
+            return 0;
+        }
+    }
+
+    return 1;
+
+}
+
+// MENUS
+
+int menu_inicial() // permite a escolha entre os diferentes usuários
+{
+    int op = -1;
+    do
+    {
+        //system ("cls");
+        printf("\nBem vindo!\n");
+        printf("\nSelecione uma opcao: \n");
+        printf("1. Sou cliente\n");
+        printf("2. Sou restaurante\n");
+        printf("3. Sou entregador\n");
+        printf("4. Sou administrador\n");
+        printf("0. Sair\n");
+        printf("Opcao: ");
+        scanf("%d", &op);
+        if (op < 0 || op > 4)
+            printf("\nDigite uma opcao valida\n\n");
+    } while (op < 0 || op > 4);
+    return op;
+}
+
+int menu_inicial_cliente() // permite ao cliente escolher
+{
+    int op = -1;
+    do
+    {
+        //system ("cls");
+        printf("\n\nSelecione uma opcao: \n");
+        printf("1. Quero me cadastrar\n");
+        printf("2. Ja tenho cadastro\n");
+        printf("3. Voltar\n");
+        printf("0. Sair\n");
+        printf("Opcao: ");
+        scanf("%d", &op);
+        if (op < 0 || op > 4)
+            printf("\nDigite uma opcao valida\n\n");
+    } while (op < 0 || op > 4);
+    return op;
+}
+
+int menu_cliente() // permite ao cliente escolher após logado
+{
+    int op = -1;
+    do
+    {
+        //system ("cls");
+        printf("\n\nSelecione uma opcao: \n");
+        printf("1. Mostrar todos os restaurantes\n");
+        printf("2. Filtrar por categoria\n");
+        printf("3. Procurar por nome\n");
+        printf("4. Historico de pedidos\n");
+        printf("5. Cartoes\n");
+        printf("6. Enderecos\n");
+        printf("7. Alterar senha\n");
+        printf("8. Alterar e-mail\n");
+        printf ("9. Confirmar entrega\n");
+        printf("10. Sair da conta\n");
+        printf("11. Apagar conta\n");
+        printf("0. Sair do app\n");
+        printf("Opcao: ");
+        scanf("%d", &op);
+        if (op < 0 || op > 11)
+            printf("\nDigite uma opcao valida\n\n");
+    } while (op < 0 || op > 11);
+    return op;
+}
+
+int menu_inicial_restaurante() // permite ao restaurante escolher
+{
+    int op = -1;
+    do
+    {
+        //system ("cls");
+        printf("\n\nSelecione uma opcao: \n");
+        printf("1. Quero me cadastrar\n");
+        printf("2. Ja tenho cadastro\n");
+        printf("3. Voltar\n");
+        printf("0. Sair\n");
+        printf("Opcao: ");
+        scanf("%d", &op);
+        if (op < 0 || op > 3)
+            printf("\nDigite uma opcao valida\n\n");
+    } while (op < 0 || op > 3);
+    return op;
+}
+
+int menu_restaurante()
+{
+    int op = -1;
+    do
+    {
+        /*
+        "1.Atualizar Menu\n"
+        "2.Cadastrar Cliente\n"
+        "3.Pedidos Pendentes\n"
+        "4.Histórico"
+        "5.Programa de fidelidade\n"
+        "6.Voltar\n"
+        ""
+        */
+        // system ("cls");
+        printf("\n\nSelecione uma opcao: \n");
+        printf("1. Atualizar Menu\n"); //(trocar por atualizar cardapio) ir para outro menu que da opcao de add ou remover algum prato
+        printf("2. Pedidos Pendentes\n"); // ir para outro menu que mostra todos os pedidos ou apenas o proximo a ser executado
+        printf("3. Historico de pedidos\n"); // ir para outro menu que mostra todos os pedidos ja feitos no restaurante, talvez implementar um filtro por mes, semana, codigo e prato
+
+        // configuracoes
+        //alterar codigo de acesso 
+        printf("7. Alterar senha\n");
+        printf("8. Alterar e-mail\n");
+        printf("9. Sair da conta\n");
+        printf("10. Apagar conta\n");
+        printf("0. Sair do app\n");
+        printf("Opcao: ");
+        scanf("%d", &op);
+        if (op < 0 || op > 10)
+            printf("\nDigite uma opcao valida\n\n");
+    } while (op < 0 || op > 10);
+    return op;
+}
+
+int menu_adm() // permite ao adm escolher
+{
+    int op = -1;
+    do
+    {
+        //system ("cls");
+        printf("\n\nSelecione uma opcao: \n");
+        printf("1. Mostrar lista de clientes\n");
+        printf("2. Mostrar lista de entregadores\n");
+        printf("3. Mostrar lista de restaurantes\n");
+        printf("4. Mostrar fila de pedidos universal\n");
+        printf("5. \n");
+        printf("6. \n");
+        printf("7. \n");
+        printf("8. \n");
+        printf("9. Sair da conta\n");
+        printf("0. Sair\n");
+        printf("Opcao: ");
+        scanf("%d", &op);
+        if (op < 0 || op > 9)
+            printf("\nDigite uma opcao valida\n\n");
+    } while (op < 0 || op > 9);
+    return op;
+}
+
+int menu_inicial_entregador() // permite ao entregador escolher
+{
+    int op = -1;
+    do
+    {
+        //system ("cls");
+        printf("\n\nSelecione uma opcao: \n");
+        printf("1. Quero me cadastrar\n");
+        printf("2. Ja tenho cadastro\n");
+        printf("3. Voltar\n");
+        printf("0. Sair\n");
+        printf("Opcao: ");
+        scanf("%d", &op);
+        if (op < 0 || op > 4)
+            printf("\nDigite uma opcao valida\n\n");
+    } while (op < 0 || op > 4);
+    return op;
+}
+
+int menu_entregador() // permite ao entregador escolher após logar
+{
+    int op = -1;
+    do
+    {
+        //system ("cls");
+        printf("\n\nSelecione uma opcao: \n");
+        printf("1. Mostrar corrida atual\n");
+        printf("2. Mostrar dados pessoais\n");
+        printf("3. Mostrar nota\n");
+        printf("4. Mostrar historico de entregas\n");
+        printf("5. Alterar codigo de acesso\n");
+        printf("6. Alterar e-mail\n");
+        printf("7. Sair da conta\n");
+        printf("8. Apagar conta\n");
+        printf("0. Sair do app\n");
+        printf("Opcao: ");
+        scanf("%d", &op);
+        if (op < 0 || op > 8)
+            printf("\nDigite uma opcao valida\n\n");
+    } while (op < 0 || op > 8);
+    return op;
 }
