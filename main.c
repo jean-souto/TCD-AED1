@@ -1136,6 +1136,7 @@ int main()
                                                 {
                                                     if (inserirPrato(&logado_restaurante, &numPratos) == 0)
                                                     {
+                                                        // vou copiar a nova versão do rest para a lista se a inserção der certo mas tô vendo se a função copiar tá certa mesmo, para de me vigiar!
                                                         printf("Item adicionado com sucesso!\n");
 
                                                     } else {
@@ -1151,6 +1152,7 @@ int main()
                                                 {
                                                     if (removerPrato(&logado_restaurante, &numPratos) == 0)
                                                     {
+                                                        // o mesmo serve pra ca!
                                                         printf("Item removido com sucesso!\n");
                                                     }
                                                     else
