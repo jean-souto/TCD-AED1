@@ -8,7 +8,7 @@
 #include "restaurante.h"
 #include "filaPedidosPendentes.h"
 
-// STRUCTS EXTRAS
+// STRUCTS EXTRAS //
 typedef struct juncao
 {
     entregador entregador_do_pedido;
@@ -74,16 +74,59 @@ int inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedid
     (*qtd)++;
     pg = (pedidosglobais *)realloc(pg, (*qtd) * sizeof(pedidosglobais));
 
-    copiarEntregador(&entregador_atual, &pg->entregador_do_pedido);
-    copiarPedidoCpC(&pedido_atual, &pg->pedido_em_andamento);
-    copiarCliente(&cliente_atual, &pg->comprador);
+    int i = (*qtd) - 1;
+    copiarEntregador(&entregador_atual, &pg[i].entregador_do_pedido);
+    copiarPedidoCpC(&pedido_atual, &pg[i].pedido_em_andamento);
+    copiarCliente(&cliente_atual, &pg[i].comprador);
 
     return 0;
 }
 
-int removerControleGlobal() // deve remover do controle, pedir nota, liberar entregador e adicionar aos historicos
+int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int cod_entregador, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador) // deve remover do controle, liberar entregador e adicionar aos historicos
 {
+    int i, rem;
+    pedidosE temp;
+    pedidosR temp2;
+    for (i = 0; i < *qtd; i++)
+    {
+        if (pg[i].pedido_em_andamento.codigo == numero_pedido)
+        {
+            rem = i;
+        }
+    }
 
+    inserirPedidoHistorico (l_cliente, pg[rem].comprador.codigo, pg[rem].pedido_em_andamento);
+    copiarPedidoCpE (&(pg[rem].pedido_em_andamento), &temp);
+    inserirPedidoHistoricoEntregador (l_entregador, pg[rem].entregador_do_pedido.codigo, temp);
+    copiarPedidoCpR (&(pg[rem].pedido_em_andamento), &temp2);
+    // inserir no historico do restaurante aqui 
+
+    for (i = rem; i < *qtd-1; i++)
+    {
+        copiarCliente(&(pg[i].comprador), &(pg[i+1].comprador));
+        copiarEntregador(&(pg[i].entregador_do_pedido), &(pg[i+1].entregador_do_pedido));
+        copiarPedidoCpC (&(pg[i].pedido_em_andamento), &(pg[i+1].pedido_em_andamento));
+    }
+
+    (*qtd)--;
+    pg = (pedidosglobais *)realloc(pg, (*qtd) * sizeof(pedidosglobais));
+    return 0;
+}
+
+int buscarPedidoAndamento (pedidosglobais *pg, int qtd, char *nome_cliente, pedidosC *em_andamento)
+{
+    int i = 0;
+    int num_pedidos = 0;
+    for (i = 0; i < qtd; i++)
+    {
+        if (strcmp (pg[i].comprador.nome, nome_cliente) == 0)
+        {
+            num_pedidos++;
+            em_andamento = (pedidosC*) realloc (em_andamento, num_pedidos * sizeof(pedidosC));
+            copiarPedidoCpC (&(pg[i].pedido_em_andamento), &em_andamento[num_pedidos-1]);
+        }
+    }
+    return num_pedidos;
 }
 
 // FUNÇÕES EXTRAS
@@ -218,14 +261,15 @@ int menu_cliente() // permite ao cliente escolher após logado
         printf("6. Enderecos\n");
         printf("7. Alterar senha\n");
         printf("8. Alterar e-mail\n");
-        printf("9. Sair da conta\n");
-        printf("10. Apagar conta\n");
+        printf ("9. Confirmar entrega\n");
+        printf("10. Sair da conta\n");
+        printf("11. Apagar conta\n");
         printf("0. Sair do app\n");
         printf("Opcao: ");
         scanf("%d", &op);
-        if (op < 0 || op > 10)
+        if (op < 0 || op > 11)
             printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 10);
+    } while (op < 0 || op > 11);
     return op;
 }
 
@@ -367,6 +411,7 @@ int main()
     Cliente esqueceu_senha_cliente, inicializados_cliente;
     cartao novo_cartao;
     endereco novo_endereco;
+    pedidosC *em_andamento;
 
     // declarações relacionadas aos restaurantes
     Lista_restaurantes *lista_principal_restaurantes;
@@ -402,7 +447,7 @@ int main()
     strcpy(teste.senha, "bem vinde");
     inicializar_restaurante(&teste);
     inserirInicioRest(lista_principal_restaurantes, teste);
-    mostrarRest(lista_principal_restaurantes);
+    //mostrarRest(lista_principal_restaurantes);
 
     strcpy(loginADM, "souADM");
     strcpy(senhaADM, "123ADM");
@@ -548,7 +593,7 @@ int main()
 
                             if (verify == 5) break; // sair e voltar ao menu anterior
 
-                            while ((option != 9) && (option != 10)) // voltar após selecionar voltar ou excluir a conta
+                            while ((option != 10) && (option != 11)) // voltar após selecionar voltar ou excluir a conta
                             {
                                 option = menu_cliente();
 
@@ -559,6 +604,7 @@ int main()
                                     break;
 
                                     case 1: // mostrar todos os restaurantes
+                                        printf ("blablablabalablabalabalaba");
                                     break;
 
                                     case 2: // filtrar por categoria
@@ -768,10 +814,48 @@ int main()
 
                                     break;
 
-                                    case 9: // sair da conta (voltar)
+                                    case 9: // procura os pedidos em andamento com o nome do cliente, se tiver algum pergunta se esta concluido e, se sim, pede a nota do entregador
+                                        verify = 0;
+                                        verify = buscarPedidoAndamento (controlePedidos, qtdPedidosAndamento, logado_cliente.nome, em_andamento);
+                                        int i, j;
+
+                                        if (verify == 0)
+                                        {
+                                            printf ("\nVoce nao possui pedidos em andamento. Esta na hora de fazer um! ");
+                                        }
+                                        else
+                                        {
+                                            printf ("\nVoce possui %d pedidos em andamento!", verify);
+                                            for (i = 0; i < verify; i++)
+                                            {
+                                                printf ("\n%d: %s\n", i+1, em_andamento[i].nome_rest);
+                                                printf ("Total: %.2f\n", em_andamento[i].precoTotal);
+                                                for (j = 0; j < em_andamento[i].qtdPed; j++)
+                                                {
+                                                    printf ("%s: %.2f\n", em_andamento[i].ped[j].nome, em_andamento[i].ped[j].preco);
+                                                }
+                                            }
+
+                                            printf ("\nAlgum dos seus pedidos chegou? Digite 1 se sim e 0 se não: ");
+                                            scanf ("%d", &verify);
+
+                                            if (verify == 1)
+                                            {
+                                                i = 0;
+                                                printf ("Digite o numero do pedido que chegou: ");
+                                                scanf ("%d", &i);
+
+                                                // removerControleGlobal (controlePedidos, em_andamento[i-1].codigo); QUE INFERNO BUCETA CU CAPETA
+                                            }
+                                        }
+
+
                                     break;
 
-                                    case 10: // apagar conta
+                                    case 10: // sair da conta (voltar)
+                                    break;
+
+                                    case 11: // apagar conta
                                         printf("\nVoce esta prestes a apagar sua conta e tudo que esta contido nela. Voce tem certeza? ");
                                         printf("\nDigite 1 para sim e 2 para nao: ");
                                         scanf("%d", &verify);
