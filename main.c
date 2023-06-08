@@ -1,9 +1,10 @@
 // BIBLIOTECAS, TADs E DEFINES
-//ve se o trem vai ai
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
+#include <Windows.h>
 #include "entregador.h"
 #include "cliente.h"
 #include "restaurante.h"
@@ -205,6 +206,76 @@ int limpar_variavel_rest(restaurante *item) // limpa a variavel para evitar erro
     strcpy(item->senha, "000");
     item->codigo = -1;
     inicializar_restaurante(item);
+}
+
+void limpaBuffer()
+{
+    char meuchar;
+    while ((meuchar = getchar()) != EOF && meuchar != '\n');
+}
+
+int inserirPrato(restaurante *rest, int *numPratos)
+{
+    pratosR novoPrato;
+
+    limpaBuffer();
+    printf("Nome do prato(maximo 40 caracteres): ");
+    setbuf(stdin, NULL);
+    fgets(novoPrato.nome, sizeof(novoPrato.nome), stdin);
+    novoPrato.nome[strcspn(novoPrato.nome, "\n")] = '\0';
+    limpaBuffer();
+
+    printf("Descricao do prato(maximo 100 caracteres): ");
+    fgets(novoPrato.descricao, sizeof(novoPrato.descricao), stdin);
+    novoPrato.descricao[strcspn(novoPrato.descricao, "\n")] = '\0';
+    limpaBuffer();
+
+    printf("Preco do prato: ");
+    scanf("%f", &novoPrato.preco);
+    limpaBuffer();
+
+    rest->menu = realloc(rest->menu, (*numPratos + 1) * sizeof(pratosR));
+
+    if(rest->menu != NULL) {
+        rest->menu[*numPratos] = novoPrato;
+        (*numPratos)++;
+        return 0;
+    }
+
+    return 1;
+
+}
+
+void removerPrato(restaurante *rest, int *numPratos)
+{
+    char nomePrato[40];
+    int i, j;
+
+    limpaBuffer();
+    printf("Nome do prato a ser removido: ");
+    fgets(nomePrato, sizeof(nomePrato), stdin);
+    nomePrato[strcspn(nomePrato, "\n")] = '\0';
+    limpaBuffer();
+
+    for (i = 0; i < *numPratos; i++)
+    {
+        if (strcmp(rest->menu[i].nome, nomePrato) == 0)
+        {
+            // Deslocar os pratos restantes para preencher o espaço
+            for (j = i; j < *numPratos - 1; j++)
+            {
+                rest->menu[j] = rest->menu[j + 1];
+            }
+
+            rest->menu = realloc(rest->menu, (*numPratos - 1) * sizeof(pratosR));
+            (*numPratos)--;
+
+            printf("Prato removido com sucesso!\n");
+            return;
+        }
+    }
+
+    printf("Prato nao encontrado.\n");
 }
 
 int menu_inicial() // permite a escolha entre os diferentes usuários
@@ -416,8 +487,9 @@ int main()
 
     // declarações relacionadas aos restaurantes
     Lista_restaurantes *lista_principal_restaurantes;
-    restaurante login_restaurante, novo_restaurante;
+    restaurante novo_restaurante, login_restaurante, logado_restaurante, item;
     int codigo_loginR;
+    int numPratos = 0;
 
     // declarações relacionadas aos entregadores
     Lista_entregadores *lista_principal_entregadores;
@@ -968,7 +1040,7 @@ int main()
                             setbuf(stdin, NULL);
                             scanf("%[^\n]s", &senha);
 
-                            verify = loginRestaurante(lista_principal_restaurantes, email, senha, &login_restaurante);
+                            verify = loginRestaurante(lista_principal_restaurantes, email, senha, &logado_restaurante);
 
                             strcpy(email, " ");
                             strcpy(senha, " ");
@@ -979,7 +1051,7 @@ int main()
                             }
                             if (verify == 0)
                             {
-                                printf("\nLogin efetuado com sucesso. Bem vindos de volta, %s!\n", login_restaurante.nome);
+                                printf("\nLogin efetuado com sucesso. Bem vindos de volta, %s!\n", logado_restaurante.nome);
                                 break;
                             }
 
@@ -1041,51 +1113,60 @@ int main()
                         while ((option != 4))
                         {
                             option = menu_restaurante();
-                            /* 
-                            "1.Atualizar Menu\n"
-                            "2.Cadastrar Cliente\n"
-                            "3.Pedidos Pendentes\n"
-                            "4.Histórico"
-                            "5.Programa de fidelidade\n"
-                            "6.Voltar\n"
-                            ""
-        
-                            // system ("cls");
-                            printf("\n\nSelecione uma opcao: \n");
-                            printf("1. Atualizar Menu\n");       // ir para outro menu que da opcao de add ou remover algum prato
-                            printf("2. Pedidos Pendentes\n");    // ir para outro menu que mostra todos os pedidos ou apenas o proximo a ser executado
-                            printf("3. Historico de pedidos\n"); // ir para outro menu que mostra todos os pedidos ja feitos no restaurante, talvez implementar um filtro por mes, semana, codigo e prato
-
-                            // configuracoes
-                            // alterar codigo de acesso
-                            printf("7. Alterar senha\n");
-                            printf("8. Alterar e-mail\n");
-                            printf("9. Sair da conta\n");
-                            printf("10. Apagar conta\n");
-                            printf("0. Sair do app\n");
-                            */
-
+                           
                            switch (option)
                            {
+                                case 0: // voltar
+                                    break;
+
                                 case 1: // atualizar cardapio
-                                    /* while ((option != voltar))
+
+                                    while (verify != 0)
                                     {
-                                        option = menu_;
+                                        verify = menu_Cardapio();
 
-                                        if(option == ) {
-                                            inserir prato no vetor
+                                        switch (verify)
+                                        {
+                                            case 1:
 
-                                        } else if(option == ){
-                                            remover prato do vetor
+                                                printf("CARDAPIO:\n");
+                                                mostrarCardapio();
+                                                break;
 
+                                            case 2:
+
+                                                if (buscarRestNome(lista_principal_restaurantes, &logado_restaurante.nome) == 0)
+                                                {
+                                                    if (inserirPrato(&logado_restaurante, &numPratos) == 0)
+                                                    {
+                                                        printf("Prato adicionado com sucesso!\n");
+
+                                                    } else {
+                                                        printf("Tente Novamente\n");
+                                                        break;
+                                                    }
+                                                }
+                                                break;
+                                            
+                                            case 3:
+                                                removerPrato(&logado_restaurante, &numPratos);
+                                                break;
+
+                                            case 0:
+                                                printf("Saindo...\n");
+                                                break;
+
+                                            default:
+                                                printf("Opcao invalida. Tente novamente.\n");
+                                                break;
                                         }
                                     }
-                                    */
+
                                     break;
 
                                 case 2: // pedidos pendentes
                                     /*
-                                    while ((option != voltar))
+                                    while ((option != 0))
                                     {
                                         option = menu_;
 
