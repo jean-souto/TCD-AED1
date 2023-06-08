@@ -3,82 +3,55 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct plate
-{
-    char nome[40];
-    char descricao[100];
-    float preco;
-} pratos;
-
-typedef struct ped
-{
-    int codigo;
-    float precoTotal;
-    char nome_rest[40];
-    pratos *ped; //vetor em que cada elemento eh um prato e juntando todos os pratos que o cliente pediu torna-se o pedido completo
-    int qtdPed; //tamanho do vetor
-} pedidos;
-
-typedef struct no_pedidosPendentes
-{
-    pedidos valor;
-    struct no_pedidosPendentes *proximo;
-} No_pedidosPendentes;
-
-typedef struct fila
-{
-    No_pedidosPendentes *inicio;
-    No_pedidosPendentes *fim;
-    int qtd;
-} Fila_PedidosPendentes;
-
-Fila_PedidosPendentes *criarFilaP()
+Fila_PedidosPendentes *criar_filaPedidosPendentes()
 {
     Fila_PedidosPendentes *f = (Fila_PedidosPendentes *)malloc(sizeof(Fila_PedidosPendentes));
+
     f->qtd = 0;
     f->inicio = NULL;
     f->fim = NULL;
+
     return f;
 }
 
-int filaVaziaP(Fila_PedidosPendentes *f)
+int filaVazia(Fila_PedidosPendentes *f)
 {
-    if (f == NULL)
-        return 2;
-    if (f->qtd == 0)
-        return 0;
-    else
-        return 1;
+    if (f == NULL) return 2;
+    if (f->qtd == 0) return 0;
+    else return 1;
 }
 
-int filaCheiaP(Fila_PedidosPendentes *f)
+int filaCheia(Fila_PedidosPendentes *f)
 {
     return 1;
 }
 
-int inserirP(Fila_PedidosPendentes *f, pedidos *x)
+int inserirPedidoPendente(Fila_PedidosPendentes *f, pedidos *x)
 {
-    if (f == NULL)
-        return 2;
+    if (f == NULL) return 2;
+
     No_pedidosPendentes *no = (No_pedidosPendentes *)malloc(sizeof(No_pedidosPendentes));
     no->valor = *x;
     no->proximo = NULL;
-    if (filaVaziaP(f) == 0)
+
+    if (filaVazia(f) == 0)
         f->inicio = no;
     else
         f->fim->proximo = no->proximo;
+
     f->fim = no;
     f->qtd++;
+
     return 0;
 }
 
-int removerP (Fila_PedidosPendentes *f) // remove no inicio da lista
+int removerPedidoPendente(Fila_PedidosPendentes *f)
 {
     if (f == NULL) return 3;
-    if (filaVaziaP(f) == 0) return 0;
+    if (filaVazia(f) == 0) return 0;
 
     No_pedidosPendentes *aux = f->inicio;
-    
+
     if (f->inicio->proximo == NULL)
     {
         f->inicio = NULL;
@@ -90,6 +63,7 @@ int removerP (Fila_PedidosPendentes *f) // remove no inicio da lista
         f->inicio = aux->proximo;
         free(aux);
     }
+
     return 0;
 }
 
@@ -97,7 +71,7 @@ int removerP (Fila_PedidosPendentes *f) // remove no inicio da lista
 {
     if (f == NULL)
         return 2;
-    if (filaVaziaP(f) == 0)
+    if (filaVazia(f) == 0)
         return 1;
     No_pedidosPendentes *temp = f->inicio;
     f->inicio = temp->proximo;
@@ -108,34 +82,36 @@ int removerP (Fila_PedidosPendentes *f) // remove no inicio da lista
     return 0;
 }*/
 
-int consultarP(Fila_PedidosPendentes *f, pedidos **x)
+int consultarProxPedido(Fila_PedidosPendentes *f, pedidos **x)
 {
     if (f == NULL)
         return 2;
-    if (filaVaziaP(f) == 0)
+    if (filaVazia(f) == 0)
         return 1;
+
     *x = &f->inicio->valor;
+
     return 0;
 }
 
-void limparP(Fila_PedidosPendentes *f)
+void limparFila(Fila_PedidosPendentes *f)
 {
-    if (f == NULL)
-        return;
-    while (filaVaziaP(f) != 0)
-        removerP(f);
+    while (filaVazia(f) != 0)
+        removerPedidoPendente(f);
+
     free(f);
     f = NULL;
 }
 
-int tamanhoP(Fila_PedidosPendentes *f)
+int tamanhoFila(Fila_PedidosPendentes *f)
 {
     if (f == NULL)
         return -1;
+
     return f->qtd;
 }
 
-void mostrarP(Fila_PedidosPendentes *f)
+void mostrarPedidosPendentes(Fila_PedidosPendentes *f)
 {
     if (f != NULL)
     {
@@ -153,19 +129,18 @@ void mostrarP(Fila_PedidosPendentes *f)
             printf("---------------------------------------------\n");
             no = no->proximo;
         }
-        
     }
 }
 
-int mostrarProxP(Fila_PedidosPendentes *f)
+int mostrarProxPedido(Fila_PedidosPendentes *f)
 {
     if (f == NULL)
         return 2;
-    if (filaVaziaP(f) == 0)
+    if (filaVazia(f) == 0)
         return 1;
 
     pedidos *x;
-    consultarP(f, &x);
+    consultarProxPedido(f, &x);
 
     printf("Proximo Pedido: ");
     printf("Codigo: %d", x->codigo);

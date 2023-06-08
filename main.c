@@ -1174,20 +1174,30 @@ int main()
                                     break;
 
                                 case 2: // pedidos pendentes
-                                    /*
-                                    while ((option != 0))
+                                    
+                                    while ((verify != 0))
                                     {
-                                        option = menu_;
+                                        //verify = menu_PedidosPendentes();
 
-                                        if(option == ) {
-                                            mostrar a fila toda
+                                        switch (verify)
+                                        {
+                                            case 0: // voltar
+                                                break;
+                                            case 1: // mostrar a fila toda
+                                                break;
+                                            case 2: // mostrar apenas o proximo
+                                                break;
+                                            case 3: // 
+                                                break;
+                                            case 4:
+                                                break;
 
-                                        } else if(option == ){
-                                            mostrar apenas proximo da fila
-
+                                            default:
+                                                printf("Opcao invalida. Tente novamente.\n");
+                                                break;
                                         }
                                     }
-                                    */
+                                    
                                     break;
 
                                 case 3: // historico de pedidos

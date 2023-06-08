@@ -65,13 +65,17 @@ int tamanhoRest(Lista_restaurantes *l)
 {
     if (l == NULL)
         return -1;
+
     No_restaurante *no = l->inicio;
+
     int tam = 0;
+
     while (no != NULL)
     {
         tam++;
         no = no->prox;
     }
+    
     return tam;
 }
 
