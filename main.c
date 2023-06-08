@@ -1201,6 +1201,8 @@ int main()
 
     limparCliente(lista_principal_clientes);
     free(lista_principal_clientes);
+    limparEntregador(lista_principal_entregadores);
+    free(lista_principal_entregadores);
     limparRest(lista_principal_restaurantes);
     free(lista_principal_restaurantes);
 
