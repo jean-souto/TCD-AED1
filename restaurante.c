@@ -295,18 +295,40 @@ int buscarRestEmailCodigo(Lista_restaurantes *l, char *email, int codigo, restau
     if (listaVaziaRest(l) == 0)
         return EMPTY_LIST;
 
-    No_restaurante *aux = l->inicio;
+    No_restaurante *no = l->inicio;
 
-    while (aux->prox != NULL && (strcmp(aux->valor.email, email) != 0))
+    while (no->prox != NULL && (strcmp(no->valor.email, email) != 0))
     {
-        aux = aux->prox;
+        no = no->prox;
     }
 
-    if ((strcmp(aux->valor.email, email) == 0) && (aux->valor.codigo == codigo))
+    if ((strcmp(no->valor.email, email) == 0) && (no->valor.codigo == codigo))
     {
-        copiarRestaurante(&aux->valor, &(*item));
+        copiarRestaurante(&no->valor, &(*item));
         return 0;
     }
+    return 1;
+}
+
+int buscarRestNome(Lista_restaurantes *l, char *nome)
+{
+    if (l == NULL)
+        return NULL_LIST;
+    if (listaVaziaRest(l) == 0)
+        return EMPTY_LIST;
+
+    No_restaurante *no = l->inicio;
+
+    while (no->prox != NULL && (strcmp(no->valor.nome, nome) != 0))
+    {
+        no = no->prox;
+    }
+
+    if ((strcmp(no->valor.nome, nome) == 0))
+    {
+        return 0;
+    }
+
     return 1;
 }
 
@@ -430,50 +452,6 @@ int sortearCodigoRest(Lista_restaurantes *l)
     return codigo;
 }
 
-/*
-// função de auxílio. copia todas as informações de um elemento para outro
-void copiarRestaurante(restaurante *A, restaurante *B)
-{
-    int i, j;
-
-    strcpy(B->nome, A->nome);
-    strcpy(B->email, A->email);
-    strcpy(B->senha, A->senha);
-    strcpy(B->categoria, A->categoria);
-
-    B->codigo = A->codigo;
-    B->status = A->status;
-
-    B->menu = (pratosR*) malloc(sizeof(pratosR) * )
-
-     B->historico = (pedidosC *)malloc(B->historico, A->quant_pedidos * sizeof(pedidosC));
-    for (i = 0; i < A->quant_pedidos; i++)
-    {
-        B->historico[i].precoTotal = A->historico[i].precoTotal;
-        strcpy(B->historico[i].nome_rest, A->historico[i].nome_rest);
-        B->historico[i].codigo = A->historico[i].codigo;
-        B->historico[i].qtdPed = A->historico[i].qtdPed;
-
-        B->historico[i].ped = (pratosC *)malloc(B->historico[i].ped, A->historico[i].qtdPed * sizeof(pratosC));
-
-        for (j = 0; j < A->historico[i].qtdPed; j++)
-        {
-            B->historico[i].ped[j].preco = A->historico[i].ped[j].preco;
-            strcpy(B->historico[i].ped[j].nome, A->historico[i].ped[j].nome);
-            strcpy(B->historico[i].ped[j].descricao, A->historico[i].ped[j].descricao);
-        }
-    }
-
-    B->enderecos = (endereco *)malloc(B->enderecos, A->quant_enderecos * sizeof(endereco));
-    for (i = 0; i < A->quant_enderecos; i++)
-    {
-        strcpy(B->enderecos[i].cep, A->enderecos[i].cep);
-        strcpy(B->enderecos[i].numero, A->enderecos[i].numero);
-        strcpy(B->enderecos[i].rua, A->enderecos[i].rua);
-    } 
-}
-*/
-
 // copia todas as informacoes de um elemento para outro
 void copiarRestaurante(restaurante *A, restaurante *B)
 {
@@ -483,7 +461,16 @@ void copiarRestaurante(restaurante *A, restaurante *B)
     strcpy(B->categoria, A->categoria);
     B->codigo = A->codigo;
     B->status = A->status;
-    // copiarRestaurante mennu
-    // copiarRestaurante historico
-    // copiarRestaurante fila pedidosPendentes
+
+    // copiar o menu
+    int qtdPratos = (sizeof(A->menu)) / (sizeof(pratosR));
+    B->menu = (pratosR *)malloc(sizeof(pratosR) * qtdPratos);
+    memcpy(B->menu, A->menu, sizeof(pratosR) * qtdPratos); // funcao da <string.h> que faz uma cópia de um bloco de memória byte a byte de uma área de memória para outra.
+
+    // copiar o histórico de pedidos
+    B->historico = (pedidosR *)malloc(sizeof(pedidosR) * A->historico->qtdPed);
+    memcpy(B->historico, A->historico, sizeof(pedidosR) * A->historico->qtdPed); // mesma funcao utilizada anteriormente que permite fazer as cópias de forma mais eficiente e tem verificação de erro
+
+    // Copiar a fila de pedidos pendentes
+    B->pedidosPendentes = A->pedidosPendentes; //incerta sobre, vou ver com thiago
 }

@@ -83,7 +83,7 @@ void mostrarInfoRest(Lista_restaurantes *l);
 // void mostrarHistoricoPedidos(Lista_restaurantes *l, char *nome);
 
 // visualização ADM
-void mostrarListaRest(Lista_restaurantes *l);
+void mostrarListaRest(Lista_restaurantes *l); 
 
 // outros
 int loginRestaurante(Lista_restaurantes *l, char *email, char *senha, restaurante *item);

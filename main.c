@@ -218,25 +218,22 @@ int inserirPrato(restaurante *rest, int *numPratos)
 {
     pratosR novoPrato;
 
+    printf("Digite o nome:\n(max 40 caracteres)\n");
     limpaBuffer();
-    printf("Nome do prato(maximo 40 caracteres): ");
-    setbuf(stdin, NULL);
-    fgets(novoPrato.nome, sizeof(novoPrato.nome), stdin);
-    novoPrato.nome[strcspn(novoPrato.nome, "\n")] = '\0';
+    scanf("%[^\n]s", &novoPrato.nome);
+
+    printf("Descricao:\nEx.: Bedida, Ingredientes\n(max 100 caracteres): ");
     limpaBuffer();
+    scanf("%[^\n]s", &novoPrato.descricao);
 
-    printf("Descricao do prato(maximo 100 caracteres): ");
-    fgets(novoPrato.descricao, sizeof(novoPrato.descricao), stdin);
-    novoPrato.descricao[strcspn(novoPrato.descricao, "\n")] = '\0';
+    printf("Entre com o preco do prato: ");
     limpaBuffer();
+    scanf("%[^\n]s", &novoPrato.preco);
 
-    printf("Preco do prato: ");
-    scanf("%f", &novoPrato.preco);
-    limpaBuffer();
+    rest->menu = (pratosR *)realloc(rest->menu, (*numPratos + 1) * sizeof(pratosR));
 
-    rest->menu = realloc(rest->menu, (*numPratos + 1) * sizeof(pratosR));
-
-    if(rest->menu != NULL) {
+    if(rest->menu != NULL) 
+    {
         rest->menu[*numPratos] = novoPrato;
         (*numPratos)++;
         return 0;
@@ -246,14 +243,14 @@ int inserirPrato(restaurante *rest, int *numPratos)
 
 }
 
-void removerPrato(restaurante *rest, int *numPratos)
+int removerPrato(restaurante *rest, int *numPratos)
 {
     char nomePrato[40];
     int i, j;
 
     limpaBuffer();
     printf("Nome do prato a ser removido: ");
-    fgets(nomePrato, sizeof(nomePrato), stdin);
+    fgets(nomePrato, 40, stdin);
     nomePrato[strcspn(nomePrato, "\n")] = '\0';
     limpaBuffer();
 
@@ -267,15 +264,15 @@ void removerPrato(restaurante *rest, int *numPratos)
                 rest->menu[j] = rest->menu[j + 1];
             }
 
-            rest->menu = realloc(rest->menu, (*numPratos - 1) * sizeof(pratosR));
+            rest->menu = (pratosR *)realloc(rest->menu, (*numPratos - 1) * sizeof(pratosR));
             (*numPratos)--;
 
-            printf("Prato removido com sucesso!\n");
-            return;
+            return 0;
         }
     }
 
-    printf("Prato nao encontrado.\n");
+    return 1;
+
 }
 
 int menu_inicial() // permite a escolha entre os diferentes usuários
@@ -1024,7 +1021,7 @@ int main()
                         if ((inserirFimRest(lista_principal_restaurantes, novo_restaurante)) == 0)
                         printf("\nCadastro realizado com sucesso!\n");
                         limpar_variavel_rest(&novo_restaurante);
-                        mostrarRest(lista_principal_restaurantes);
+                        mostrarInfoRest(lista_principal_restaurantes);
                         break;
 
                     case 2:; // Ja tenho cadastro
@@ -1123,23 +1120,23 @@ int main()
 
                                     while (verify != 0)
                                     {
-                                        verify = menu_Cardapio();
+                                        //verify = menu_Cardapio();
 
                                         switch (verify)
                                         {
                                             case 1:
 
                                                 printf("CARDAPIO:\n");
-                                                mostrarCardapio();
+                                                //mostrarCardapio();
                                                 break;
 
                                             case 2:
 
-                                                if (buscarRestNome(lista_principal_restaurantes, &logado_restaurante.nome) == 0)
+                                                if (buscarRestNome(lista_principal_restaurantes, logado_restaurante.nome) == 0)
                                                 {
                                                     if (inserirPrato(&logado_restaurante, &numPratos) == 0)
                                                     {
-                                                        printf("Prato adicionado com sucesso!\n");
+                                                        printf("Item adicionado com sucesso!\n");
 
                                                     } else {
                                                         printf("Tente Novamente\n");
@@ -1149,7 +1146,19 @@ int main()
                                                 break;
                                             
                                             case 3:
-                                                removerPrato(&logado_restaurante, &numPratos);
+
+                                                if (buscarRestNome(lista_principal_restaurantes, logado_restaurante.nome) == 0)
+                                                {
+                                                    if (removerPrato(&logado_restaurante, &numPratos) == 0)
+                                                    {
+                                                        printf("Item removido com sucesso!\n");
+                                                    }
+                                                    else
+                                                    {
+                                                        printf("Item nao encontrado.\n");
+                                                        break;
+                                                    }
+                                                }
                                                 break;
 
                                             case 0:
