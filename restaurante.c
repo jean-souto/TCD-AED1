@@ -130,7 +130,7 @@ int inserirFimRest(Lista_restaurantes *l, restaurante item)
 }
 
 // insere posição desejada na lista
-int inserirPosicao(Lista_restaurantes *l, restaurante item, int pos) //att essa bomba
+int inserirPosicaoRest(Lista_restaurantes *l, restaurante item, int pos) //att essa bomba
 {
     if (l == NULL)
         return NULL_LIST;
@@ -238,7 +238,7 @@ int removerPosRest(Lista_restaurantes *l, int pos)
 }
 
 // remove o item correspondente ao codigo passado
-int removerRest(Lista_restaurantes *l, int codigo)
+int removerRestCodigo(Lista_restaurantes *l, int codigo)
 {
     if (l == NULL)
         return NULL_LIST;
@@ -265,7 +265,7 @@ int removerRest(Lista_restaurantes *l, int codigo)
 
 
 // busca o restaurante correspondente ao codigo e retorna ele por parametro
-int buscarCodigoRest(Lista_restaurantes *l, int codigo, restaurante *item)
+int buscarRestCodigo(Lista_restaurantes *l, int codigo, restaurante *item)
 {
     if (l == NULL)
         return NULL_LIST;
@@ -287,31 +287,6 @@ int buscarCodigoRest(Lista_restaurantes *l, int codigo, restaurante *item)
     else
         return 1;
 }
-
-/*
-// busca um restaurante
-int buscarRest(Lista_restaurantes *l, restaurante *item)
-{
-    if (l == NULL)
-        return NULL_LIST;
-    if (listaVaziaRest(l) == 0)
-        return EMPTY_LIST;
-
-    No_restaurante *aux;
-    aux = l->inicio;
-
-    while (aux != NULL)
-    {
-        if (aux->valor.email == 0)
-        {
-            aux->valor.email = 1;
-            copiarRestaurante(&(aux->valor), &(*item));
-            return 0;
-        }
-        aux = aux->prox;
-    }
-    return 1;
-}*/
 
 int buscarRestEmailCodigo(Lista_restaurantes *l, char *email, int codigo, restaurante *item) //revisar 
 {
@@ -354,7 +329,8 @@ void mostrarInfoRest(Lista_restaurantes *l)
     }
 }
 
-void mostrarRest(Lista_restaurantes *l) // mostra as principais informações de cada restaurante para ADM
+// mostra as principais informações de cada restaurante para ADM
+void mostrarListaRest(Lista_restaurantes *l)
 {
     if (l != NULL)
     {
@@ -399,20 +375,6 @@ int loginRestaurante(Lista_restaurantes * l, char *email, char *senha, restauran
     }
 
     return 1;
-}
-
-// copia todas as informacoes de um elemento para outro
-void copiarRestaurante(restaurante * A, restaurante * B)
-{
-    strcpy(B->nome, A->nome);
-    strcpy(B->email, A->email);
-    strcpy(B->senha, A->senha);
-    strcpy(B->categoria, A->categoria);
-    B->codigo = A->codigo;
-    B->status = A->status;
-    // copiarRestaurante mennu
-    // copiarRestaurante historico
-    // copiarRestaurante fila pedidosPendentes
 }
 
 int alterarSenhaRest(Lista_restaurantes * l, int codigo, char *novaSenha, char *confirmNovaSenha)
@@ -511,3 +473,17 @@ void copiarRestaurante(restaurante *A, restaurante *B)
     } 
 }
 */
+
+// copia todas as informacoes de um elemento para outro
+void copiarRestaurante(restaurante *A, restaurante *B)
+{
+    strcpy(B->nome, A->nome);
+    strcpy(B->email, A->email);
+    strcpy(B->senha, A->senha);
+    strcpy(B->categoria, A->categoria);
+    B->codigo = A->codigo;
+    B->status = A->status;
+    // copiarRestaurante mennu
+    // copiarRestaurante historico
+    // copiarRestaurante fila pedidosPendentes
+}
