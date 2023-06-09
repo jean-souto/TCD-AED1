@@ -33,12 +33,9 @@ int inicializar_entregador(entregador *item); // usada ao criar um novo cadastro
 int limpar_variavel_entregador(entregador *item); // limpa a variavel para evitar erros ao sobrepor
 int inicializar_cliente(Cliente *item); // usada ao criar um novo_cliente cadastro de entregador (zera todas as informações para evitar lixo e erros)
 int inicializar_restaurante(restaurante *item);
-int confirmarSenha(char *str1, char *str2);
 int limpar_variavel_cliente(Cliente *item); // limpa a variavel para evitar erros ao sobrepor
 int limpar_variavel_rest(restaurante *item); // limpa a variavel para evitar erros ao sobrepor
 void limpaBuffer();
-int inserirPrato(restaurante *rest, int *numPratos);
-int removerPrato(restaurante *rest, int *numPratos);
 
 // MENUS
 
@@ -71,9 +68,10 @@ int main()
 
     // declarações relacionadas aos restaurantes
     Lista_restaurantes *lista_principal_restaurantes;
-    restaurante novo_restaurante, login_restaurante, logado_restaurante, item;
+    restaurante novo_restaurante, login_restaurante, logado_restaurante;
     int codigo_loginR;
-    int numPratos = 0;
+    pratosR novo_prato;
+    char nome_prato[40];
 
     // declarações relacionadas aos entregadores
     Lista_entregadores *lista_principal_entregadores;
@@ -104,7 +102,7 @@ int main()
     strcpy(teste.senha, "bem vinde");
     inicializar_restaurante(&teste);
     inserirInicioRest(lista_principal_restaurantes, teste);
-    //mostrarRest(lista_principal_restaurantes);
+    mostrarListaRest(lista_principal_restaurantes);
 
     strcpy(loginADM, "souADM");
     strcpy(senhaADM, "123ADM");
@@ -638,7 +636,7 @@ int main()
                         if ((inserirFimRest(lista_principal_restaurantes, novo_restaurante)) == 0)
                         printf("\nCadastro realizado com sucesso!\n");
                         limpar_variavel_rest(&novo_restaurante);
-                        mostrarInfoRest(lista_principal_restaurantes);
+                        mostrarListaRest(lista_principal_restaurantes);
                         break;
 
                     case 2:; // Ja tenho cadastro
@@ -653,9 +651,10 @@ int main()
                             printf("\nDigite a senha: ");
                             setbuf(stdin, NULL);
                             scanf("%[^\n]s", &senha);
+                            printf("%d\n", verify);
 
                             verify = loginRestaurante(lista_principal_restaurantes, email, senha, &logado_restaurante);
-
+                            printf("%d\n", verify);
                             strcpy(email, " ");
                             strcpy(senha, " ");
 
@@ -668,6 +667,8 @@ int main()
                                 printf("\nLogin efetuado com sucesso. Bem vindos de volta, %s!\n", logado_restaurante.nome);
                                 break;
                             }
+
+                            if (verify == 0) break;
 
                             printf("\nTentar Novamente (Digite 0)\n"
                                    "Esqueceu a senha? (Digite 5)\n"
@@ -724,65 +725,78 @@ int main()
                             if (verify == 0) verify = 1;
                         }
 
-                        while ((option != 4))
+                        if (verify == 5) break; // sair e voltar ao menu anterior
+
+                        while (option != 4)
                         {
                             option = menu_restaurante();
+                            int op;
                            
-                           switch (option)
-                           {
+                            switch (option)
+                            {
                                 case 0: // voltar
                                     break;
 
                                 case 1: // atualizar cardapio
 
-                                    while (verify != 0)
+                                    while (op != 0)
                                     {
-                                        //verify = menu_Cardapio();
+                                        //op = menu_Cardapio();
 
-                                        switch (verify)
+                                        switch (op)
                                         {
+                                            case 0:
+                                                printf("Saindo...\n");
+                                                break;
+
                                             case 1:
 
                                                 printf("CARDAPIO:\n");
-                                                //mostrarCardapio();
+                                                mostrarCardapio(lista_principal_restaurantes, &logado_restaurante);
                                                 break;
 
                                             case 2:
 
-                                                if (buscarRestNome(lista_principal_restaurantes, logado_restaurante.nome) == 0)
-                                                {
-                                                    if (inserirPrato(&logado_restaurante, &numPratos) == 0)
-                                                    {
-                                                        // vou copiar a nova versão do rest para a lista se a inserção der certo mas tô vendo se a função copiar tá certa mesmo, para de me vigiar!
-                                                        printf("Item adicionado com sucesso!\n");
+                                                printf("Digite o nome:\n(max 40 caracteres)\n");
+                                                limpaBuffer();
 
-                                                    } else {
-                                                        printf("Tente Novamente\n");
-                                                        break;
-                                                    }
+                                                printf("Descricao:\nEx.: Bedida, Ingredientes\n(max 100 caracteres): ");
+                                                limpaBuffer();
+                                                scanf("%[^\n]s", &novo_prato.descricao);
+
+                                                printf("Entre com o preco: ");
+                                                limpaBuffer();
+                                                scanf("%f", &novo_prato.preco);
+ 
+                                                if (inserirPratoRest(lista_principal_restaurantes, novo_prato, &logado_restaurante) == 0)
+                                                {
+                                                    printf("Item adicionado com sucesso!\n");
+
+                                                } else {
+                                                    printf("Tente Novamente\n");
+                                                    break;
                                                 }
+                                                
                                                 break;
                                             
                                             case 3:
 
-                                                if (buscarRestNome(lista_principal_restaurantes, logado_restaurante.nome) == 0)
-                                                {
-                                                    if (removerPrato(&logado_restaurante, &numPratos) == 0)
-                                                    {
-                                                        // o mesmo serve pra ca!
-                                                        printf("Item removido com sucesso!\n");
-                                                    }
-                                                    else
-                                                    {
-                                                        printf("Item nao encontrado.\n");
-                                                        break;
-                                                    }
-                                                }
-                                                break;
+                                                printf("Nome do prato a ser removido: ");
+                                                limpaBuffer();
+                                                scanf("%[^\n]s", &nome_prato);
 
-                                            case 0:
-                                                printf("Saindo...\n");
+                                                if (removerPratoRest(lista_principal_restaurantes, nome_prato, &logado_restaurante) == 0)
+                                                {
+                                                    printf("Item removido com sucesso!\n");
+                                                }
+                                                else
+                                                {
+                                                    printf("Item nao encontrado.\n");
+                                                    break;
+                                                }
+                                                
                                                 break;
+                                                
 
                                             default:
                                                 printf("Opcao invalida. Tente novamente.\n");
@@ -794,21 +808,19 @@ int main()
 
                                 case 2: // pedidos pendentes
                                     
-                                    while ((verify != 0))
+                                    while ((op != 0))
                                     {
-                                        //verify = menu_PedidosPendentes();
+                                        //op = menu_PedidosPendentes();
 
-                                        switch (verify)
+                                        switch (op)
                                         {
                                             case 0: // voltar
                                                 break;
+
                                             case 1: // mostrar a fila toda
                                                 break;
+
                                             case 2: // mostrar apenas o proximo
-                                                break;
-                                            case 3: // 
-                                                break;
-                                            case 4:
                                                 break;
 
                                             default:
@@ -821,11 +833,11 @@ int main()
 
                                 case 3: // historico de pedidos
                                     /*
-                                    while ((option != voltar))
+                                    while ((op != voltar))
                                     {
-                                        option = menu_;
+                                        op = menu_;
 
-                                        switch (expression)
+                                        switch (op)
                                         {
                                             case 1: // todos os pedidos ja feitos no restaurante
                                                 break;
@@ -848,11 +860,11 @@ int main()
 
                                 case 4: // configuracoes
                                     /*
-                                    while ((option != voltar))
+                                    while ((op != voltar))
                                     {
-                                        option = menu_;
+                                        op = menu_;
 
-                                        switch (expression)
+                                        switch (op)
                                         {
                                             case 1: // alterar codigo de acesso
                                                 break;
@@ -1407,8 +1419,9 @@ int inicializar_cliente(Cliente *item) // usada ao criar um novo_cliente cadastr
 
 int inicializar_restaurante(restaurante *item)
 {
-    //item->categoria = NULL;
-    item->menu = NULL;
+    strcpy(item->categoria, "-");
+    item->cardapio = NULL;
+    item->qtdCardapio = 0;
     item->historico = NULL;
     item->status = -1;
     item->pedidosPendentes = NULL;
@@ -1451,67 +1464,6 @@ void limpaBuffer()
 {
     char meuchar;
     while ((meuchar = getchar()) != EOF && meuchar != '\n');
-}
-
-int inserirPrato(restaurante *rest, int *numPratos)
-{
-    pratosR novoPrato;
-
-    printf("Digite o nome:\n(max 40 caracteres)\n");
-    limpaBuffer();
-    scanf("%[^\n]s", &novoPrato.nome);
-
-    printf("Descricao:\nEx.: Bedida, Ingredientes\n(max 100 caracteres): ");
-    limpaBuffer();
-    scanf("%[^\n]s", &novoPrato.descricao);
-
-    printf("Entre com o preco do prato: ");
-    limpaBuffer();
-    scanf("%[^\n]s", &novoPrato.preco);
-
-    rest->menu = (pratosR *)realloc(rest->menu, (*numPratos + 1) * sizeof(pratosR));
-
-    if(rest->menu != NULL) 
-    {
-        rest->menu[*numPratos] = novoPrato;
-        (*numPratos)++;
-        return 0;
-    }
-
-    return 1;
-
-}
-
-int removerPrato(restaurante *rest, int *numPratos)
-{
-    char nomePrato[40];
-    int i, j;
-
-    limpaBuffer();
-    printf("Nome do prato a ser removido: ");
-    fgets(nomePrato, 40, stdin);
-    nomePrato[strcspn(nomePrato, "\n")] = '\0';
-    limpaBuffer();
-
-    for (i = 0; i < *numPratos; i++)
-    {
-        if (strcmp(rest->menu[i].nome, nomePrato) == 0)
-        {
-            // Deslocar os pratos restantes para preencher o espaço
-            for (j = i; j < *numPratos - 1; j++)
-            {
-                rest->menu[j] = rest->menu[j + 1];
-            }
-
-            rest->menu = (pratosR *)realloc(rest->menu, (*numPratos - 1) * sizeof(pratosR));
-            (*numPratos)--;
-
-            return 0;
-        }
-    }
-
-    return 1;
-
 }
 
 // MENUS

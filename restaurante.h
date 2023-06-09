@@ -30,7 +30,8 @@ typedef struct rest
     char categoria[30];
     int codigo;
     int status; // se quer participar do programa de fidelidade
-    pratosR *menu;
+    pratosR *cardapio;
+    int qtdCardapio;
     pedidosR *historico;
     Fila_PedidosPendentes *pedidosPendentes;
 } restaurante;
@@ -61,12 +62,14 @@ int tamanhoRest(Lista_restaurantes *l);
 int inserirInicioRest(Lista_restaurantes *l, restaurante item);
 int inserirFimRest(Lista_restaurantes *l, restaurante item);   
 int inserirPosicaoRest(Lista_restaurantes *l, restaurante item, int pos);
+int inserirPratoRest(Lista_restaurantes *l, pratosR novoPrato, restaurante *item);
 
 // remocao
 int removerInicioRest(Lista_restaurantes *l);
 int removerFimRest(Lista_restaurantes *l);
 int removerPosRest(Lista_restaurantes *l, int pos);
 int removerRestCodigo(Lista_restaurantes *l, int codigo);
+int removerPratoRest(Lista_restaurantes *l, char *nomePrato, restaurante *item);
 
 // busca
 int buscarRestCodigo(Lista_restaurantes *l, int codigo, restaurante *item);
@@ -75,12 +78,11 @@ int buscarRestNome(Lista_restaurantes *l, char *nome);
 //int buscarRestPos(Lista_restaurantes *l, int pos, restaurante *item);
 
 
-// visualização cliente
+// visualização usuário
 // void mostrarRestaurantes(Lista_restaurantes *l); 
 void mostrarInfoRest(Lista_restaurantes *l); 
-
-// visualização funcionário
 // void mostrarHistoricoPedidos(Lista_restaurantes *l, char *nome);
+void mostrarCardapio(Lista_restaurantes *l, restaurante *item);
 
 // visualização ADM
 void mostrarListaRest(Lista_restaurantes *l); 
