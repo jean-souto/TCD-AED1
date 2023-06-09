@@ -3,6 +3,37 @@
 #include <stdlib.h>
 #include <string.h>
 
+// STRUCTS
+typedef struct plate
+{
+    char nome[40];
+    char descricao[100];
+    float preco;
+} pratos;
+
+typedef struct ped
+{
+    int codigo;
+    float precoTotal;
+    char nome_rest[40];
+    pratos *ped; // vetor em que cada elemento eh um prato e juntando todos os pratos que o cliente pediu torna-se o pedido completo
+    int qtdPed;  // tamanho do vetor
+} pedidos;
+
+typedef struct no_pedidosPendentes
+{
+    pedidos valor;
+    struct no_pedidosPendentes *proximo;
+} No_pedidosPendentes;
+
+typedef struct fila
+{
+    No_pedidosPendentes *inicio;
+    No_pedidosPendentes *fim;
+    int qtd;
+} Fila_PedidosPendentes;
+
+// IMPLEMENTACOES
 Fila_PedidosPendentes *criar_filaPedidosPendentes()
 {
     Fila_PedidosPendentes *f = (Fila_PedidosPendentes *)malloc(sizeof(Fila_PedidosPendentes));
@@ -16,9 +47,12 @@ Fila_PedidosPendentes *criar_filaPedidosPendentes()
 
 int filaVazia(Fila_PedidosPendentes *f)
 {
-    if (f == NULL) return 2;
-    if (f->qtd == 0) return 0;
-    else return 1;
+    if (f == NULL)
+        return NULL_QUEUE;
+    if (f->qtd == 0)
+        return 0;
+    else
+        return 1;
 }
 
 int filaCheia(Fila_PedidosPendentes *f)
@@ -28,7 +62,8 @@ int filaCheia(Fila_PedidosPendentes *f)
 
 int inserirPedidoPendente(Fila_PedidosPendentes *f, pedidos *x)
 {
-    if (f == NULL) return 2;
+    if (f == NULL)
+        return NULL_QUEUE;
 
     No_pedidosPendentes *no = (No_pedidosPendentes *)malloc(sizeof(No_pedidosPendentes));
     no->valor = *x;
@@ -47,47 +82,29 @@ int inserirPedidoPendente(Fila_PedidosPendentes *f, pedidos *x)
 
 int removerPedidoPendente(Fila_PedidosPendentes *f)
 {
-    if (f == NULL) return 3;
-    if (filaVazia(f) == 0) return 0;
+    if (f == NULL)
+        return NULL_QUEUE;
+    if (filaVazia(f) == 0)
+        return EMPTY_QUEUE;
 
-    No_pedidosPendentes *aux = f->inicio;
+    No_pedidosPendentes *no = f->inicio;
+    f->inicio = no->proximo;
+    free(no);
 
-    if (f->inicio->proximo == NULL)
-    {
-        f->inicio = NULL;
+    if (f->inicio == NULL)
         f->fim = NULL;
-        free(aux);
-    }
-    else
-    {
-        f->inicio = aux->proximo;
-        free(aux);
-    }
+
+    f->qtd--;
 
     return 0;
 }
 
-/*int removerP(Fila_PedidosPendentes *f)
-{
-    if (f == NULL)
-        return 2;
-    if (filaVazia(f) == 0)
-        return 1;
-    No_pedidosPendentes *temp = f->inicio;
-    f->inicio = temp->proximo;
-    free(temp);
-    if (f->inicio == NULL)
-        f->fim = NULL;
-    f->qtd--;
-    return 0;
-}*/
-
 int consultarProxPedido(Fila_PedidosPendentes *f, pedidos **x)
 {
     if (f == NULL)
-        return 2;
+        return NULL_QUEUE;
     if (filaVazia(f) == 0)
-        return 1;
+        return EMPTY_QUEUE;
 
     *x = &f->inicio->valor;
 
@@ -135,9 +152,9 @@ void mostrarPedidosPendentes(Fila_PedidosPendentes *f)
 int mostrarProxPedido(Fila_PedidosPendentes *f)
 {
     if (f == NULL)
-        return 2;
+        return NULL_QUEUE;
     if (filaVazia(f) == 0)
-        return 1;
+        return EMPTY_QUEUE;
 
     pedidos *x;
     consultarProxPedido(f, &x);
