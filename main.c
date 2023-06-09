@@ -112,7 +112,7 @@ int main()
     inicializar_entregador (&esqueceu_senha_entregador);
     inicializar_entregador (&novoped_entregador);
     limpar_variavel_entregador (&esqueceu_senha_entregador);
-    inicializar_restaurante ()
+    inicializar_restaurante(&login_restaurante);
 
     // AQUI COMEÇA O PROGRAMA EM SI
 
@@ -738,7 +738,7 @@ int main()
                                 case 0: // voltar
                                     break;
 
-                                case 1: // atualizar cardapio
+                                case 1:; // atualizar cardapio
                                     int option3 = -1;
 
                                     while (option3 != 0)
@@ -808,7 +808,7 @@ int main()
 
                                     break;
 
-                                case 2: // pedidos pendentes
+                                case 2:; // pedidos pendentes
 
                                     int option4 = -1;
 
@@ -880,7 +880,7 @@ int main()
                                         {
                                             case 0:
                                                 break;
-                                                
+
                                             case 1: // alterar codigo de acesso
                                                 break;
 
