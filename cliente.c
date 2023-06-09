@@ -505,7 +505,7 @@ void copiarCliente (Cliente *A, Cliente *B) // função de auxílio. copia todas
     strcpy (B->nome, A->nome);
     strcpy (B->senha_8d, A->senha_8d);
 
-    B->pagamentos = (cartao*) realloc (B->pagamentos, A->quantidade_cartoes*sizeof(cartao));
+    B->pagamentos = (cartao*) malloc (A->quantidade_cartoes*sizeof(cartao));
     for (i = 0; i < A->quantidade_cartoes; i++)
     {
         B->pagamentos[i].cvv = A->pagamentos[i].cvv;
@@ -514,7 +514,7 @@ void copiarCliente (Cliente *A, Cliente *B) // função de auxílio. copia todas
         strcpy(B->pagamentos[i].validade, A->pagamentos[i].validade);
     }
 
-    B->historico = (pedidosC*) realloc (B->historico, A->quant_pedidos*sizeof(pedidosC));
+    B->historico = (pedidosC*) malloc (A->quant_pedidos*sizeof(pedidosC));
     for (i = 0; i < A->quant_pedidos; i++)
     {
         B->historico[i].precoTotal = A->historico[i].precoTotal;
@@ -522,7 +522,7 @@ void copiarCliente (Cliente *A, Cliente *B) // função de auxílio. copia todas
         B->historico[i].codigo = A->historico[i].codigo;
         B->historico[i].qtdPed = A->historico[i].qtdPed;
 
-        B->historico[i].ped = (pratosC*) realloc (B->historico[i].ped, A->historico[i].qtdPed*sizeof(pratosC));
+        B->historico[i].ped = (pratosC*) malloc (A->historico[i].qtdPed*sizeof(pratosC));
 
         for (j = 0; j < A->historico[i].qtdPed; j++)
         {
@@ -532,7 +532,7 @@ void copiarCliente (Cliente *A, Cliente *B) // função de auxílio. copia todas
         }
     }
 
-    B->enderecos = (endereco*) realloc (B->enderecos, A->quant_enderecos*sizeof(endereco));
+    B->enderecos = (endereco*) malloc (A->quant_enderecos*sizeof(endereco));
     for (i = 0; i < A->quant_enderecos; i++)
     {
         strcpy(B->enderecos[i].cep, A->enderecos[i].cep);
