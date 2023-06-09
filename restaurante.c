@@ -445,7 +445,7 @@ void mostrarListaRest(Lista_restaurantes *l)
     }
 }
 
-int loginRestaurante(Lista_restaurantes * l, char *email, char *senha, restaurante *item)
+int loginRestaurante(Lista_restaurantes *l, char *email, char *senha, restaurante *item)
 {
     if (l == NULL)
         return NULL_LIST;
@@ -461,7 +461,7 @@ int loginRestaurante(Lista_restaurantes * l, char *email, char *senha, restauran
 
     if ((strcmp(no->valor.email, email) == 0) && (strcmp(no->valor.senha, senha) == 0))
     {
-        copiarRestaurante(&no->valor, &(*item));
+        copiarRestaurante(&no->valor, item);
         return 0;
     }
 
@@ -537,9 +537,15 @@ void copiarRestaurante(restaurante *A, restaurante *B)
     B->cardapio = (pratosR *)malloc(sizeof(pratosR) * A->qtdCardapio);
     for (i = 0; i < A->qtdCardapio; i++)
     {
+        strcpy(A->cardapio[i].nome, "porra");
         strcpy(B->cardapio[i].nome, A->cardapio[i].nome);
+        printf("nome: %s\n", B->cardapio[i].nome);
+        strcpy(A->cardapio[i].descricao, "merda");
         strcpy(B->cardapio[i].descricao, A->cardapio[i].descricao);
+        printf("descricao: %s\n", B->cardapio->descricao);
+        A->cardapio[i].preco = 23.8;
         B->cardapio[i].preco = A->cardapio[i].preco;
+        printf("preco: %g\n", B->cardapio->preco);
     }
 
     // copiar o histórico de pedidos
@@ -561,7 +567,10 @@ void copiarRestaurante(restaurante *A, restaurante *B)
 
         B->historico[i].qtdPed = A->historico[i].qtdPed;
     }
+    printf("deus me ajuda");
 
     // Copiar a fila de pedidos pendentes
-    B->pedidosPendentes = A->pedidosPendentes; //incerta sobre, vou ver com thiago
+    B->pedidosPendentes = criar_filaPedidosPendentes();
+    copiarFilaPedidosPendentes(A->pedidosPendentes, B->pedidosPendentes);
+    printf("jesus");
 }
