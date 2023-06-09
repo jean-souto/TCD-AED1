@@ -378,12 +378,12 @@ void mostrar_pedidos (Cliente item)
     {
         printf ("[%d, ", item.historico->codigo);
         printf ("%s, ", item.historico->nome_rest);
-        printf ("%.2f, ", item.historico->precoTotal);
+        printf ("%.2f /", item.historico->precoTotal);
 
         for (j = 0; j < item.historico->qtdPed; j++)
         {
-            printf ("%s, ", item.historico->ped[j].nome);
-            printf ("%.2f", item.historico->ped[j].preco);
+            printf (" %s, ", item.historico->ped[j].nome);
+            printf ("%.2f /", item.historico->ped[j].preco);
         }
         printf ("] ");
     }

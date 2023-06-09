@@ -29,12 +29,12 @@ pedidosC* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente
 
 // FUNÇÕES EXTRAS
 
-int inicializar_entregador(entregador *item); // usada ao criar um novo cadastro de entregador (zera todas as informações para evitar lixo e erros)
-int limpar_variavel_entregador(entregador *item); // limpa a variavel para evitar erros ao sobrepor
-int inicializar_cliente(Cliente *item); // usada ao criar um novo_cliente cadastro de entregador (zera todas as informações para evitar lixo e erros)
-int inicializar_restaurante(restaurante *item);
-int limpar_variavel_cliente(Cliente *item); // limpa a variavel para evitar erros ao sobrepor
-int limpar_variavel_rest(restaurante *item); // limpa a variavel para evitar erros ao sobrepor
+void inicializar_entregador(entregador *item); // usada ao criar um novo cadastro de entregador (zera todas as informações para evitar lixo e erros)
+void limpar_variavel_entregador(entregador *item); // limpa a variavel para evitar erros ao sobrepor
+void inicializar_cliente(Cliente *item); // usada ao criar um novo_cliente cadastro de entregador (zera todas as informações para evitar lixo e erros)
+void inicializar_restaurante(restaurante *item);
+void limpar_variavel_cliente(Cliente *item); // limpa a variavel para evitar erros ao sobrepor
+void limpar_variavel_rest(restaurante *item); // limpa a variavel para evitar erros ao sobrepor
 void limpaBuffer();
 
 // MENUS
@@ -255,7 +255,7 @@ int main()
                                     break;
 
                                     case 1: // mostrar todos os restaurantes
-                                        mostrar_entregador (lista_principal_entregadores);
+                                        /*mostrar_entregador (lista_principal_entregadores);
                                         buscarEntregador (lista_principal_entregadores, &novoped_entregador);
                                         mostrar_entregador (lista_principal_entregadores);
 
@@ -271,7 +271,12 @@ int main()
                                         strcpy (novoped_pedido.ped[1].descricao, "teste descricao 2");
                                         novoped_pedido.ped[1].preco = 75.25;
 
-                                        controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPedidosAndamento);
+                                        controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPedidosAndamento);*/
+
+                                        printf ("\nAqui estao todos os restaurantes disponiveis: \n");
+                                        mostrarListaRest (lista_principal_restaurantes);
+                                        // conferir se tá funcionando e então fazer uma forma de buscar o restaurante X para fazer o pedido
+                                    
                                     break;
 
                                     case 2: // filtrar por categoria
@@ -281,6 +286,9 @@ int main()
                                     break;
 
                                     case 4: // histórico
+                                        buscarItemCliente (lista_principal_clientes, logado_cliente.codigo, &logado_cliente);
+                                        printf ("\nAqui estao seus ultimos pedidos: \n");
+                                        mostrar_pedidos (logado_cliente);
                                     break;
 
                                     case 5: // cartões (cadastrar e excluir)
@@ -482,8 +490,6 @@ int main()
                                     break;
 
                                     case 9: // procura os pedidos em andamento com o nome do cliente, se tiver algum pergunta se esta concluido e, se sim, pede a nota do entregador
-
-
 
                                         verify = 0;
 
@@ -1334,6 +1340,7 @@ pedidosglobais* removerControleGlobal(pedidosglobais *pg, int numero_pedido, int
     int i, rem = 0;
     pedidosE temp;
     pedidosR temp2;
+    pedidosC temp3;
     for (i = 0; i < *qtd; i++)
     {
         if (pg[i].pedido_em_andamento.codigo == numero_pedido)
@@ -1341,12 +1348,13 @@ pedidosglobais* removerControleGlobal(pedidosglobais *pg, int numero_pedido, int
             rem = i;
         }
     }
-
-    inserirPedidoHistorico (l_cliente, pg[rem].comprador.codigo, pg[rem].pedido_em_andamento);
     
     copiarPedidoCpE (&(pg[rem].pedido_em_andamento), &temp);
     inserirPedidoHistoricoEntregador (l_entregador, pg[rem].entregador_do_pedido.codigo, temp);
 
+    copiarPedidoCpC (&(pg[rem].pedido_em_andamento), &temp3);
+    inserirPedidoHistorico (l_cliente, pg[rem].comprador.codigo, temp3);
+    
     //copiarPedidoCpR (&(pg[rem].pedido_em_andamento), &temp2);
     // inserir no historico do restaurante aqui 
 
@@ -1387,7 +1395,7 @@ pedidosC* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente
 
 // funções extras
 
-int inicializar_entregador(entregador *item) // usada ao criar um novo cadastro de entregador (zera todas as informações para evitar lixo e erros)
+void inicializar_entregador(entregador *item) // usada ao criar um novo cadastro de entregador (zera todas as informações para evitar lixo e erros)
 {
     item->corridas = 0;
     item->status = 0;
@@ -1396,10 +1404,9 @@ int inicializar_entregador(entregador *item) // usada ao criar um novo cadastro 
     item->rank.total = 0;
     item->quant_pedidos = 0;
     item->historico = NULL;
-    return 0;
 }
 
-int limpar_variavel_entregador(entregador *item) // limpa a variavel para evitar erros ao sobrepor
+void limpar_variavel_entregador(entregador *item) // limpa a variavel para evitar erros ao sobrepor
 {
     strcpy(item->cpf, "000");
     strcpy(item->email, "000");
@@ -1408,7 +1415,7 @@ int limpar_variavel_entregador(entregador *item) // limpa a variavel para evitar
     inicializar_entregador(item);
 }
 
-int inicializar_cliente(Cliente *item) // usada ao criar um novo_cliente cadastro de entregador (zera todas as informações para evitar lixo e erros)
+void inicializar_cliente(Cliente *item) // usada ao criar um novo_cliente cadastro de entregador (zera todas as informações para evitar lixo e erros)
 {
     item->gasto_total = 0;
     item->quantidade_cartoes = 0;
@@ -1417,10 +1424,9 @@ int inicializar_cliente(Cliente *item) // usada ao criar um novo_cliente cadastr
     item->historico = NULL;
     item->pagamentos = NULL;
     item->enderecos = NULL;
-    return 0;
 }
 
-int inicializar_restaurante(restaurante *item)
+void inicializar_restaurante(restaurante *item)
 {
     strcpy(item->categoria, "-");
     item->cardapio = NULL;
@@ -1428,7 +1434,6 @@ int inicializar_restaurante(restaurante *item)
     item->historico = NULL;
     item->status = -1;
     item->pedidosPendentes = NULL;
-    return 0;
 }
 
 int confirmarSenha(char *str1, char *str2)
@@ -1444,7 +1449,7 @@ int confirmarSenha(char *str1, char *str2)
     return 0;
 }
 
-int limpar_variavel_cliente(Cliente *item) // limpa a variavel para evitar erros ao sobrepor
+void limpar_variavel_cliente(Cliente *item) // limpa a variavel para evitar erros ao sobrepor
 {
     strcpy(item->cpf, "000");
     strcpy(item->email, "000");
@@ -1454,7 +1459,7 @@ int limpar_variavel_cliente(Cliente *item) // limpa a variavel para evitar erros
     inicializar_cliente(item);
 }
 
-int limpar_variavel_rest(restaurante *item) // limpa a variavel para evitar erros ao sobrepor
+void limpar_variavel_rest(restaurante *item) // limpa a variavel para evitar erros ao sobrepor
 {
     strcpy(item->email, "000");
     strcpy(item->nome, "000");

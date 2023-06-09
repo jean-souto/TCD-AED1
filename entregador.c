@@ -482,7 +482,7 @@ int inserirPedidoHistoricoEntregador (Lista_entregadores *l, int codigo, pedidos
         aux->valor.historico[aux->valor.quant_pedidos-1].qtdPed = novo_pedido.qtdPed;
         strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].nome_rest, novo_pedido.nome_rest);
 
-        aux->valor.historico->ped = (pratosE*) malloc (novo_pedido.qtdPed*sizeof(pratosE));
+        aux->valor.historico[aux->valor.quant_pedidos-1].ped = (pratosE*) malloc (novo_pedido.qtdPed*sizeof(pratosE));
 
         for (i = 0; i < novo_pedido.qtdPed; i++)
         {
@@ -546,12 +546,12 @@ void mostrar_pedidos_entregador (entregador item)
     {
         printf ("[%d, ", item.historico->codigo);
         printf ("%s, ", item.historico->nome_rest);
-        printf ("%.2f, ", item.historico->precoTotal);
+        printf ("%.2f /", item.historico->precoTotal);
 
         for (j = 0; j < item.historico->qtdPed; j++)
         {
-            printf ("%s, ", item.historico->ped[j].nome);
-            printf ("%.2f", item.historico->ped[j].preco);
+            printf (" %s, ", item.historico->ped[j].nome);
+            printf ("%.2f /", item.historico->ped[j].preco);
         }
         printf ("] ");
     }
