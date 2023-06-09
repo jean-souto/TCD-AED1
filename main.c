@@ -73,6 +73,7 @@ int main()
     int codigo_loginR;
     pratosR novo_prato;
     char nome_prato[40];
+    Fila_PedidosPendentes *fila_pedidosPendentes;
 
     // declarações relacionadas aos entregadores
     Lista_entregadores *lista_principal_entregadores;
@@ -97,13 +98,13 @@ int main()
     lista_principal_restaurantes = criar_listaRestaurantes();
 
     // criando testes
-    /* restaurante teste;
+    restaurante teste;
     strcpy(teste.nome, "Fast Acai");
     strcpy(teste.email, "fast@gmail.com");
     strcpy(teste.senha, "bem vinde");
     inicializar_restaurante(&teste);
     inserirInicioRest(lista_principal_restaurantes, teste);
-    mostrarListaRest(lista_principal_restaurantes); */
+    mostrarListaRest(lista_principal_restaurantes); 
 
     strcpy(loginADM, "souADM");
     strcpy(senhaADM, "123ADM");
@@ -819,9 +820,13 @@ int main()
                                                 break;
 
                                             case 1: // mostrar a fila toda
+                                                printf("PEDIDOS PENDENTES\n");
+                                                mostrarPedidosPendentes(fila_pedidosPendentes);
                                                 break;
 
                                             case 2: // mostrar apenas o proximo
+                                                printf("PROXIMO PEDIDO\n");
+                                                //consultarProxPedido(fila_pedidosPendentes, &);
                                                 break;
 
                                             default:
