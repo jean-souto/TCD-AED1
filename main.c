@@ -24,7 +24,7 @@ void copiarPedidoCpC(pedidosC *A, pedidosC *B); // criar possivel funcao que cop
 void copiarPedidoCpE(pedidosC *A, pedidosE *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
 void copiarPedidoCpR(pedidosC *A, pedidosR *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
 int inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidosC pedido_atual, Cliente cliente_atual, int *qtd);
-int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int cod_entregador, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador);
+int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador, float nota);
 int buscarPedidoAndamento (pedidosglobais *pg, int qtd, char *nome_cliente, pedidosC *em_andamento);
 
 // FUNÇÕES EXTRAS
@@ -67,7 +67,7 @@ int main()
     Cliente esqueceu_senha_cliente, inicializados_cliente;
     cartao novo_cartao;
     endereco novo_endereco;
-    pedidosC *em_andamento;
+    pedidosC *em_andamento, novoped_pedido;
 
     // declarações relacionadas aos restaurantes
     Lista_restaurantes *lista_principal_restaurantes;
@@ -77,7 +77,7 @@ int main()
 
     // declarações relacionadas aos entregadores
     Lista_entregadores *lista_principal_entregadores;
-    entregador novo_entregador, logado_entregador, esqueceu_senha_entregador;
+    entregador novo_entregador, logado_entregador, esqueceu_senha_entregador, novoped_entregador;
     int cod_novo = -1;
     int codigo_loginE = -1;
 
@@ -256,7 +256,22 @@ int main()
                                     break;
 
                                     case 1: // mostrar todos os restaurantes
-                                        printf ("blablablabalablabalabalaba");
+                                        mostrar_entregador (lista_principal_entregadores);
+                                        buscarEntregador (lista_principal_entregadores, &novoped_entregador);
+                                        mostrar_entregador (lista_principal_entregadores);
+
+                                        novoped_pedido.codigo = 123;
+                                        novoped_pedido.precoTotal = 125.25;
+                                        strcpy(novoped_pedido.nome_rest, "mariass");
+                                        novoped_pedido.qtdPed = 2;
+                                        novoped_pedido.ped = (pratosC*) realloc (novoped_pedido.ped, 2*sizeof(pratosC));
+                                        strcpy (novoped_pedido.ped[0].nome, "teste1");
+                                        strcpy (novoped_pedido.ped[0].descricao, "teste descricao 1");
+                                        novoped_pedido.ped[0].preco = 50;
+                                        strcpy (novoped_pedido.ped[1].nome, "teste2");
+                                        strcpy (novoped_pedido.ped[1].descricao, "teste descricao 2");
+                                        novoped_pedido.ped[1].preco = 75.25;
+                                        inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, qtdPedidosAndamento);
                                     break;
 
                                     case 2: // filtrar por categoria
@@ -467,6 +482,9 @@ int main()
                                     break;
 
                                     case 9: // procura os pedidos em andamento com o nome do cliente, se tiver algum pergunta se esta concluido e, se sim, pede a nota do entregador
+
+
+
                                         verify = 0;
                                         verify = buscarPedidoAndamento (controlePedidos, qtdPedidosAndamento, logado_cliente.nome, em_andamento);
                                         int i, j;
@@ -493,11 +511,21 @@ int main()
 
                                             if (verify == 1)
                                             {
+                                                float nota = 0;
                                                 i = 0;
                                                 printf ("Digite o numero do pedido que chegou: ");
                                                 scanf ("%d", &i);
 
-                                                // removerControleGlobal (controlePedidos, em_andamento[i-1].codigo); QUE INFERNO BUCETA CU CAPETA
+                                                printf ("\nQual nota voce da para o entregador (0 - 5)? ");
+                                                scanf ("%f", &nota);
+                                                
+                                                removerControleGlobal (controlePedidos, em_andamento[i-1].codigo, &qtdPedidosAndamento, lista_principal_clientes, lista_principal_entregadores, nota); // QUE INFERNO BUCETA CU CAPETA
+                                            
+                                                free(em_andamento);
+                                            }
+                                            else
+                                            {
+                                                printf ("\nTudo bem! Nao esqueca de nos avisar caso chegue.\n");
                                             }
                                         }
 
@@ -850,9 +878,7 @@ int main()
             break;
 
             case 3:; // sou entregador
-
-                option = -1;
-                
+  
                 while (option != 3) // voltar
                 {
                     option = menu_inicial_entregador();
@@ -1275,7 +1301,7 @@ int inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedid
     return 0;
 }
 
-int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int cod_entregador, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador) // deve remover do controle, liberar entregador e adicionar aos historicos
+int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador, float nota) // deve remover do controle, liberar entregador e adicionar aos historicos
 {
     int i, rem;
     pedidosE temp;
@@ -1293,6 +1319,8 @@ int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int cod_entrega
     inserirPedidoHistoricoEntregador (l_entregador, pg[rem].entregador_do_pedido.codigo, temp);
     copiarPedidoCpR (&(pg[rem].pedido_em_andamento), &temp2);
     // inserir no historico do restaurante aqui 
+
+    adicionarCorridaNota(l_entregador, pg[rem].entregador_do_pedido.codigo, nota); // adiciona a nota ao entregador e libera ele
 
     for (i = rem; i < *qtd-1; i++)
     {
