@@ -859,6 +859,8 @@ int main()
 
                                         switch (op)
                                         {
+                                            case 0:
+                                                break;
                                             case 1: // alterar codigo de acesso
                                                 break;
 
