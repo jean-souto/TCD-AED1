@@ -75,7 +75,7 @@ int tamanhoRest(Lista_restaurantes *l)
         tam++;
         no = no->prox;
     }
-    
+
     return tam;
 }
 
@@ -164,6 +164,25 @@ int inserirPosicaoRest(Lista_restaurantes *l, restaurante item, int pos) //att e
         }
     }
     return i;
+}
+
+int inserirPratoRest(Lista_restaurantes *l, pratosR novoPrato, restaurante *item)
+{
+    if (l == NULL) return NULL_LIST;
+    if (listaVaziaRest(l) == 0) EMPTY_LIST;
+
+    if (buscarRestNome(l, item->nome) == 0)
+    {
+        item->cardapio = (pratosR *)realloc(item->cardapio, (item->qtdCardapio + 1) * sizeof(pratosR));
+
+        if (item->cardapio != NULL)
+        {
+            item->cardapio[item->qtdCardapio] = novoPrato;
+            item->qtdCardapio++;
+            return 0;
+        }
+    }
+    return 1;
 }
 
 // remove no inicio da lista
@@ -266,7 +285,33 @@ int removerRestCodigo(Lista_restaurantes *l, int codigo)
     return 1;
 }
 
+int removerPratoRest(Lista_restaurantes *l, char *nomePrato, restaurante *item)
+{
+    if (l == NULL) return NULL_LIST;
+    if (listaVaziaRest(l) == 0) EMPTY_LIST;
+    
+    if (buscarRestNome(l, item->nome) == 0)
+    {
+        for (int i = 0; i < item->qtdCardapio; i++)
+        {
+            if (strcmp(item->cardapio[i].nome, nomePrato) == 0)
+            {
+                // Deslocar os pratos restantes para sobrepor o que deseja ser removido
+                for (int j = i; j < item->qtdCardapio - 1; j++)
+                {
+                    item->cardapio[j] = item->cardapio[j + 1];
+                }
 
+                item->cardapio = (pratosR *)realloc(item->cardapio, (item->qtdCardapio - 1) * sizeof(pratosR));
+                (item->qtdCardapio)--;
+
+                return 0;
+            }
+        }
+    }
+
+    return 1;
+}
 
 // busca o restaurante correspondente ao codigo e retorna ele por parametro
 int buscarRestCodigo(Lista_restaurantes *l, int codigo, restaurante *item)
@@ -346,12 +391,32 @@ void mostrarInfoRest(Lista_restaurantes *l)
         while (no != NULL)
         {
             printf("%s\n", no->valor.nome);
-            // printf("Codigo: %d\n", no->valor.codigo);
+            printf("Codigo: %d\n", no->valor.codigo);
             printf("Categoria: %d\n", no->valor.categoria);
-
             printf("---------------------------------------------\n");
             no = no->prox;
         }
+    }
+}
+
+void mostrarCardapio(Lista_restaurantes *l, restaurante *item)
+{
+    if (l != NULL)
+    {
+        printf("[ Cardapio ]");
+
+        if (buscarRestNome(l, item->nome) == 0)
+        {
+            for (int i = 0; i < item->qtdCardapio; i++)
+            {
+                printf("%s\n"
+                       "%s\n"
+                       "%0.2f\n",
+                       item->cardapio->nome, item->cardapio->descricao, item->cardapio->preco);
+            }
+            
+        }
+
     }
 }
 
@@ -466,10 +531,9 @@ void copiarRestaurante(restaurante *A, restaurante *B)
     B->codigo = A->codigo;
     B->status = A->status;
 
-    // copiar o menu
-    int qtdPratos = (sizeof(A->menu)) / (sizeof(pratosR));
-    B->menu = (pratosR *)malloc(sizeof(pratosR) * qtdPratos);
-    memcpy(B->menu, A->menu, sizeof(pratosR) * qtdPratos); // funcao da <string.h> que faz uma cópia de um bloco de memória byte a byte de uma área de memória para outra.
+    // copiar o cardapio
+    B->cardapio = (pratosR *)malloc(sizeof(pratosR) * A->qtdCardapio);
+    memcpy(B->cardapio, A->cardapio, sizeof(pratosR) * A->qtdCardapio); // funcao da <string.h> que faz uma cópia de um bloco de memória byte a byte de uma área de memória para outra.
 
     // copiar o histórico de pedidos
     B->historico = (pedidosR *)malloc(sizeof(pedidosR) * A->historico->qtdPed);
