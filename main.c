@@ -646,15 +646,15 @@ int main()
                         {
                             printf("\nDigite o e-mail: ");
                             setbuf(stdin, NULL);
-                            scanf("%[^\n]s", &email);
+                            scanf("%[^\n]s", email);
 
                             printf("\nDigite a senha: ");
                             setbuf(stdin, NULL);
-                            scanf("%[^\n]s", &senha);
-                            printf("%d\n", verify);
-
+                            scanf("%[^\n]s", senha);
+                            
                             verify = loginRestaurante(lista_principal_restaurantes, email, senha, &logado_restaurante);
-                            printf("%d\n", verify);
+                            printf("%dAAAAAAA\n", verify);
+
                             strcpy(email, " ");
                             strcpy(senha, " ");
 
@@ -683,11 +683,11 @@ int main()
                                 {
                                     printf("\nDigite o email: ");
                                     setbuf(stdin, NULL);
-                                    scanf("%[^\n]s", &email);
+                                    scanf("%[^\n]s", email);
 
                                     printf("\nDigite o codigo do restaurante: ");
                                     setbuf(stdin, NULL);
-                                    scanf("%[^\n]s", &codigo_loginR);
+                                    scanf("%[^\n]s", codigo_loginR);
 
                                     verify = buscarRestEmailCodigo(lista_principal_restaurantes, email, codigo_loginR, &login_restaurante);
                                     printf("%d", verify);
@@ -703,11 +703,11 @@ int main()
 
                                             printf("\nDigite sua nova senha: "); 
                                             setbuf(stdin, NULL);
-                                            scanf("%[^\n]s", &senha);
+                                            scanf("%[^\n]s", senha);
 
                                             printf("\nDigite sua nova senha novamente: ");
                                             setbuf(stdin, NULL);
-                                            scanf("%[^\n]s", &confirmSenha);
+                                            scanf("%[^\n]s", confirmSenha);
 
                                             verify = alterarSenhaRest(lista_principal_restaurantes, codigo_loginR, senha, confirmSenha);
 
