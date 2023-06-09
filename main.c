@@ -68,7 +68,8 @@ int main()
 
     // declarações relacionadas aos restaurantes
     Lista_restaurantes *lista_principal_restaurantes;
-    restaurante novo_restaurante, login_restaurante, logado_restaurante;
+    restaurante novo_restaurante, logado_restaurante;
+    restaurante login_restaurante, inicializados_restaurante;
     int codigo_loginR;
     pratosR novo_prato;
     char nome_prato[40];
@@ -96,13 +97,13 @@ int main()
     lista_principal_restaurantes = criar_listaRestaurantes();
 
     // criando testes
-    restaurante teste;
+    /* restaurante teste;
     strcpy(teste.nome, "Fast Acai");
     strcpy(teste.email, "fast@gmail.com");
     strcpy(teste.senha, "bem vinde");
     inicializar_restaurante(&teste);
     inserirInicioRest(lista_principal_restaurantes, teste);
-    mostrarListaRest(lista_principal_restaurantes);
+    mostrarListaRest(lista_principal_restaurantes); */
 
     strcpy(loginADM, "souADM");
     strcpy(senhaADM, "123ADM");
@@ -111,6 +112,7 @@ int main()
     inicializar_entregador (&esqueceu_senha_entregador);
     inicializar_entregador (&novoped_entregador);
     limpar_variavel_entregador (&esqueceu_senha_entregador);
+    inicializar_restaurante ()
 
     // AQUI COMEÇA O PROGRAMA EM SI
 
@@ -120,7 +122,6 @@ int main()
 
         switch (option)
         {
-
             case 0: // sair
                 return 0;
             break;
@@ -600,43 +601,44 @@ int main()
 
                     switch (option)
                     {
-                    case 0: // Sair
-                        return 0;
+                        case 0: // Sair
+                            return 0;
                         break;
 
-                    case 1: // Quero me cadastrar
+                        case 1: // Quero me cadastrar
 
-                        printf("\nMuito bem! Vamos realizar o cadastro: \n");
+                            printf("\nMuito bem! Vamos realizar o cadastro: \n");
 
-                        printf("\nDigite o nome do restaurante: ");
-                        setbuf(stdin, NULL);
-                        scanf("%[^\n]s", novo_restaurante.nome);
+                            printf("\nDigite o nome do restaurante: ");
+                            setbuf(stdin, NULL);
+                            scanf("%[^\n]s", novo_restaurante.nome);
 
-                        printf("\nDigite o e-mail: ");
-                        setbuf(stdin, NULL);
-                        scanf("%[^\n]s", novo_restaurante.email);
+                            printf("\nDigite o e-mail: ");
+                            setbuf(stdin, NULL);
+                            scanf("%[^\n]s", novo_restaurante.email);
 
-                        printf("\nDigite a senha (ate 14 digitos): ");
-                        setbuf(stdin, NULL);
-                        scanf("%[^\n]s", senha);
+                            printf("\nDigite a senha (ate 14 digitos): ");
+                            setbuf(stdin, NULL);
+                            scanf("%[^\n]s", senha);
 
-                        printf("\nDigite a senha novamente (ate 14 digitos): ");
-                        setbuf(stdin, NULL);
-                        scanf("%[^\n]s", confirmSenha);
+                            printf("\nDigite a senha novamente (ate 14 digitos): ");
+                            setbuf(stdin, NULL);
+                            scanf("%[^\n]s", confirmSenha);
 
-                        if (strcmp(senha, confirmSenha) == 0) {
-                            strcpy(novo_restaurante.senha, senha);
-                        } else {
-                            printf("Senha Incorreta!\n");
-                            break;
-                        }
+                            if (strcmp(senha, confirmSenha) == 0)
+                            {
+                                strcpy(novo_restaurante.senha, senha);
+                            } else {
+                                printf("Senha Incorreta!\n");
+                                break;
+                            }
 
-                        inicializar_restaurante(&novo_restaurante);
+                            inicializar_restaurante(&novo_restaurante);
 
-                        if ((inserirFimRest(lista_principal_restaurantes, novo_restaurante)) == 0)
-                        printf("\nCadastro realizado com sucesso!\n");
-                        limpar_variavel_rest(&novo_restaurante);
-                        mostrarListaRest(lista_principal_restaurantes);
+                            if ((inserirFimRest(lista_principal_restaurantes, novo_restaurante)) == 0)
+                                printf("\nCadastro realizado com sucesso!\n");
+                            limpar_variavel_rest(&novo_restaurante);
+                            mostrarListaRest(lista_principal_restaurantes);
                         break;
 
                     case 2:; // Ja tenho cadastro
@@ -646,11 +648,11 @@ int main()
                         {
                             printf("\nDigite o e-mail: ");
                             setbuf(stdin, NULL);
-                            scanf("%[^\n]s", email);
+                            scanf("%[^\n]s", &email);
 
                             printf("\nDigite a senha: ");
                             setbuf(stdin, NULL);
-                            scanf("%[^\n]s", senha);
+                            scanf("%[^\n]s", &senha);
                             
                             verify = loginRestaurante(lista_principal_restaurantes, email, senha, &logado_restaurante);
                             printf("%dAAAAAAA\n", verify);
@@ -661,14 +663,11 @@ int main()
                             if (verify != 0)
                             {
                                 printf("\nLogin ou senha invalidos. Tente novamente!\n");
-                            }
-                            if (verify == 0)
+                            } else if (verify == 0)
                             {
                                 printf("\nLogin efetuado com sucesso. Bem vindos de volta, %s!\n", logado_restaurante.nome);
                                 break;
                             }
-
-                            if (verify == 0) break;
 
                             printf("\nTentar Novamente (Digite 0)\n"
                                    "Esqueceu a senha? (Digite 5)\n"
@@ -677,6 +676,7 @@ int main()
 
                             if (verify == 6)
                                 break;
+
                             if (verify == 5)
                             {
                                 while (verify != 0)
@@ -725,25 +725,27 @@ int main()
                             if (verify == 0) verify = 1;
                         }
 
-                        if (verify == 5) break; // sair e voltar ao menu anterior
+                        if (verify == 6) break; // sair e voltar ao menu anterior
+                        
+                        int option2 = -1;
 
-                        while (option != 4)
+                        while (option2 != 4)
                         {
-                            option = menu_restaurante();
-                            int op;
+                            option2 = menu_restaurante();
                            
-                            switch (option)
+                            switch (option2)
                             {
                                 case 0: // voltar
                                     break;
 
                                 case 1: // atualizar cardapio
+                                    int option3 = -1;
 
-                                    while (op != 0)
+                                    while (option3 != 0)
                                     {
-                                        //op = menu_Cardapio();
+                                        //option3 = menu_Cardapio();
 
-                                        switch (op)
+                                        switch (option3)
                                         {
                                             case 0:
                                                 printf("Saindo...\n");
@@ -807,12 +809,14 @@ int main()
                                     break;
 
                                 case 2: // pedidos pendentes
-                                    
-                                    while ((op != 0))
-                                    {
-                                        //op = menu_PedidosPendentes();
 
-                                        switch (op)
+                                    int option4 = -1;
+
+                                    while ((option4 != 0))
+                                    {
+                                        //option4 = menu_PedidosPendentes();
+
+                                        switch (option4)
                                         {
                                             case 0: // voltar
                                                 break;
@@ -833,12 +837,17 @@ int main()
 
                                 case 3: // historico de pedidos
                                     /*
-                                    while ((op != voltar))
-                                    {
-                                        op = menu_;
+                                    int option5 = -1;
 
-                                        switch (op)
+                                    while ((option5 != 0))
+                                    {
+                                        option5 = menu_;
+
+                                        switch (option5)
                                         {
+                                            case 0:
+                                                break;
+
                                             case 1: // todos os pedidos ja feitos no restaurante
                                                 break;
 
@@ -860,14 +869,18 @@ int main()
 
                                 case 4: // configuracoes
                                     /*
-                                    while ((op != voltar))
-                                    {
-                                        op = menu_;
 
-                                        switch (op)
+                                    int option6 = -1;
+
+                                    while ((option6 != 0))
+                                    {
+                                        option6 = menu_;
+
+                                        switch (option6)
                                         {
                                             case 0:
                                                 break;
+                                                
                                             case 1: // alterar codigo de acesso
                                                 break;
 
@@ -885,7 +898,7 @@ int main()
                                         }
                                     }
                                     */
-                                    break;       
+                                break;       
                            }
                            
                         }
