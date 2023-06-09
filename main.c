@@ -104,7 +104,7 @@ int main()
     strcpy(teste.senha, "bem vinde");
     inicializar_restaurante(&teste);
     inserirInicioRest(lista_principal_restaurantes, teste);
-    mostrarListaRest(lista_principal_restaurantes); 
+    // mostrarListaRest(lista_principal_restaurantes); 
 
     strcpy(loginADM, "souADM");
     strcpy(senhaADM, "123ADM");
