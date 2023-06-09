@@ -4,25 +4,25 @@
 #include <string.h>
 
 // STRUCTS
-typedef struct plate
+typedef struct plateR
 {
     char nome[40];
     char descricao[100];
     float preco;
-} pratos;
+} pratosR;
 
-typedef struct ped
+typedef struct pedR
 {
     int codigo;
     float precoTotal;
     char nome_rest[40];
-    pratos *ped; // vetor em que cada elemento eh um prato e juntando todos os pratos que o cliente pediu torna-se o pedido completo
+    pratosR *ped; // vetor em que cada elemento eh um prato e juntando todos os pratos que o cliente pediu torna-se o pedido completo
     int qtdPed;  // tamanho do vetor
-} pedidos;
+} pedidosR;
 
 typedef struct no_pedidosPendentes
 {
-    pedidos valor;
+    pedidosR valor;
     struct no_pedidosPendentes *proximo;
 } No_pedidosPendentes;
 
@@ -60,7 +60,7 @@ int filaCheia(Fila_PedidosPendentes *f)
     return 1;
 }
 
-int inserirPedidoPendente(Fila_PedidosPendentes *f, pedidos *x)
+int inserirPedidoPendente(Fila_PedidosPendentes *f, pedidosR *x)
 {
     if (f == NULL)
         return NULL_QUEUE;
@@ -99,7 +99,7 @@ int removerPedidoPendente(Fila_PedidosPendentes *f)
     return 0;
 }
 
-int consultarProxPedido(Fila_PedidosPendentes *f, pedidos **x)
+int consultarProxPedido(Fila_PedidosPendentes *f, pedidosR **x)
 {
     if (f == NULL)
         return NULL_QUEUE;
@@ -156,7 +156,7 @@ int mostrarProxPedido(Fila_PedidosPendentes *f)
     if (filaVazia(f) == 0)
         return EMPTY_QUEUE;
 
-    pedidos *x;
+    pedidosR *x;
     consultarProxPedido(f, &x);
 
     printf("Proximo Pedido: ");
@@ -164,6 +164,22 @@ int mostrarProxPedido(Fila_PedidosPendentes *f)
     for (int i = 0; i < x->qtdPed; i++)
     {
         printf("%s | %f.2\n", x->ped->nome, x->ped->preco);
+    }
+
+    return 0;
+}
+
+int copiarFilaPedidosPendentes(Fila_PedidosPendentes *f1, Fila_PedidosPendentes *f2)
+{
+    if (f1 == NULL || f2 == NULL)
+        return NULL_QUEUE;
+
+    No_pedidosPendentes *no = f1->inicio;
+
+    while (no != NULL)
+    {
+        inserirPedidoPendente(f2, &no->valor);
+        no = no->proximo;
     }
 
     return 0;
