@@ -271,7 +271,7 @@ int main()
                                         strcpy (novoped_pedido.ped[1].nome, "teste2");
                                         strcpy (novoped_pedido.ped[1].descricao, "teste descricao 2");
                                         novoped_pedido.ped[1].preco = 75.25;
-                                        inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, qtdPedidosAndamento);
+                                        inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPedidosAndamento);
                                     break;
 
                                     case 2: // filtrar por categoria
