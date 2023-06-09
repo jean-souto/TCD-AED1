@@ -531,13 +531,36 @@ void copiarRestaurante(restaurante *A, restaurante *B)
     B->codigo = A->codigo;
     B->status = A->status;
 
-    // copiar o cardapio
+    int i, j;
+
+    // copiar o cardápio
     B->cardapio = (pratosR *)malloc(sizeof(pratosR) * A->qtdCardapio);
-    memcpy(B->cardapio, A->cardapio, sizeof(pratosR) * A->qtdCardapio); // funcao da <string.h> que faz uma cópia de um bloco de memória byte a byte de uma área de memória para outra.
+    for (i = 0; i < A->qtdCardapio; i++)
+    {
+        strcpy(B->cardapio[i].nome, A->cardapio[i].nome);
+        strcpy(B->cardapio[i].descricao, A->cardapio[i].descricao);
+        B->cardapio[i].preco = A->cardapio[i].preco;
+    }
 
     // copiar o histórico de pedidos
     B->historico = (pedidosR *)malloc(sizeof(pedidosR) * A->historico->qtdPed);
-    memcpy(B->historico, A->historico, sizeof(pedidosR) * A->historico->qtdPed); // mesma funcao utilizada anteriormente que permite fazer as cópias de forma mais eficiente e tem verificação de erro
+    for (i = 0; i < A->historico->qtdPed; i++)
+    {
+        B->historico[i].codigo = A->historico[i].codigo;
+        B->historico[i].precoTotal = A->historico[i].precoTotal;
+        strcpy(B->historico[i].nome_rest, A->historico[i].nome_rest);
+
+        // Copiar o vetor de pratos
+        B->historico[i].ped = (pratosR *)malloc(sizeof(pratosR) * A->historico[i].qtdPed);
+        for (j = 0; j < A->historico[i].qtdPed; j++)
+        {
+            strcpy(B->historico[i].ped[j].nome, A->historico[i].ped[j].nome);
+            strcpy(B->historico[i].ped[j].descricao, A->historico[i].ped[j].descricao);
+            B->historico[i].ped[j].preco = A->historico[i].ped[j].preco;
+        }
+
+        B->historico[i].qtdPed = A->historico[i].qtdPed;
+    }
 
     // Copiar a fila de pedidos pendentes
     B->pedidosPendentes = A->pedidosPendentes; //incerta sobre, vou ver com thiago
