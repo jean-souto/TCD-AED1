@@ -392,7 +392,7 @@ void mostrarInfoRest(Lista_restaurantes *l)
         {
             printf("%s\n", no->valor.nome);
             printf("Codigo: %d\n", no->valor.codigo);
-            printf("Categoria: %d\n", no->valor.categoria);
+            printf("Categoria: %s\n", no->valor.categoria);
             printf("---------------------------------------------\n");
             no = no->prox;
         }
@@ -486,7 +486,7 @@ int alterarSenhaRest(Lista_restaurantes * l, int codigo, char *novaSenha, char *
     {
         if (strcmp(novaSenha, confirmNovaSenha) == 0)
         {
-            strcmp(no->valor.senha, novaSenha);
+            strcpy(no->valor.senha, novaSenha);
             return 0;
          }
     }
