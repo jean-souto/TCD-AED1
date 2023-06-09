@@ -374,7 +374,7 @@ void copiarEntregador (entregador *A, entregador *B) // função de auxílio. co
     //if (B->historico == NULL) B->historico = (pedidosE*) malloc (sizeof(pedidosE));
     if (A->historico != NULL)
     {
-        B->historico = (pedidosE*) realloc (B->historico, A->quant_pedidos*sizeof(pedidosE));
+        B->historico = (pedidosE*) malloc (A->quant_pedidos*sizeof(pedidosE));
         for (i = 0; i < A->quant_pedidos; i++)
         {
             B->historico[i].precoTotal = A->historico[i].precoTotal;
@@ -382,7 +382,7 @@ void copiarEntregador (entregador *A, entregador *B) // função de auxílio. co
             B->historico[i].codigo = A->historico[i].codigo;
             B->historico[i].qtdPed = A->historico[i].qtdPed;
 
-            B->historico[i].ped = (pratosE*) realloc (B->historico[i].ped, A->historico[i].qtdPed*sizeof(pratosE));
+            B->historico[i].ped = (pratosE*) malloc (A->historico[i].qtdPed*sizeof(pratosE));
 
             for (j = 0; j < A->historico[i].qtdPed; j++)
             {
@@ -482,9 +482,10 @@ int inserirPedidoHistoricoEntregador (Lista_entregadores *l, int codigo, pedidos
         aux->valor.historico[aux->valor.quant_pedidos-1].qtdPed = novo_pedido.qtdPed;
         strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].nome_rest, novo_pedido.nome_rest);
 
+        aux->valor.historico->ped = (pratosE*) malloc (novo_pedido.qtdPed*sizeof(pratosE));
+
         for (i = 0; i < novo_pedido.qtdPed; i++)
         {
-            aux->valor.historico->ped = (pratosE*) realloc (aux->valor.historico->ped, novo_pedido.qtdPed*sizeof(pratosE));
             strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].nome, novo_pedido.ped[i].nome);
             strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].descricao, novo_pedido.ped[i].descricao);
             aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].preco = novo_pedido.ped[i].preco;
@@ -534,4 +535,25 @@ int trocaEmail (Lista_entregadores *l, int codigo, char *novo_email)
         return 0;
     }
     return 1;
+}
+
+void mostrar_pedidos_entregador (entregador item)
+{
+    int i = 0;
+    int j = 0;
+    printf (" ( ");
+    for (i = 0; i < item.quant_pedidos; i++)
+    {
+        printf ("[%d, ", item.historico->codigo);
+        printf ("%s, ", item.historico->nome_rest);
+        printf ("%.2f, ", item.historico->precoTotal);
+
+        for (j = 0; j < item.historico->qtdPed; j++)
+        {
+            printf ("%s, ", item.historico->ped[j].nome);
+            printf ("%.2f", item.historico->ped[j].preco);
+        }
+        printf ("] ");
+    }
+    printf (") ");
 }

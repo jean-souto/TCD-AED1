@@ -288,19 +288,21 @@ int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidosC novo_pedido)
     {  
         aux->valor.quant_pedidos++;
         aux->valor.historico = (pedidosC*) realloc (aux->valor.historico, aux->valor.quant_pedidos*sizeof(pedidosC));
-        
+
         aux->valor.historico[aux->valor.quant_pedidos-1].codigo = novo_pedido.codigo;
         aux->valor.historico[aux->valor.quant_pedidos-1].precoTotal = novo_pedido.precoTotal;
         aux->valor.historico[aux->valor.quant_pedidos-1].qtdPed = novo_pedido.qtdPed;
         strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].nome_rest, novo_pedido.nome_rest);
 
+        aux->valor.historico[aux->valor.quant_pedidos-1].ped = (pratosC*) malloc (novo_pedido.qtdPed*sizeof(pratosC));
+
         for (i = 0; i < novo_pedido.qtdPed; i++)
         {
-            aux->valor.historico->ped = (pratosC*) realloc (aux->valor.historico->ped, novo_pedido.qtdPed*sizeof(pratosC));
             strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].nome, novo_pedido.ped[i].nome);
             strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].descricao, novo_pedido.ped[i].descricao);
             aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].preco = novo_pedido.ped[i].preco;
         }
+        printf ("CHEGOU");
         return 0;
     } 
     return 1;

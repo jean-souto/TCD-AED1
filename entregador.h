@@ -78,6 +78,7 @@ int limparEntregador (Lista_entregadores *l); // ok
 int tamanhoEntregador (Lista_entregadores *l); // ok
 void mostrar_entregador (Lista_entregadores *l); // ok
 void mostrar_tudo_entregador (Lista_entregadores *l); // ok
+void mostrar_pedidos_entregador (entregador item); 
 void copiarEntregador (entregador *A, entregador *B); // ok
 
 //auxiliares 3

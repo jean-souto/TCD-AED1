@@ -24,7 +24,7 @@ void copiarPedidoCpC(pedidosC *A, pedidosC *B); // criar possivel funcao que cop
 void copiarPedidoCpE(pedidosC *A, pedidosE *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
 void copiarPedidoCpR(pedidosC *A, pedidosR *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
 pedidosglobais* inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidosC pedido_atual, Cliente cliente_atual, int *qtd);
-int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador, float nota);
+pedidosglobais* removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador, float nota);
 pedidosC* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente, int *num_pedidos);
 
 // FUNÇÕES EXTRAS
@@ -487,11 +487,10 @@ int main()
 
 
                                         verify = 0;
-                                        printf ("AAAAAAA");
-                                        em_andamento = buscarPedidoAndamento (controlePedidos, qtdPedidosAndamento, logado_cliente.codigo, &verify);
-                                        int i, j;
 
-                                        printf ("BBBBBB");
+                                        em_andamento = buscarPedidoAndamento (controlePedidos, qtdPedidosAndamento, logado_cliente.codigo, &verify);
+                                        
+                                        int i, j;
 
                                         if (verify == 0)
                                         {
@@ -499,7 +498,6 @@ int main()
                                         }
                                         else
                                         {
-                                            printf ("CCCCCCC");
                                             printf ("\nVoce possui %d pedidos em andamento!", verify);
                                             for (i = 0; i < verify; i++)
                                             {
@@ -511,22 +509,21 @@ int main()
                                                 }
                                             }
 
-                                            printf ("\nAlgum dos seus pedidos chegou? Digite 1 se sim e 0 se não: "); // O ERRO É DAQUI PRA BAIXO, PQ PRA CIMA TA FUNCIONANDO. POSSIVELMENTE O BO EH NA REMOVERCONTROLEGLOBAL. TALVEZ EU PRECISE FAZER ELA TBM DO TIPO pedidosglobais*
-                                            // PRECISO FAZER UM CASE DO CLIENTE PRA PRINTAR AS INFORMACOES PESSOAIS DELE
+                                            printf ("\nAlgum dos seus pedidos chegou? Digite 1 se sim e 0 se nao: ");
                                             scanf ("%d", &verify);
 
                                             if (verify == 1)
                                             {
                                                 float nota = 0;
                                                 i = 0;
-                                                printf ("Digite o numero do pedido que chegou: ");
+                                                printf ("Digite o numero do pedido que chegou (!, 2, 3...): ");
                                                 scanf ("%d", &i);
 
                                                 printf ("\nQual nota voce da para o entregador (0 - 5)? ");
                                                 scanf ("%f", &nota);
-                                                
-                                                removerControleGlobal (controlePedidos, em_andamento[i-1].codigo, &qtdPedidosAndamento, lista_principal_clientes, lista_principal_entregadores, nota); // AQUI
-                                            
+
+                                                controlePedidos = removerControleGlobal(controlePedidos, em_andamento[i-1].codigo, &qtdPedidosAndamento, lista_principal_clientes, lista_principal_entregadores, nota);
+
                                                 free(em_andamento);
                                             }
                                             else
@@ -1075,7 +1072,9 @@ int main()
                                     break;
 
                                     case 4: // mostrar historico
-
+                                        buscarItemEntregador (lista_principal_entregadores, logado_entregador.codigo, &logado_entregador);
+                                        printf ("\nAqui estao seus ultimos pedidos: \n");
+                                        mostrar_pedidos_entregador (logado_entregador);
                                     break;
 
                                     case 5: // alterar codigo de acesso // se estiver em corrida nao poderá alterar
@@ -1343,9 +1342,9 @@ pedidosglobais* inserirControleGlobal(pedidosglobais *pg, entregador entregador_
     return pg;
 }
 
-int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador, float nota) // deve remover do controle, liberar entregador e adicionar aos historicos
+pedidosglobais* removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador, float nota) // deve remover do controle, liberar entregador e adicionar aos historicos
 {
-    int i, rem;
+    int i, rem = 0;
     pedidosE temp;
     pedidosR temp2;
     for (i = 0; i < *qtd; i++)
@@ -1357,9 +1356,11 @@ int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista
     }
 
     inserirPedidoHistorico (l_cliente, pg[rem].comprador.codigo, pg[rem].pedido_em_andamento);
+    
     copiarPedidoCpE (&(pg[rem].pedido_em_andamento), &temp);
     inserirPedidoHistoricoEntregador (l_entregador, pg[rem].entregador_do_pedido.codigo, temp);
-    copiarPedidoCpR (&(pg[rem].pedido_em_andamento), &temp2);
+
+    //copiarPedidoCpR (&(pg[rem].pedido_em_andamento), &temp2);
     // inserir no historico do restaurante aqui 
 
     adicionarCorridaNota(l_entregador, pg[rem].entregador_do_pedido.codigo, nota); // adiciona a nota ao entregador e libera ele
@@ -1373,7 +1374,7 @@ int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista
 
     (*qtd)--;
     pg = (pedidosglobais *)realloc(pg, (*qtd) * sizeof(pedidosglobais));
-    return 0;
+    return pg;
 }
 
 pedidosC* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente, int *num_pedidos)
