@@ -555,6 +555,7 @@ void copiarRestaurante(restaurante *A, restaurante *B)
         B->historico[i].codigo = A->historico[i].codigo;
         B->historico[i].precoTotal = A->historico[i].precoTotal;
         strcpy(B->historico[i].nome_rest, A->historico[i].nome_rest);
+        B->historico[i].qtdPed = A->historico[i].qtdPed;
 
         // Copiar o vetor de pratos
         B->historico[i].ped = (pratosR *)malloc(sizeof(pratosR) * A->historico[i].qtdPed);
@@ -564,8 +565,6 @@ void copiarRestaurante(restaurante *A, restaurante *B)
             strcpy(B->historico[i].ped[j].descricao, A->historico[i].ped[j].descricao);
             B->historico[i].ped[j].preco = A->historico[i].ped[j].preco;
         }
-
-        B->historico[i].qtdPed = A->historico[i].qtdPed;
     }
     printf("deus me ajuda");
 
