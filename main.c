@@ -23,9 +23,9 @@ typedef struct juncao
 void copiarPedidoCpC(pedidosC *A, pedidosC *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
 void copiarPedidoCpE(pedidosC *A, pedidosE *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
 void copiarPedidoCpR(pedidosC *A, pedidosR *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
-int inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidosC pedido_atual, Cliente cliente_atual, int *qtd);
+pedidosglobais* inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidosC pedido_atual, Cliente cliente_atual, int *qtd);
 int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador, float nota);
-int buscarPedidoAndamento (pedidosglobais *pg, int qtd, char *nome_cliente, pedidosC *em_andamento);
+pedidosC* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente, int *num_pedidos);
 
 // FUNÇÕES EXTRAS
 
@@ -58,7 +58,7 @@ int main()
     srand(time(NULL));
 
     // declarações relacionadas ao gerenciador global de pedidos
-    pedidosglobais *controlePedidos;
+    pedidosglobais *controlePedidos = NULL;
     int qtdPedidosAndamento = 0;
 
     // declarações relacionadas aos clientes
@@ -111,6 +111,7 @@ int main()
 
     inicializar_cliente (&esqueceu_senha_cliente);
     inicializar_entregador (&esqueceu_senha_entregador);
+    inicializar_entregador (&novoped_entregador);
     limpar_variavel_entregador (&esqueceu_senha_entregador);
 
     // AQUI COMEÇA O PROGRAMA EM SI
@@ -264,14 +265,15 @@ int main()
                                         novoped_pedido.precoTotal = 125.25;
                                         strcpy(novoped_pedido.nome_rest, "mariass");
                                         novoped_pedido.qtdPed = 2;
-                                        novoped_pedido.ped = (pratosC*) realloc (novoped_pedido.ped, 2*sizeof(pratosC));
+                                        novoped_pedido.ped = (pratosC*) malloc (2*sizeof(pratosC));
                                         strcpy (novoped_pedido.ped[0].nome, "teste1");
                                         strcpy (novoped_pedido.ped[0].descricao, "teste descricao 1");
                                         novoped_pedido.ped[0].preco = 50;
                                         strcpy (novoped_pedido.ped[1].nome, "teste2");
                                         strcpy (novoped_pedido.ped[1].descricao, "teste descricao 2");
                                         novoped_pedido.ped[1].preco = 75.25;
-                                        inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPedidosAndamento);
+
+                                        controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPedidosAndamento);
                                     break;
 
                                     case 2: // filtrar por categoria
@@ -486,8 +488,11 @@ int main()
 
 
                                         verify = 0;
-                                        verify = buscarPedidoAndamento (controlePedidos, qtdPedidosAndamento, logado_cliente.nome, em_andamento);
+                                        printf ("AAAAAAA");
+                                        em_andamento = buscarPedidoAndamento (controlePedidos, qtdPedidosAndamento, logado_cliente.codigo, &verify);
                                         int i, j;
+
+                                        printf ("BBBBBB");
 
                                         if (verify == 0)
                                         {
@@ -495,6 +500,7 @@ int main()
                                         }
                                         else
                                         {
+                                            printf ("CCCCCCC");
                                             printf ("\nVoce possui %d pedidos em andamento!", verify);
                                             for (i = 0; i < verify; i++)
                                             {
@@ -506,7 +512,8 @@ int main()
                                                 }
                                             }
 
-                                            printf ("\nAlgum dos seus pedidos chegou? Digite 1 se sim e 0 se não: ");
+                                            printf ("\nAlgum dos seus pedidos chegou? Digite 1 se sim e 0 se não: "); // O ERRO É DAQUI PRA BAIXO, PQ PRA CIMA TA FUNCIONANDO. POSSIVELMENTE O BO EH NA REMOVERCONTROLEGLOBAL. TALVEZ EU PRECISE FAZER ELA TBM DO TIPO pedidosglobais*
+                                            // PRECISO FAZER UM CASE DO CLIENTE PRA PRINTAR AS INFORMACOES PESSOAIS DELE
                                             scanf ("%d", &verify);
 
                                             if (verify == 1)
@@ -519,7 +526,7 @@ int main()
                                                 printf ("\nQual nota voce da para o entregador (0 - 5)? ");
                                                 scanf ("%f", &nota);
                                                 
-                                                removerControleGlobal (controlePedidos, em_andamento[i-1].codigo, &qtdPedidosAndamento, lista_principal_clientes, lista_principal_entregadores, nota); // QUE INFERNO BUCETA CU CAPETA
+                                                removerControleGlobal (controlePedidos, em_andamento[i-1].codigo, &qtdPedidosAndamento, lista_principal_clientes, lista_principal_entregadores, nota); // AQUI
                                             
                                                 free(em_andamento);
                                             }
@@ -880,7 +887,9 @@ int main()
             break;
 
             case 3:; // sou entregador
-  
+
+                option = -1;
+
                 while (option != 3) // voltar
                 {
                     option = menu_inicial_entregador();
@@ -1247,7 +1256,8 @@ void copiarPedidoCpC(pedidosC *A, pedidosC *B) // criar possivel funcao que copi
     B->precoTotal = A->precoTotal;
     strcpy(B->nome_rest, A->nome_rest);
 
-    B->ped = (pratosC *)realloc(B->ped, A->qtdPed * sizeof(pratosC));
+    B->ped = (pratosC*) malloc (A->qtdPed*sizeof(pratosC));
+
     for (i = 0; i < A->qtdPed; i++)
     {
         B->ped[i].preco = A->ped[i].preco;
@@ -1264,7 +1274,7 @@ void copiarPedidoCpE(pedidosC *A, pedidosE *B) // criar possivel funcao que copi
     B->precoTotal = A->precoTotal;
     strcpy(B->nome_rest, A->nome_rest);
 
-    B->ped = (pratosE *)realloc(B->ped, A->qtdPed * sizeof(pratosE));
+    B->ped = (pratosE *) malloc (A->qtdPed * sizeof(pratosE));
     for (i = 0; i < A->qtdPed; i++)
     {
         B->ped[i].preco = A->ped[i].preco;
@@ -1281,7 +1291,7 @@ void copiarPedidoCpR(pedidosC *A, pedidosR *B) // criar possivel funcao que copi
     B->precoTotal = A->precoTotal;
     strcpy(B->nome_rest, A->nome_rest);
 
-    B->ped = (pratosR *)realloc(B->ped, A->qtdPed * sizeof(pratosR));
+    B->ped = (pratosR *) malloc (A->qtdPed * sizeof(pratosR));
     for (i = 0; i < A->qtdPed; i++)
     {
         B->ped[i].preco = A->ped[i].preco;
@@ -1290,17 +1300,20 @@ void copiarPedidoCpR(pedidosC *A, pedidosR *B) // criar possivel funcao que copi
     }
 }
 
-int inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidosC pedido_atual, Cliente cliente_atual, int *qtd)
+pedidosglobais* inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidosC pedido_atual, Cliente cliente_atual, int *qtd)
 {
     (*qtd)++;
-    pg = (pedidosglobais *)realloc(pg, (*qtd) * sizeof(pedidosglobais));
+    int j = *qtd;
 
-    int i = (*qtd) - 1;
+    if(pg == NULL) pg = (pedidosglobais*) malloc (sizeof(pedidosglobais));
+    pg = (pedidosglobais*) realloc (pg, j*sizeof(pedidosglobais));
+
+    int i = *qtd - 1;
+
     copiarEntregador(&entregador_atual, &pg[i].entregador_do_pedido);
     copiarPedidoCpC(&pedido_atual, &pg[i].pedido_em_andamento);
     copiarCliente(&cliente_atual, &pg[i].comprador);
-
-    return 0;
+    return pg;
 }
 
 int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador, float nota) // deve remover do controle, liberar entregador e adicionar aos historicos
@@ -1336,20 +1349,25 @@ int removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista
     return 0;
 }
 
-int buscarPedidoAndamento (pedidosglobais *pg, int qtd, char *nome_cliente, pedidosC *em_andamento)
+pedidosC* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente, int *num_pedidos)
 {
+    pedidosC *em_andamento;
     int i = 0;
-    int num_pedidos = 0;
+
+    *num_pedidos = 0;
+
+    em_andamento = (pedidosC*) malloc (sizeof(pedidosC));
+
     for (i = 0; i < qtd; i++)
     {
-        if (strcmp (pg[i].comprador.nome, nome_cliente) == 0)
+        if (pg[i].comprador.codigo == codigo_cliente)
         {
-            num_pedidos++;
-            em_andamento = (pedidosC*) realloc (em_andamento, num_pedidos * sizeof(pedidosC));
-            copiarPedidoCpC (&(pg[i].pedido_em_andamento), &em_andamento[num_pedidos-1]);
+            (*num_pedidos)++;
+            em_andamento = (pedidosC*) realloc (em_andamento, (*num_pedidos) * sizeof(pedidosC));
+            copiarPedidoCpC (&(pg[i].pedido_em_andamento), &em_andamento[(*num_pedidos)-1]);
         }
     }
-    return num_pedidos;
+    return em_andamento;
 }
 
 // funções extras
