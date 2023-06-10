@@ -76,6 +76,9 @@ int buscarRestCodigo(Lista_restaurantes *l, int codigo, restaurante *item);
 int buscarRestEmailCodigo(Lista_restaurantes *l, char *email, int codigo, restaurante *item);
 int buscarRestNome(Lista_restaurantes *l, char *nome);
 //int buscarRestPos(Lista_restaurantes *l, int pos, restaurante *item);
+int buscarRestEmail(Lista_restaurantes *l, char *email, restaurante *item);
+
+
 
 
 // visualização usuário

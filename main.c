@@ -98,10 +98,16 @@ int main()
     lista_principal_restaurantes = criar_listaRestaurantes();
 
     // criando testes
+    pratosR r;
     restaurante teste;
     strcpy(teste.nome, "Fast Acai");
     strcpy(teste.email, "fast@gmail.com");
     strcpy(teste.senha, "bem vinde");
+    strcpy(r.nome, "macarrao");
+    strcpy(r.descricao, "molho branco");
+    r.preco = 20.52;
+    inserirPratoRest(lista_principal_restaurantes, r, &teste);
+
     inicializar_restaurante(&teste);
     inserirInicioRest(lista_principal_restaurantes, teste);
     mostrarListaRest(lista_principal_restaurantes); 
@@ -116,6 +122,14 @@ int main()
     inicializar_restaurante(&login_restaurante);
 
     // AQUI COMEÇA O PROGRAMA EM SI
+
+    restaurante retorno;
+    int a = buscarRestEmail(lista_principal_restaurantes, teste.email, &retorno);
+    if (!a)
+    {
+        mostrarCardapio(lista_principal_restaurantes, &retorno);
+    }
+    
 
     while (option != 0) // mantém o programa rodando até que seja escolhido sair
     {
