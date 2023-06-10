@@ -277,13 +277,13 @@ int main()
                                         novoped_pedido.precoTotal = 125.25;
                                         strcpy(novoped_pedido.nome_rest, "mariass");
                                         novoped_pedido.qtdPratosPed = 2;
-                                        novoped_pedido.ped = (pratos*) malloc (2*sizeof(pratos));
-                                        strcpy (novoped_pedido.ped[0].nome, "teste1");
-                                        strcpy (novoped_pedido.ped[0].descricao, "teste descricao 1");
-                                        novoped_pedido.ped[0].preco = 50;
-                                        strcpy (novoped_pedido.ped[1].nome, "teste2");
-                                        strcpy (novoped_pedido.ped[1].descricao, "teste descricao 2");
-                                        novoped_pedido.ped[1].preco = 75.25;
+                                        novoped_pedido.pratosPed = (pratos*) malloc (2*sizeof(pratos));
+                                        strcpy (novoped_pedido.pratosPed[0].nome, "teste1");
+                                        strcpy (novoped_pedido.pratosPed[0].descricao, "teste descricao 1");
+                                        novoped_pedido.pratosPed[0].preco = 50;
+                                        strcpy (novoped_pedido.pratosPed[1].nome, "teste2");
+                                        strcpy (novoped_pedido.pratosPed[1].descricao, "teste descricao 2");
+                                        novoped_pedido.pratosPed[1].preco = 75.25;
 
                                         controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPratosPedidosAndamento);*/
 
@@ -535,7 +535,7 @@ int main()
                                             {
                                                 float nota = 0;
                                                 i = 0;
-                                                printf ("Digite o numero do pedido que chegou (!, 2, 3...): ");
+                                                printf ("Digite o numero do pedido que chegou (1, 2, 3...): ");
                                                 scanf ("%d", &i);
 
                                                 printf ("\nQual nota voce da para o entregador (0 - 5)? ");
