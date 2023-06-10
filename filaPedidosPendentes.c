@@ -3,26 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-// STRUCTS
-typedef struct plateR
-{
-    char nome[40];
-    char descricao[100];
-    float preco;
-} pratosR;
-
-typedef struct pedR
-{
-    int codigo;
-    float precoTotal;
-    char nome_rest[40];
-    pratosR *ped; // vetor em que cada elemento eh um prato e juntando todos os pratos que o cliente pediu torna-se o pedido completo
-    int qtdPed;  // tamanho do vetor
-} pedidosR;
-
 typedef struct no_pedidosPendentes
 {
-    pedidosR valor;
+    pedidos valor;
     struct no_pedidosPendentes *proximo;
 } No_pedidosPendentes;
 
@@ -60,7 +43,7 @@ int filaCheia(Fila_PedidosPendentes *f)
     return 1;
 }
 
-int inserirPedidoPendente(Fila_PedidosPendentes *f, pedidosR *x)
+int inserirPedidoPendente(Fila_PedidosPendentes *f, pedidos *x)
 {
     if (f == NULL)
         return NULL_QUEUE;
@@ -99,7 +82,7 @@ int removerPedidoPendente(Fila_PedidosPendentes *f)
     return 0;
 }
 
-int consultarProxPedido(Fila_PedidosPendentes *f, pedidosR **x)
+int consultarProxPedido(Fila_PedidosPendentes *f, pedidos **x)
 {
     if (f == NULL)
         return NULL_QUEUE;
@@ -138,9 +121,9 @@ void mostrarPedidosPendentes(Fila_PedidosPendentes *f)
         {
             printf("%s\n", no->valor.nome_rest);
             printf("%d\n", no->valor.codigo);
-            for (int i = 0; i < no->valor.qtdPed; i++)
+            for (int i = 0; i < no->valor.qtdPratosPed; i++)
             {
-                printf("%s | %f.2\n", no->valor.ped->nome, no->valor.ped->preco);
+                printf("%s | %f.2\n", no->valor.pratosPed->nome, no->valor.pratosPed->preco);
             }
             printf("Valor Total: R$ %f.2\n", no->valor.precoTotal);
             printf("---------------------------------------------\n");
@@ -156,14 +139,14 @@ int mostrarProxPedido(Fila_PedidosPendentes *f)
     if (filaVazia(f) == 0)
         return EMPTY_QUEUE;
 
-    pedidosR *x;
+    pedidos *x;
     consultarProxPedido(f, &x);
 
     printf("Proximo Pedido: ");
     printf("Codigo: %d", x->codigo);
-    for (int i = 0; i < x->qtdPed; i++)
+    for (int i = 0; i < x->qtdPratosPed; i++)
     {
-        printf("%s | %f.2\n", x->ped->nome, x->ped->preco);
+        printf("%s | %f.2\n", x->pratosPed->nome, x->pratosPed->preco);
     }
 
     return 0;

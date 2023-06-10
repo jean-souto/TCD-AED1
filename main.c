@@ -14,18 +14,18 @@
 typedef struct juncao
 {
     entregador entregador_do_pedido;
-    pedidosC pedido_em_andamento;
+    pedidos pedido_em_andamento;
     Cliente comprador;
 }pedidosglobais;
 
 // funções para o gerenciador global de pedidos em andamento
 
-void copiarPedidoCpC(pedidosC *A, pedidosC *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
-void copiarPedidoCpE(pedidosC *A, pedidosE *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
-void copiarPedidoCpR(pedidosC *A, pedidosR *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
-pedidosglobais* inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidosC pedido_atual, Cliente cliente_atual, int *qtd);
+void copiarPedidoCpC(pedidos *A, pedidos *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
+void copiarPedidoCpE(pedidos *A, pedidos *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
+void copiarPedidoCpR(pedidos *A, pedidos *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
+pedidosglobais* inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidos pedido_atual, Cliente cliente_atual, int *qtd);
 pedidosglobais* removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador, float nota);
-pedidosC* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente, int *num_pedidos);
+pedidos* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente, int *num_pedidos);
 
 // FUNÇÕES EXTRAS
 
@@ -56,7 +56,7 @@ int main()
 
     // declarações relacionadas ao gerenciador global de pedidos
     pedidosglobais *controlePedidos = NULL;
-    int qtdPedidosAndamento = 0;
+    int qtdPratosPedidosAndamento = 0;
 
     // declarações relacionadas aos clientes
     Lista_cliente *lista_principal_clientes;
@@ -64,14 +64,14 @@ int main()
     Cliente esqueceu_senha_cliente, inicializados_cliente;
     cartao novo_cartao;
     endereco novo_endereco;
-    pedidosC *em_andamento, novoped_pedido;
+    pedidos *em_andamento, novoped_pedido;
 
     // declarações relacionadas aos restaurantes
     Lista_restaurantes *lista_principal_restaurantes;
     restaurante novo_restaurante, logado_restaurante;
     restaurante login_restaurante, inicializados_restaurante;
     int codigo_loginR;
-    pratosR novo_prato;
+    pratos novo_prato;
     char nome_prato[40];
     Fila_PedidosPendentes *fila_pedidosPendentes;
 
@@ -98,18 +98,17 @@ int main()
     lista_principal_restaurantes = criar_listaRestaurantes();
 
     // criando testes
-    pratosR r;
     restaurante teste;
     strcpy(teste.nome, "Fast Acai");
     strcpy(teste.email, "fast@gmail.com");
     strcpy(teste.senha, "bem vinde");
+    inicializar_restaurante(&teste);
+    pratos r;
     strcpy(r.nome, "macarrao");
     strcpy(r.descricao, "molho branco");
     r.preco = 20.52;
-    inserirPratoRest(lista_principal_restaurantes, r, &teste);
-
-    inicializar_restaurante(&teste);
     inserirInicioRest(lista_principal_restaurantes, teste);
+    inserirPratoRest(lista_principal_restaurantes, r, &teste);
     // mostrarListaRest(lista_principal_restaurantes); 
 
     strcpy(loginADM, "souADM");
@@ -129,7 +128,6 @@ int main()
     {
         mostrarCardapio(lista_principal_restaurantes, &retorno);
     }
-    
 
     while (option != 0) // mantém o programa rodando até que seja escolhido sair
     {
@@ -278,8 +276,8 @@ int main()
                                         novoped_pedido.codigo = 123;
                                         novoped_pedido.precoTotal = 125.25;
                                         strcpy(novoped_pedido.nome_rest, "mariass");
-                                        novoped_pedido.qtdPed = 2;
-                                        novoped_pedido.ped = (pratosC*) malloc (2*sizeof(pratosC));
+                                        novoped_pedido.qtdPratosPed = 2;
+                                        novoped_pedido.ped = (pratos*) malloc (2*sizeof(pratos));
                                         strcpy (novoped_pedido.ped[0].nome, "teste1");
                                         strcpy (novoped_pedido.ped[0].descricao, "teste descricao 1");
                                         novoped_pedido.ped[0].preco = 50;
@@ -287,7 +285,7 @@ int main()
                                         strcpy (novoped_pedido.ped[1].descricao, "teste descricao 2");
                                         novoped_pedido.ped[1].preco = 75.25;
 
-                                        controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPedidosAndamento);*/
+                                        controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPratosPedidosAndamento);*/
 
                                         printf ("\nAqui estao todos os restaurantes disponiveis: \n");
                                         mostrarListaRest (lista_principal_restaurantes);
@@ -509,7 +507,7 @@ int main()
 
                                         verify = 0;
 
-                                        em_andamento = buscarPedidoAndamento (controlePedidos, qtdPedidosAndamento, logado_cliente.codigo, &verify);
+                                        em_andamento = buscarPedidoAndamento (controlePedidos, qtdPratosPedidosAndamento, logado_cliente.codigo, &verify);
                                         
                                         int i, j;
 
@@ -524,9 +522,9 @@ int main()
                                             {
                                                 printf ("\n%d: %s\n", i+1, em_andamento[i].nome_rest);
                                                 printf ("Total: %.2f\n", em_andamento[i].precoTotal);
-                                                for (j = 0; j < em_andamento[i].qtdPed; j++)
+                                                for (j = 0; j < em_andamento[i].qtdPratosPed; j++)
                                                 {
-                                                    printf ("%s: %.2f\n", em_andamento[i].ped[j].nome, em_andamento[i].ped[j].preco);
+                                                    printf ("%s: %.2f\n", em_andamento[i].pratosPed[j].nome, em_andamento[i].pratosPed[j].preco);
                                                 }
                                             }
 
@@ -543,7 +541,7 @@ int main()
                                                 printf ("\nQual nota voce da para o entregador (0 - 5)? ");
                                                 scanf ("%f", &nota);
 
-                                                controlePedidos = removerControleGlobal(controlePedidos, em_andamento[i-1].codigo, &qtdPedidosAndamento, lista_principal_clientes, lista_principal_entregadores, nota);
+                                                controlePedidos = removerControleGlobal(controlePedidos, em_andamento[i-1].codigo, &qtdPratosPedidosAndamento, lista_principal_clientes, lista_principal_entregadores, nota);
 
                                                 free(em_andamento);
                                             }
@@ -1299,59 +1297,59 @@ int main()
 
 // FUNÇÕES EXTRAS RELACIONADAS ÀS STRUCTS EXTRAS
 
-void copiarPedidoCpC(pedidosC *A, pedidosC *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
+void copiarPedidoCpC(pedidos *A, pedidos *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
 {
     int i;
     B->codigo = A->codigo;
-    B->qtdPed = A->qtdPed;
+    B->qtdPratosPed = A->qtdPratosPed;
     B->precoTotal = A->precoTotal;
     strcpy(B->nome_rest, A->nome_rest);
 
-    B->ped = (pratosC*) malloc (A->qtdPed*sizeof(pratosC));
+    B->pratosPed = (pratos*) malloc (A->qtdPratosPed*sizeof(pratos));
 
-    for (i = 0; i < A->qtdPed; i++)
+    for (i = 0; i < A->qtdPratosPed; i++)
     {
-        B->ped[i].preco = A->ped[i].preco;
-        strcpy(B->ped[i].descricao, A->ped[i].descricao);
-        strcpy(B->ped[i].nome, A->ped[i].nome);
+        B->pratosPed[i].preco = A->pratosPed[i].preco;
+        strcpy(B->pratosPed[i].descricao, A->pratosPed[i].descricao);
+        strcpy(B->pratosPed[i].nome, A->pratosPed[i].nome);
     }
 }
 
-void copiarPedidoCpE(pedidosC *A, pedidosE *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
+void copiarPedidoCpE(pedidos *A, pedidos *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
 {
     int i;
     B->codigo = A->codigo;
-    B->qtdPed = A->qtdPed;
+    B->qtdPratosPed = A->qtdPratosPed;
     B->precoTotal = A->precoTotal;
     strcpy(B->nome_rest, A->nome_rest);
 
-    B->ped = (pratosE *) malloc (A->qtdPed * sizeof(pratosE));
-    for (i = 0; i < A->qtdPed; i++)
+    B->pratosPed = (pratos *) malloc (A->qtdPratosPed * sizeof(pratos));
+    for (i = 0; i < A->qtdPratosPed; i++)
     {
-        B->ped[i].preco = A->ped[i].preco;
-        strcpy(B->ped[i].descricao, A->ped[i].descricao);
-        strcpy(B->ped[i].nome, A->ped[i].nome);
+        B->pratosPed[i].preco = A->pratosPed[i].preco;
+        strcpy(B->pratosPed[i].descricao, A->pratosPed[i].descricao);
+        strcpy(B->pratosPed[i].nome, A->pratosPed[i].nome);
     }
 }
 
-void copiarPedidoCpR(pedidosC *A, pedidosR *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
+void copiarPedidoCpR(pedidos *A, pedidos *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
 {
     int i;
     B->codigo = A->codigo;
-    B->qtdPed = A->qtdPed;
+    B->qtdPratosPed = A->qtdPratosPed;
     B->precoTotal = A->precoTotal;
     strcpy(B->nome_rest, A->nome_rest);
 
-    B->ped = (pratosR *) malloc (A->qtdPed * sizeof(pratosR));
-    for (i = 0; i < A->qtdPed; i++)
+    B->pratosPed = (pratos *) malloc (A->qtdPratosPed * sizeof(pratos));
+    for (i = 0; i < A->qtdPratosPed; i++)
     {
-        B->ped[i].preco = A->ped[i].preco;
-        strcpy(B->ped[i].descricao, A->ped[i].descricao);
-        strcpy(B->ped[i].nome, A->ped[i].nome);
+        B->pratosPed[i].preco = A->pratosPed[i].preco;
+        strcpy(B->pratosPed[i].descricao, A->pratosPed[i].descricao);
+        strcpy(B->pratosPed[i].nome, A->pratosPed[i].nome);
     }
 }
 
-pedidosglobais* inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidosC pedido_atual, Cliente cliente_atual, int *qtd)
+pedidosglobais* inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidos pedido_atual, Cliente cliente_atual, int *qtd)
 {
     (*qtd)++;
     int j = *qtd;
@@ -1370,9 +1368,9 @@ pedidosglobais* inserirControleGlobal(pedidosglobais *pg, entregador entregador_
 pedidosglobais* removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador, float nota) // deve remover do controle, liberar entregador e adicionar aos historicos
 {
     int i, rem = 0;
-    pedidosE temp;
-    pedidosR temp2;
-    pedidosC temp3;
+    pedidos temp;
+    pedidos temp2;
+    pedidos temp3;
     for (i = 0; i < *qtd; i++)
     {
         if (pg[i].pedido_em_andamento.codigo == numero_pedido)
@@ -1404,21 +1402,21 @@ pedidosglobais* removerControleGlobal(pedidosglobais *pg, int numero_pedido, int
     return pg;
 }
 
-pedidosC* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente, int *num_pedidos)
+pedidos* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente, int *num_pedidos)
 {
-    pedidosC *em_andamento;
+    pedidos *em_andamento;
     int i = 0;
 
     *num_pedidos = 0;
 
-    em_andamento = (pedidosC*) malloc (sizeof(pedidosC));
+    em_andamento = (pedidos*) malloc (sizeof(pedidos));
 
     for (i = 0; i < qtd; i++)
     {
         if (pg[i].comprador.codigo == codigo_cliente)
         {
             (*num_pedidos)++;
-            em_andamento = (pedidosC*) realloc (em_andamento, (*num_pedidos) * sizeof(pedidosC));
+            em_andamento = (pedidos*) realloc (em_andamento, (*num_pedidos) * sizeof(pedidos));
             copiarPedidoCpC (&(pg[i].pedido_em_andamento), &em_andamento[(*num_pedidos)-1]);
         }
     }
@@ -1464,6 +1462,7 @@ void inicializar_restaurante(restaurante *item)
     item->cardapio = NULL;
     item->qtdCardapio = 0;
     item->historico = NULL;
+    item->qtdHistorico = 0;
     item->status = -1;
     item->pedidosPendentes = NULL;
 }

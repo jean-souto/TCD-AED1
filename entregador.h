@@ -1,23 +1,8 @@
+#include "structs.h"
+
 // defines de auxilio
 #define NULL_LIST 3
 #define EMPTY_LIST 2
-
-//structs
-typedef struct plateE // aqui
-{ 
-    char nome[40]; 
-    char descricao[100]; 
-    float preco; 
-} pratosE; 
-
-typedef struct pedE // aqui
-{ 
-    int codigo; 
-    float precoTotal; 
-    char nome_rest[40]; 
-    pratosE *ped; 
-    int qtdPed; 
-} pedidosE;
 
 typedef struct ranking // para garantir o bom funcionamento da nota do entregador
 {
@@ -36,7 +21,7 @@ typedef struct motoboy // o proprio motoboy
     nota rank;
     int corridas;
     int quant_pedidos;
-    pedidosE *historico;
+    pedidos *historico;
 }entregador;
 
 typedef struct No_motoboy // no
@@ -85,6 +70,6 @@ void copiarEntregador (entregador *A, entregador *B); // ok
 int loginCodigo (Lista_entregadores *l, char *email, int codigo, entregador *item);
 int alterarEmailEntregador (Lista_entregadores *l, int codigo, char *novo_email);
 int buscarEntregadorEmailCPF (Lista_entregadores *l, char *email, char *cpf, entregador *item);
-int inserirPedidoHistoricoEntregador (Lista_entregadores *l, int codigo, pedidosE novo_pedido);
+int inserirPedidoHistoricoEntregador (Lista_entregadores *l, int codigo, pedidos novo_pedido);
 int trocaCodigo (Lista_entregadores *l, int codigo_atual, int *novo_codigo);
 int trocaEmail (Lista_entregadores *l, int codigo, char *novo_email);
