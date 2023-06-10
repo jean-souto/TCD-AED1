@@ -76,7 +76,10 @@ int main()
     pratos novo_prato;
     char nome_prato[40];
     float preco_prato;
+
+    // declaracoes relacionadas a fila de pedidos pendentes
     Fila_PedidosPendentes *fila_pedidosPendentes;
+    pedidos *pedidoPendente;
 
     // declarações relacionadas aos entregadores
     Lista_entregadores *lista_principal_entregadores;
@@ -100,6 +103,7 @@ int main()
     lista_principal_clientes = criarCliente();
     lista_principal_entregadores = criar_lista_entregadores();
     lista_principal_restaurantes = criar_listaRestaurantes();
+    fila_pedidosPendentes = criar_filaPedidosPendentes();
 
     // criando testes
     
@@ -793,7 +797,7 @@ int main()
                         
                         int option2 = -1;
 
-                        while (option2 != 4)
+                        while (option2 != 0) 
                         {
                             option2 = menu_restaurante();
                            
@@ -891,13 +895,23 @@ int main()
                                                 break;
 
                                             case 1: // mostrar a fila toda
-                                                printf("PEDIDOS PENDENTES\n");
-                                                mostrarPedidosPendentes(fila_pedidosPendentes);
+                                                if (filaVazia(fila_pedidosPendentes) != EMPTY_QUEUE)
+                                                {
+                                                    printf("PEDIDOS PENDENTES\n");
+                                                    mostrarPedidosPendentes(fila_pedidosPendentes);
+                                                } else 
+                                                    printf("Nao ha pedidos pendentes por enquanto... ;)\n");
+                                                
                                                 break;
 
                                             case 2: // mostrar apenas o proximo
-                                                printf("PROXIMO PEDIDO\n");
-                                                //consultarProxPedido(fila_pedidosPendentes, &);
+                                                if (filaVazia(fila_pedidosPendentes) != EMPTY_QUEUE)
+                                                {
+                                                    printf("PROXIMO PEDIDO\n");
+                                                    consultarProxPedido(fila_pedidosPendentes, &pedidoPendente);
+                                                } else
+                                                    printf("Nao ha nenhum pedido pendente por enquanto... ;)\n");
+
                                                 break;
 
                                             default:
@@ -973,6 +987,7 @@ int main()
                                     */
                                 break;       
                            }
+                           break;
                            
                         }
                         
