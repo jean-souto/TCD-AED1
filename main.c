@@ -21,8 +21,6 @@ typedef struct juncao
 // funções para o gerenciador global de pedidos em andamento
 
 void copiarPedidoCpC(pedidos *A, pedidos *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
-void copiarPedidoCpE(pedidos *A, pedidos *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
-void copiarPedidoCpR(pedidos *A, pedidos *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
 pedidosglobais* inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidos pedido_atual, Cliente cliente_atual, int *qtd);
 pedidosglobais* removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador, float nota);
 pedidos* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente, int *num_pedidos);
@@ -269,7 +267,7 @@ int main()
                                     break;
 
                                     case 1: // mostrar todos os restaurantes
-                                        /*mostrar_entregador (lista_principal_entregadores);
+                                        mostrar_entregador (lista_principal_entregadores);
                                         buscarEntregador (lista_principal_entregadores, &novoped_entregador);
                                         mostrar_entregador (lista_principal_entregadores);
 
@@ -285,7 +283,9 @@ int main()
                                         strcpy (novoped_pedido.pratosPed[1].descricao, "teste descricao 2");
                                         novoped_pedido.pratosPed[1].preco = 75.25;
 
-                                        controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPratosPedidosAndamento);*/
+                                        controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPratosPedidosAndamento);
+                                        limpar_variavel_entregador (&novoped_entregador);
+                                        inicializar_entregador (&novoped_entregador);
 
                                         printf ("\nAqui estao todos os restaurantes disponiveis: \n");
                                         mostrarListaRest (lista_principal_restaurantes);
@@ -294,6 +294,25 @@ int main()
                                     break;
 
                                     case 2: // filtrar por categoria
+                                        mostrar_entregador (lista_principal_entregadores);
+                                        buscarEntregador (lista_principal_entregadores, &novoped_entregador);
+                                        mostrar_entregador (lista_principal_entregadores);
+
+                                        novoped_pedido.codigo = 456;
+                                        novoped_pedido.precoTotal = 125.25;
+                                        strcpy(novoped_pedido.nome_rest, "mariass");
+                                        novoped_pedido.qtdPratosPed = 2;
+                                        novoped_pedido.pratosPed = (pratos*) malloc (2*sizeof(pratos));
+                                        strcpy (novoped_pedido.pratosPed[0].nome, "teste1");
+                                        strcpy (novoped_pedido.pratosPed[0].descricao, "teste descricao 1");
+                                        novoped_pedido.pratosPed[0].preco = 50;
+                                        strcpy (novoped_pedido.pratosPed[1].nome, "teste2");
+                                        strcpy (novoped_pedido.pratosPed[1].descricao, "teste descricao 2");
+                                        novoped_pedido.pratosPed[1].preco = 75.25;
+
+                                        controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPratosPedidosAndamento);
+                                        limpar_variavel_entregador (&novoped_entregador);
+                                        inicializar_entregador (&novoped_entregador);
                                     break;
 
                                     case 3: // procurar por nome
@@ -1021,7 +1040,6 @@ int main()
                                         if (verify == 0)
                                         {
                                             printf("\nTe encontramos!");
-                                            esqueceu_senha_entregador.status = 1;
                                             if (esqueceu_senha_entregador.status == 1)
                                             {
                                                 verify = 15;
@@ -1315,40 +1333,6 @@ void copiarPedidoCpC(pedidos *A, pedidos *B) // criar possivel funcao que copiar
     }
 }
 
-void copiarPedidoCpE(pedidos *A, pedidos *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
-{
-    int i;
-    B->codigo = A->codigo;
-    B->qtdPratosPed = A->qtdPratosPed;
-    B->precoTotal = A->precoTotal;
-    strcpy(B->nome_rest, A->nome_rest);
-
-    B->pratosPed = (pratos *) malloc (A->qtdPratosPed * sizeof(pratos));
-    for (i = 0; i < A->qtdPratosPed; i++)
-    {
-        B->pratosPed[i].preco = A->pratosPed[i].preco;
-        strcpy(B->pratosPed[i].descricao, A->pratosPed[i].descricao);
-        strcpy(B->pratosPed[i].nome, A->pratosPed[i].nome);
-    }
-}
-
-void copiarPedidoCpR(pedidos *A, pedidos *B) // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
-{
-    int i;
-    B->codigo = A->codigo;
-    B->qtdPratosPed = A->qtdPratosPed;
-    B->precoTotal = A->precoTotal;
-    strcpy(B->nome_rest, A->nome_rest);
-
-    B->pratosPed = (pratos *) malloc (A->qtdPratosPed * sizeof(pratos));
-    for (i = 0; i < A->qtdPratosPed; i++)
-    {
-        B->pratosPed[i].preco = A->pratosPed[i].preco;
-        strcpy(B->pratosPed[i].descricao, A->pratosPed[i].descricao);
-        strcpy(B->pratosPed[i].nome, A->pratosPed[i].nome);
-    }
-}
-
 pedidosglobais* inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidos pedido_atual, Cliente cliente_atual, int *qtd)
 {
     (*qtd)++;
@@ -1369,8 +1353,7 @@ pedidosglobais* removerControleGlobal(pedidosglobais *pg, int numero_pedido, int
 {
     int i, rem = 0;
     pedidos temp;
-    pedidos temp2;
-    pedidos temp3;
+
     for (i = 0; i < *qtd; i++)
     {
         if (pg[i].pedido_em_andamento.codigo == numero_pedido)
@@ -1378,12 +1361,11 @@ pedidosglobais* removerControleGlobal(pedidosglobais *pg, int numero_pedido, int
             rem = i;
         }
     }
-    
-    copiarPedidoCpE (&(pg[rem].pedido_em_andamento), &temp);
-    inserirPedidoHistoricoEntregador (l_entregador, pg[rem].entregador_do_pedido.codigo, temp);
 
-    copiarPedidoCpC (&(pg[rem].pedido_em_andamento), &temp3);
-    inserirPedidoHistorico (l_cliente, pg[rem].comprador.codigo, temp3);
+    copiarPedidoCpC (&pg[rem].pedido_em_andamento, &temp);
+    
+    inserirPedidoHistoricoEntregador (l_entregador, pg[rem].entregador_do_pedido.codigo, temp);
+    inserirPedidoHistorico (l_cliente, pg[rem].comprador.codigo, temp);
     
     //copiarPedidoCpR (&(pg[rem].pedido_em_andamento), &temp2);
     // inserir no historico do restaurante aqui 
