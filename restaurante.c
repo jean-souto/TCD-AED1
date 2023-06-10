@@ -298,7 +298,7 @@ int removerRestCodigo(Lista_restaurantes *l, int codigo)
     return 1;
 }
 
-int removerPratoRest(Lista_restaurantes *l, char *nomePrato, restaurante *item)
+int removerPratoRest(Lista_restaurantes *l, char *nomePrato, float precoPrato, restaurante *item)
 {
     if (l == NULL)
         return NULL_LIST;
@@ -309,7 +309,7 @@ int removerPratoRest(Lista_restaurantes *l, char *nomePrato, restaurante *item)
     {
         for (int i = 0; i < item->qtdCardapio; i++)
         {
-            if (strcmp(item->cardapio[i].nome, nomePrato) == 0)
+            if (strcmp(item->cardapio[i].nome, nomePrato) == 0 && item->cardapio[i].preco == precoPrato)
             {
                 // Deslocar os pratos restantes para sobrepor o que deseja ser removido
                 for (int j = i; j < item->qtdCardapio - 1; j++)
@@ -358,17 +358,12 @@ int buscarRestEmailCodigo(Lista_restaurantes *l, char *email, int codigo, restau
     if (listaVaziaRest(l) == 0)
         return EMPTY_LIST;
 
-    No_restaurante *no = l->inicio;
-
-    while (no->prox != NULL && (strcmp(no->valor.email, email) != 0))
+    if (buscarRestEmail(l, email, item) == 0)
     {
-        no = no->prox;
-    }
-
-    if ((strcmp(no->valor.email, email) == 0) && (no->valor.codigo == codigo))
-    {
-        copiarRestaurante(&no->valor, &(*item));
-        return 0;
+        if (item->codigo == codigo)
+        {
+            return 0;
+        }
     }
     
     return 1;
@@ -510,7 +505,6 @@ int alterarSenhaRest(Lista_restaurantes *l, int codigo, char *novaSenha, char *c
             return 0;
         }
     }
-
 
     return 1;
 }
