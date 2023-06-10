@@ -1,26 +1,9 @@
 #include "filaPedidosPendentes.h"
+#include "structs.h"
 
 // defines de auxilio
 #define NULL_LIST 3
 #define EMPTY_LIST 2
-
-// structs
-
-typedef struct plateR
-{
-    char nome[40];
-    char descricao[100];
-    float preco;
-} pratosR;
-
-typedef struct pedR
-{
-    int codigo;
-    float precoTotal;
-    char nome_rest[40];
-    pratosR *ped; // vetor em que cada elemento eh um prato e juntando todos os pratos que o cliente pediu torna-se o pedido completo
-    int qtdPed;  // tamanho do vetor
-} pedidosR;
 
 typedef struct rest
 {
@@ -30,9 +13,10 @@ typedef struct rest
     char categoria[30];
     int codigo;
     int status; // se quer participar do programa de fidelidade
-    pratosR *cardapio;
+    pratos *cardapio;
     int qtdCardapio;
-    pedidosR *historico;
+    pedidos *historico;
+    int qtdHistorico;
     Fila_PedidosPendentes *pedidosPendentes;
 } restaurante;
 
@@ -62,7 +46,7 @@ int tamanhoRest(Lista_restaurantes *l);
 int inserirInicioRest(Lista_restaurantes *l, restaurante item);
 int inserirFimRest(Lista_restaurantes *l, restaurante item);   
 int inserirPosicaoRest(Lista_restaurantes *l, restaurante item, int pos);
-int inserirPratoRest(Lista_restaurantes *l, pratosR novoPrato, restaurante *item);
+int inserirPratoRest(Lista_restaurantes *l, pratos novoPrato, restaurante *item);
 
 // remocao
 int removerInicioRest(Lista_restaurantes *l);

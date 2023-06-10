@@ -133,8 +133,6 @@ int removerFimCliente (Lista_cliente *l) // remove no fim da lista
     if (l == NULL) return NULL_LIST;
     if (listaVaziaCliente(l) == 0) return 0;
 
-    int i, j;
-
     No_cliente *aux = l->inicio;
 
     while (aux->prox != NULL)
@@ -271,7 +269,7 @@ int inserirCartaoCliente (Lista_cliente *l, int codigo, cartao novo_cartao)
     return 1;
 }
 
-int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidosC novo_pedido)
+int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidos novo_pedido)
 {
     if (l == NULL) return NULL_LIST;
     if (listaVaziaCliente(l) == 0) return EMPTY_LIST;
@@ -287,22 +285,21 @@ int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidosC novo_pedido)
     if (aux->valor.codigo == codigo)
     {  
         aux->valor.quant_pedidos++;
-        aux->valor.historico = (pedidosC*) realloc (aux->valor.historico, aux->valor.quant_pedidos*sizeof(pedidosC));
+        aux->valor.historico = (pedidos*) realloc (aux->valor.historico, aux->valor.quant_pedidos*sizeof(pedidos));
 
         aux->valor.historico[aux->valor.quant_pedidos-1].codigo = novo_pedido.codigo;
         aux->valor.historico[aux->valor.quant_pedidos-1].precoTotal = novo_pedido.precoTotal;
-        aux->valor.historico[aux->valor.quant_pedidos-1].qtdPed = novo_pedido.qtdPed;
+        aux->valor.historico[aux->valor.quant_pedidos-1].qtdPratosPed = novo_pedido.qtdPratosPed;
         strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].nome_rest, novo_pedido.nome_rest);
 
-        aux->valor.historico[aux->valor.quant_pedidos-1].ped = (pratosC*) malloc (novo_pedido.qtdPed*sizeof(pratosC));
+        aux->valor.historico[aux->valor.quant_pedidos-1].pratosPed = (pratos*) malloc (novo_pedido.qtdPratosPed*sizeof(pratos));
 
-        for (i = 0; i < novo_pedido.qtdPed; i++)
+        for (i = 0; i < novo_pedido.qtdPratosPed; i++)
         {
-            strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].nome, novo_pedido.ped[i].nome);
-            strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].descricao, novo_pedido.ped[i].descricao);
-            aux->valor.historico[aux->valor.quant_pedidos-1].ped[i].preco = novo_pedido.ped[i].preco;
+            strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].pratosPed[i].nome, novo_pedido.pratosPed[i].nome);
+            strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].pratosPed[i].descricao, novo_pedido.pratosPed[i].descricao);
+            aux->valor.historico[aux->valor.quant_pedidos-1].pratosPed[i].preco = novo_pedido.pratosPed[i].preco;
         }
-        printf ("CHEGOU");
         return 0;
     } 
     return 1;
@@ -380,10 +377,10 @@ void mostrar_pedidos (Cliente item)
         printf ("%s, ", item.historico->nome_rest);
         printf ("%.2f /", item.historico->precoTotal);
 
-        for (j = 0; j < item.historico->qtdPed; j++)
+        for (j = 0; j < item.historico->qtdPratosPed; j++)
         {
-            printf (" %s, ", item.historico->ped[j].nome);
-            printf ("%.2f /", item.historico->ped[j].preco);
+            printf (" %s, ", item.historico->pratosPed[j].nome);
+            printf ("%.2f /", item.historico->pratosPed[j].preco);
         }
         printf ("] ");
     }
@@ -516,21 +513,21 @@ void copiarCliente (Cliente *A, Cliente *B) // função de auxílio. copia todas
         strcpy(B->pagamentos[i].validade, A->pagamentos[i].validade);
     }
 
-    B->historico = (pedidosC*) malloc (A->quant_pedidos*sizeof(pedidosC));
+    B->historico = (pedidos*) malloc (A->quant_pedidos*sizeof(pedidos));
     for (i = 0; i < A->quant_pedidos; i++)
     {
         B->historico[i].precoTotal = A->historico[i].precoTotal;
         strcpy(B->historico[i].nome_rest, A->historico[i].nome_rest);
         B->historico[i].codigo = A->historico[i].codigo;
-        B->historico[i].qtdPed = A->historico[i].qtdPed;
+        B->historico[i].qtdPratosPed = A->historico[i].qtdPratosPed;
 
-        B->historico[i].ped = (pratosC*) malloc (A->historico[i].qtdPed*sizeof(pratosC));
+        B->historico[i].pratosPed = (pratos*) malloc (A->historico[i].qtdPratosPed*sizeof(pratos));
 
-        for (j = 0; j < A->historico[i].qtdPed; j++)
+        for (j = 0; j < A->historico[i].qtdPratosPed; j++)
         {
-            B->historico[i].ped[j].preco = A->historico[i].ped[j].preco;
-            strcpy(B->historico[i].ped[j].nome, A->historico[i].ped[j].nome);
-            strcpy(B->historico[i].ped[j].descricao, A->historico[i].ped[j].descricao);
+            B->historico[i].pratosPed[j].preco = A->historico[i].pratosPed[j].preco;
+            strcpy(B->historico[i].pratosPed[j].nome, A->historico[i].pratosPed[j].nome);
+            strcpy(B->historico[i].pratosPed[j].descricao, A->historico[i].pratosPed[j].descricao);
         }
     }
 

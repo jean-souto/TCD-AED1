@@ -167,7 +167,7 @@ int inserirPosicaoRest(Lista_restaurantes *l, restaurante item, int pos) // att 
     return i;
 }
 
-int inserirPratoRest(Lista_restaurantes *l, pratosR novoPrato, restaurante *item)
+int inserirPratoRest(Lista_restaurantes *l, pratos novoPrato, restaurante *item)
 {
     if (l == NULL)
         return NULL_LIST;
@@ -176,7 +176,8 @@ int inserirPratoRest(Lista_restaurantes *l, pratosR novoPrato, restaurante *item
 
     if (buscarRestNome(l, item->nome) == 0)
     {
-        item->cardapio = (pratosR *)realloc(item->cardapio, (item->qtdCardapio + 1) * sizeof(pratosR));
+    	//verificar se e a 1a insercao e dar um malloc.
+        item->cardapio = (pratos *)realloc(item->cardapio, (item->qtdCardapio + 1) * sizeof(pratos));
 
         if (item->cardapio != NULL)
         {
@@ -307,7 +308,7 @@ int removerPratoRest(Lista_restaurantes *l, char *nomePrato, restaurante *item)
                     item->cardapio[j] = item->cardapio[j + 1];
                 }
 
-                item->cardapio = (pratosR *)realloc(item->cardapio, (item->qtdCardapio - 1) * sizeof(pratosR));
+                item->cardapio = (pratos *)realloc(item->cardapio, (item->qtdCardapio - 1) * sizeof(pratos));
                 (item->qtdCardapio)--;
 
                 return 0;
@@ -364,7 +365,7 @@ int buscarRestEmailCodigo(Lista_restaurantes *l, char *email, int codigo, restau
     return 1;
 }
 
-int buscarRestNome(Lista_restaurantes *l, char *nome)
+int buscarRestNome(Lista_restaurantes *l, char *nome) //adicionar retorno por referencia do restaurante
 {
     if (l == NULL)
         return NULL_LIST;
@@ -373,17 +374,15 @@ int buscarRestNome(Lista_restaurantes *l, char *nome)
 
     No_restaurante *no = l->inicio;
 
-    while (no->prox != NULL && (strcmp(no->valor.nome, nome) != 0))
-    {
-        no = no->prox;
-    }
+    while (strcmp(no->valor.nome, nome)) //enquanto nao encontro
+        {
+        	if(no->prox == NULL) //se o proximo for nulo morre
+        		return 1;
+        		
+            no = no->prox; //se nao segue
+        }
 
-    if ((strcmp(no->valor.nome, nome) == 0))
-    {
-        return 0;
-    }
-
-    return 1;
+    return 0;
 }
 
 int buscarRestEmail(Lista_restaurantes *l, char *email, restaurante *item)
@@ -393,20 +392,21 @@ int buscarRestEmail(Lista_restaurantes *l, char *email, restaurante *item)
     if (listaVaziaRest(l) == 0)
         return EMPTY_LIST;
 
-    No_restaurante *aux = l->inicio;
+    No_restaurante *no = l->inicio;
 
-    while (aux != NULL && strcmp(aux->valor.email, email))
+    while (strcmp(no->valor.email, email)) //enquanto nao encontro
     {
-        aux = aux->prox;
+    	if(no->prox == NULL) //se o proximo for nulo morre
+    		return 1;
+    		
+        no = no->prox; //se nao segue
     }
-
-    if (!strcmp(aux->valor.email, email))
-    {
-        copiarRestaurante(&aux->valor, &(*item));
-        return 0;
-    }
-
-    return 1;
+    
+	//chegou aqui de fora deu certo
+	//*item = no->valor;
+	//copiarRestaurante(&aux->valor, &(*item));
+	
+	return 0;
 }
 
 // mostra as principais informacoes de cada restaurante para cliente
@@ -475,18 +475,14 @@ int loginRestaurante(Lista_restaurantes *l, char *email, char *senha, restaurant
         return NULL_LIST;
     if (listaVaziaRest(l) == 0)
         return EMPTY_LIST;
+	
+    int retorno = buscarRestEmail(l, email, item);
 
-    No_restaurante *no = l->inicio;
-
-    buscarRestEmail(l, email, item);
-
-    if ((strcmp(no->valor.email, email) == 0) && (strcmp(no->valor.senha, senha) == 0))
-    {
-        printf("teste\n");
-        copiarRestaurante(&no->valor, item);
-        return 0;
-    }
-
+    if (retorno == 0 && strcmp(item->senha,senha) == 0)	{
+    	return 0;
+	}
+	
+	//limpar o item
     return 1;
 }
 
@@ -556,42 +552,34 @@ void copiarRestaurante(restaurante *A, restaurante *B)
     int i, j;
 
     // copiar o cardápio
-    B->cardapio = (pratosR *)malloc(sizeof(pratosR) * A->qtdCardapio);
+    B->cardapio = (pratos *)malloc(sizeof(pratos) * A->qtdCardapio);
     for (i = 0; i < A->qtdCardapio; i++)
     {
-        strcpy(A->cardapio[i].nome, "off");
         strcpy(B->cardapio[i].nome, A->cardapio[i].nome);
-        printf("nome: %s\n", B->cardapio[i].nome);
-        strcpy(A->cardapio[i].descricao, "merda");
         strcpy(B->cardapio[i].descricao, A->cardapio[i].descricao);
-        printf("descricao: %s\n", B->cardapio->descricao);
-        A->cardapio[i].preco = 23.8;
         B->cardapio[i].preco = A->cardapio[i].preco;
-        printf("preco: %g\n", B->cardapio->preco);
     }
-
+    
     // copiar o histórico de pedidos
-    B->historico = (pedidosR *)malloc(sizeof(pedidosR) * A->historico->qtdPed);
-    for (i = 0; i < A->historico->qtdPed; i++)
+    B->historico = (pedidos *)malloc(sizeof(pedidos) * A->qtdHistorico);
+    for (i = 0; i < A->qtdHistorico; i++)
     {
         B->historico[i].codigo = A->historico[i].codigo;
         B->historico[i].precoTotal = A->historico[i].precoTotal;
         strcpy(B->historico[i].nome_rest, A->historico[i].nome_rest);
-        B->historico[i].qtdPed = A->historico[i].qtdPed;
+        B->historico[i].qtdPratosPed = A->historico[i].qtdPratosPed;
 
         // Copiar o vetor de pratos
-        B->historico[i].ped = (pratosR *)malloc(sizeof(pratosR) * A->historico[i].qtdPed);
-        for (j = 0; j < A->historico[i].qtdPed; j++)
+        B->historico[i].pratosPed = (pratos *)malloc(sizeof(pratos) * A->historico[i].qtdPratosPed);
+        for (j = 0; j < A->historico[i].qtdPratosPed; j++)
         {
-            strcpy(B->historico[i].ped[j].nome, A->historico[i].ped[j].nome);
-            strcpy(B->historico[i].ped[j].descricao, A->historico[i].ped[j].descricao);
-            B->historico[i].ped[j].preco = A->historico[i].ped[j].preco;
+            strcpy(B->historico[i].pratosPed[j].nome, A->historico[i].pratosPed[j].nome);
+            strcpy(B->historico[i].pratosPed[j].descricao, A->historico[i].pratosPed[j].descricao);
+            B->historico[i].pratosPed[j].preco = A->historico[i].pratosPed[j].preco;
         }
     }
-    printf("deus me ajuda");
 
     // Copiar a fila de pedidos pendentes
     B->pedidosPendentes = criar_filaPedidosPendentes();
     copiarFilaPedidosPendentes(A->pedidosPendentes, B->pedidosPendentes);
-    printf("jesus");
 }
