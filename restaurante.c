@@ -91,7 +91,7 @@ int inserirInicioRest(Lista_restaurantes *l, restaurante item)
     no->valor.codigo = sortearCodigoRest(l);
     no->ant = NULL;
 
-    if(listaVaziaRest(l) == 0)
+    if (listaVaziaRest(l) == 0)
     {
         no->prox = NULL;
     }
@@ -105,7 +105,8 @@ int inserirInicioRest(Lista_restaurantes *l, restaurante item)
 // insere no fim da lista
 int inserirFimRest(Lista_restaurantes *l, restaurante item)
 {
-    if (l == NULL) return NULL_LIST;
+    if (l == NULL)
+        return NULL_LIST;
 
     No_restaurante *no = (No_restaurante *)malloc(sizeof(No_restaurante));
     No_restaurante *aux = l->inicio;
@@ -134,7 +135,7 @@ int inserirFimRest(Lista_restaurantes *l, restaurante item)
 }
 
 // insere posição desejada na lista
-int inserirPosicaoRest(Lista_restaurantes *l, restaurante item, int pos) //att essa bomba
+int inserirPosicaoRest(Lista_restaurantes *l, restaurante item, int pos) // att essa bomba
 {
     if (l == NULL)
         return NULL_LIST;
@@ -168,8 +169,10 @@ int inserirPosicaoRest(Lista_restaurantes *l, restaurante item, int pos) //att e
 
 int inserirPratoRest(Lista_restaurantes *l, pratosR novoPrato, restaurante *item)
 {
-    if (l == NULL) return NULL_LIST;
-    if (listaVaziaRest(l) == 0) EMPTY_LIST;
+    if (l == NULL)
+        return NULL_LIST;
+    if (listaVaziaRest(l) == 0)
+        EMPTY_LIST;
 
     if (buscarRestNome(l, item->nome) == 0)
     {
@@ -287,9 +290,11 @@ int removerRestCodigo(Lista_restaurantes *l, int codigo)
 
 int removerPratoRest(Lista_restaurantes *l, char *nomePrato, restaurante *item)
 {
-    if (l == NULL) return NULL_LIST;
-    if (listaVaziaRest(l) == 0) EMPTY_LIST;
-    
+    if (l == NULL)
+        return NULL_LIST;
+    if (listaVaziaRest(l) == 0)
+        EMPTY_LIST;
+
     if (buscarRestNome(l, item->nome) == 0)
     {
         for (int i = 0; i < item->qtdCardapio; i++)
@@ -333,11 +338,11 @@ int buscarRestCodigo(Lista_restaurantes *l, int codigo, restaurante *item)
         copiarRestaurante(&(aux->valor), &(*item));
         return 0;
     }
-    else
-        return 1;
+
+    return 1;
 }
 
-int buscarRestEmailCodigo(Lista_restaurantes *l, char *email, int codigo, restaurante *item) //revisar 
+int buscarRestEmailCodigo(Lista_restaurantes *l, char *email, int codigo, restaurante *item) // revisar
 {
     if (l == NULL)
         return NULL_LIST;
@@ -381,6 +386,29 @@ int buscarRestNome(Lista_restaurantes *l, char *nome)
     return 1;
 }
 
+int buscarRestEmail(Lista_restaurantes *l, char *email, restaurante *item)
+{
+    if (l == NULL)
+        return NULL_LIST;
+    if (listaVaziaRest(l) == 0)
+        return EMPTY_LIST;
+
+    No_restaurante *aux = l->inicio;
+
+    while (aux != NULL && strcmp(aux->valor.email, email))
+    {
+        aux = aux->prox;
+    }
+
+    if (!strcmp(aux->valor.email, email))
+    {
+        copiarRestaurante(&aux->valor, &(*item));
+        return 0;
+    }
+
+    return 1;
+}
+
 // mostra as principais informacoes de cada restaurante para cliente
 void mostrarInfoRest(Lista_restaurantes *l)
 {
@@ -401,22 +429,18 @@ void mostrarInfoRest(Lista_restaurantes *l)
 
 void mostrarCardapio(Lista_restaurantes *l, restaurante *item)
 {
-    if (l != NULL)
+
+    if (buscarRestNome(l, item->nome) == 0)
     {
         printf("[ Cardapio ]");
 
-        if (buscarRestNome(l, item->nome) == 0)
+        for (int i = 0; i < item->qtdCardapio; i++)
         {
-            for (int i = 0; i < item->qtdCardapio; i++)
-            {
-                printf("%s\n"
-                       "%s\n"
-                       "%0.2f\n",
-                       item->cardapio->nome, item->cardapio->descricao, item->cardapio->preco);
-            }
-            
+            printf("%s\n"
+                   "%s\n"
+                   "%0.2f\n",
+                   item->cardapio->nome, item->cardapio->descricao, item->cardapio->preco);
         }
-
     }
 }
 
@@ -454,13 +478,11 @@ int loginRestaurante(Lista_restaurantes *l, char *email, char *senha, restaurant
 
     No_restaurante *no = l->inicio;
 
-    while (no->prox != NULL && (strcmp(no->valor.email, email) != 0))
-    {
-        no = no->prox;
-    }
+    buscarRestEmail(l, email, item);
 
     if ((strcmp(no->valor.email, email) == 0) && (strcmp(no->valor.senha, senha) == 0))
     {
+        printf("teste\n");
         copiarRestaurante(&no->valor, item);
         return 0;
     }
@@ -468,7 +490,7 @@ int loginRestaurante(Lista_restaurantes *l, char *email, char *senha, restaurant
     return 1;
 }
 
-int alterarSenhaRest(Lista_restaurantes * l, int codigo, char *novaSenha, char *confirmNovaSenha)
+int alterarSenhaRest(Lista_restaurantes *l, int codigo, char *novaSenha, char *confirmNovaSenha)
 {
     if (l == NULL)
         return NULL_LIST;
@@ -488,7 +510,7 @@ int alterarSenhaRest(Lista_restaurantes * l, int codigo, char *novaSenha, char *
         {
             strcpy(no->valor.senha, novaSenha);
             return 0;
-         }
+        }
     }
     return 1;
 }
@@ -537,7 +559,7 @@ void copiarRestaurante(restaurante *A, restaurante *B)
     B->cardapio = (pratosR *)malloc(sizeof(pratosR) * A->qtdCardapio);
     for (i = 0; i < A->qtdCardapio; i++)
     {
-        strcpy(A->cardapio[i].nome, "porra");
+        strcpy(A->cardapio[i].nome, "off");
         strcpy(B->cardapio[i].nome, A->cardapio[i].nome);
         printf("nome: %s\n", B->cardapio[i].nome);
         strcpy(A->cardapio[i].descricao, "merda");
