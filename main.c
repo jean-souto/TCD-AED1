@@ -107,7 +107,8 @@ int main()
     r.preco = 20.52;
     inserirInicioRest(lista_principal_restaurantes, teste);
     inserirPratoRest(lista_principal_restaurantes, r, &teste);
-    // mostrarListaRest(lista_principal_restaurantes); 
+    mostrarListaRest(lista_principal_restaurantes); 
+    mostrarCardapio(lista_principal_restaurantes, &teste);
 
     strcpy(loginADM, "souADM");
     strcpy(senhaADM, "123ADM");

@@ -62,9 +62,6 @@ int buscarRestNome(Lista_restaurantes *l, char *nome);
 //int buscarRestPos(Lista_restaurantes *l, int pos, restaurante *item);
 int buscarRestEmail(Lista_restaurantes *l, char *email, restaurante *item);
 
-
-
-
 // visualização usuário
 // void mostrarRestaurantes(Lista_restaurantes *l); 
 void mostrarInfoRest(Lista_restaurantes *l); 
@@ -80,3 +77,4 @@ int alterarSenhaRest(Lista_restaurantes *l, int codigo, char *novaSenha, char *c
 // int alterarEmailRest(Lista_restaurantes *l, int codigo, char *novoEmail, char *confirmNovoEmail);
 int sortearCodigoRest(Lista_restaurantes *l);
 void copiarRestaurante(restaurante *A, restaurante *B);
+void limparVariavelRest(restaurante *item);

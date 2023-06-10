@@ -171,13 +171,21 @@ int inserirPratoRest(Lista_restaurantes *l, pratos novoPrato, restaurante *item)
 {
     if (l == NULL)
         return NULL_LIST;
-    if (listaVaziaRest(l) == 0)
-        EMPTY_LIST;
 
-    if (buscarRestNome(l, item->nome) == 0)
+    if (listaVaziaRest(l) == 0)
+        return EMPTY_LIST;
+
+    if (buscarRestNome(l, item->nome) == 0) // verifica se o nome está na lista
     {
-    	//verificar se e a 1a insercao e dar um malloc.
-        item->cardapio = (pratos *)realloc(item->cardapio, (item->qtdCardapio + 1) * sizeof(pratos));
+        // verifica se é a primeira inserção e da um malloc.
+        if (item->cardapio == NULL)
+        {
+            item->cardapio = (pratos *)malloc(sizeof(pratos));
+        }
+        else
+        {
+            item->cardapio = (pratos *)realloc(item->cardapio, (item->qtdCardapio + 1) * sizeof(pratos));
+        }
 
         if (item->cardapio != NULL)
         {
@@ -186,6 +194,7 @@ int inserirPratoRest(Lista_restaurantes *l, pratos novoPrato, restaurante *item)
             return 0;
         }
     }
+
     return 1;
 }
 
@@ -432,7 +441,7 @@ void mostrarCardapio(Lista_restaurantes *l, restaurante *item)
 
     if (buscarRestNome(l, item->nome) == 0)
     {
-        printf("[ Cardapio ]");
+        printf("[ Cardapio ]\n");
 
         for (int i = 0; i < item->qtdCardapio; i++)
         {
@@ -481,8 +490,9 @@ int loginRestaurante(Lista_restaurantes *l, char *email, char *senha, restaurant
     if (retorno == 0 && strcmp(item->senha,senha) == 0)	{
     	return 0;
 	}
-	
-	//limpar o item
+
+    limparVariavelRest(item);
+
     return 1;
 }
 
@@ -582,4 +592,18 @@ void copiarRestaurante(restaurante *A, restaurante *B)
     // Copiar a fila de pedidos pendentes
     B->pedidosPendentes = criar_filaPedidosPendentes();
     copiarFilaPedidosPendentes(A->pedidosPendentes, B->pedidosPendentes);
+}
+
+void limparVariavelRest(restaurante *item)
+{
+    strcpy(item->nome, "-");
+    strcpy(item->email, "-");
+    strcpy(item->senha, "-");
+    strcpy(item->categoria, "-");
+    item->cardapio = NULL;
+    item->qtdCardapio = 0;
+    item->historico = NULL;
+    item->qtdHistorico = 0;
+    item->status = -1;
+    item->pedidosPendentes = NULL;
 }
