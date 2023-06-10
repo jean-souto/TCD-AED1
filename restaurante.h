@@ -58,12 +58,12 @@ int removerPratoRest(Lista_restaurantes *l, char *nomePrato, restaurante *item);
 // busca
 int buscarRestCodigo(Lista_restaurantes *l, int codigo, restaurante *item);
 int buscarRestEmailCodigo(Lista_restaurantes *l, char *email, int codigo, restaurante *item);
-int buscarRestNome(Lista_restaurantes *l, char *nome);
+int buscarRestNome(Lista_restaurantes *l, char *nome, restaurante *item);
 //int buscarRestPos(Lista_restaurantes *l, int pos, restaurante *item);
 int buscarRestEmail(Lista_restaurantes *l, char *email, restaurante *item);
 
 // visualização usuário
-// void mostrarRestaurantes(Lista_restaurantes *l); 
+void mostrarRestaurante(restaurante *item); 
 void mostrarInfoRest(Lista_restaurantes *l); 
 // void mostrarHistoricoPedidos(Lista_restaurantes *l, char *nome);
 void mostrarCardapio(Lista_restaurantes *l, restaurante *item);
@@ -71,10 +71,14 @@ void mostrarCardapio(Lista_restaurantes *l, restaurante *item);
 // visualização ADM
 void mostrarListaRest(Lista_restaurantes *l); 
 
+//alteracoes de usuario
+int alterarSenhaRest(Lista_restaurantes *l, int codigo, char *novaSenha, char *confirmNovaSenha, restaurante *item);
+// int alterarEmailRest(Lista_restaurantes *l, int codigo, char *novoEmail, char *confirmNovoEmail, restaurante *item);
+int alterarCategoria(Lista_restaurantes *l, int codigo, char *categoria, restaurante *item);
+
 // outros
 int loginRestaurante(Lista_restaurantes *l, char *email, char *senha, restaurante *item);
-int alterarSenhaRest(Lista_restaurantes *l, int codigo, char *novaSenha, char *confirmNovaSenha);
-// int alterarEmailRest(Lista_restaurantes *l, int codigo, char *novoEmail, char *confirmNovoEmail);
+
 int sortearCodigoRest(Lista_restaurantes *l);
 void copiarRestaurante(restaurante *A, restaurante *B);
 void limparVariavelRest(restaurante *item);
