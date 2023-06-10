@@ -300,7 +300,6 @@ int inserirPedidoHistorico (Lista_cliente *l, int codigo, pedidos novo_pedido)
             strcpy(aux->valor.historico[aux->valor.quant_pedidos-1].pratosPed[i].descricao, novo_pedido.pratosPed[i].descricao);
             aux->valor.historico[aux->valor.quant_pedidos-1].pratosPed[i].preco = novo_pedido.pratosPed[i].preco;
         }
-        printf ("CHEGOU");
         return 0;
     } 
     return 1;
