@@ -75,7 +75,11 @@ int main()
     int codigo_loginR;
     pratos novo_prato;
     char nome_prato[40];
+    float preco_prato;
+
+    // declaracoes relacionadas a fila de pedidos pendentes
     Fila_PedidosPendentes *fila_pedidosPendentes;
+    pedidos *pedidoPendente;
 
     // declarações relacionadas aos entregadores
     Lista_entregadores *lista_principal_entregadores;
@@ -99,9 +103,10 @@ int main()
     lista_principal_clientes = criarCliente();
     lista_principal_entregadores = criar_lista_entregadores();
     lista_principal_restaurantes = criar_listaRestaurantes();
+    fila_pedidosPendentes = criar_filaPedidosPendentes();
 
     // criando testes
-    /*
+    
     
     restaurante teste;
     strcpy(teste.nome, "Fast Acai");
@@ -125,7 +130,6 @@ int main()
         mostrarCardapio(lista_principal_restaurantes, &retorno);
     }
     
-    */
 
     // LOGIN ADM
     strcpy(loginADM, "souADM");
@@ -728,6 +732,7 @@ int main()
                             if (verify != 0)
                             {
                                 printf("\nLogin ou senha invalidos. Tente novamente!\n");
+
                             } else if (verify == 0)
                             {
                                 printf("\nLogin efetuado com sucesso. Bem vindos de volta, %s!\n", logado_restaurante.nome);
@@ -750,12 +755,11 @@ int main()
                                     setbuf(stdin, NULL);
                                     scanf("%[^\n]s", email);
 
+                                    limpaBuffer();
                                     printf("\nDigite o codigo do restaurante: ");
-                                    setbuf(stdin, NULL);
-                                    scanf("%[^\n]s", codigo_loginR);
+                                    scanf("%d", &codigo_loginR);
 
                                     verify = buscarRestEmailCodigo(lista_principal_restaurantes, email, codigo_loginR, &login_restaurante);
-                                    printf("%d", verify);
 
                                     if (verify == 0)
                                     {
@@ -777,9 +781,8 @@ int main()
                                             verify = alterarSenhaRest(lista_principal_restaurantes, codigo_loginR, senha, confirmSenha, &login_restaurante);
 
                                             if (verify == 0)
-                                                printf("\nSenha alterada com sucesso! ");
-
-                                            if (verify != 0)
+                                                printf("\nSenha alterada com sucesso! "); //ver pq nao deixa logar depois de alterar a senha mesmo falando que mudou
+                                            else
                                                 printf("\nSenhas diferentes. Tente novamente! ");
                                         }
                                     }
@@ -794,7 +797,7 @@ int main()
                         
                         int option2 = -1;
 
-                        while (option2 != 4)
+                        while (option2 != 0) 
                         {
                             option2 = menu_restaurante();
                            
@@ -826,10 +829,11 @@ int main()
 
                                                 printf("Digite o nome:\n(max 40 caracteres)\n");
                                                 limpaBuffer();
+                                                scanf("%[^\n]s", novo_prato.nome);
 
-                                                printf("Descricao:\nEx.: Bedida, Ingredientes\n(max 100 caracteres): ");
+                                                printf("Descricao:\nEx.: Bedida, Ingredientes\n(max 100 caracteres):\n");
                                                 limpaBuffer();
-                                                scanf("%[^\n]s", &novo_prato.descricao);
+                                                scanf("%[^\n]s", novo_prato.descricao);
 
                                                 printf("Entre com o preco: ");
                                                 limpaBuffer();
@@ -852,7 +856,11 @@ int main()
                                                 limpaBuffer();
                                                 scanf("%[^\n]s", &nome_prato);
 
-                                                if (removerPratoRest(lista_principal_restaurantes, nome_prato, &logado_restaurante) == 0)
+                                                printf("Preco do prato a ser removido: ");
+                                                limpaBuffer();
+                                                scanf("%f", &preco_prato);
+
+                                                if (removerPratoRest(lista_principal_restaurantes, nome_prato, preco_prato, &logado_restaurante) == 0)
                                                 {
                                                     printf("Item removido com sucesso!\n");
                                                 }
@@ -887,13 +895,23 @@ int main()
                                                 break;
 
                                             case 1: // mostrar a fila toda
-                                                printf("PEDIDOS PENDENTES\n");
-                                                mostrarPedidosPendentes(fila_pedidosPendentes);
+                                                if (filaVazia(fila_pedidosPendentes) != EMPTY_QUEUE)
+                                                {
+                                                    printf("PEDIDOS PENDENTES\n");
+                                                    mostrarPedidosPendentes(fila_pedidosPendentes);
+                                                } else 
+                                                    printf("Nao ha pedidos pendentes por enquanto... ;)\n");
+                                                
                                                 break;
 
                                             case 2: // mostrar apenas o proximo
-                                                printf("PROXIMO PEDIDO\n");
-                                                //consultarProxPedido(fila_pedidosPendentes, &);
+                                                if (filaVazia(fila_pedidosPendentes) != EMPTY_QUEUE)
+                                                {
+                                                    printf("PROXIMO PEDIDO\n");
+                                                    consultarProxPedido(fila_pedidosPendentes, &pedidoPendente);
+                                                } else
+                                                    printf("Nao ha nenhum pedido pendente por enquanto... ;)\n");
+
                                                 break;
 
                                             default:
@@ -969,6 +987,7 @@ int main()
                                     */
                                 break;       
                            }
+                           break;
                            
                         }
                         

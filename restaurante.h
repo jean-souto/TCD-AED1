@@ -53,7 +53,7 @@ int removerInicioRest(Lista_restaurantes *l);
 int removerFimRest(Lista_restaurantes *l);
 int removerPosRest(Lista_restaurantes *l, int pos);
 int removerRestCodigo(Lista_restaurantes *l, int codigo);
-int removerPratoRest(Lista_restaurantes *l, char *nomePrato, restaurante *item);
+int removerPratoRest(Lista_restaurantes *l, char *nomePrato, float precoPrato, restaurante *item);
 
 // busca
 int buscarRestCodigo(Lista_restaurantes *l, int codigo, restaurante *item);
