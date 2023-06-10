@@ -28,7 +28,7 @@ int criar_listaCategoria(Lista_restaurantes *l1, Lista_restaurantes *l2, char *c
         no = no->prox;
         if (no->valor.categoria == categoria)
         {
-            inserirFimRest(l2, no->valor);
+            inserirFimRest(l2, &no->valor);
         }
     }
 
@@ -87,8 +87,8 @@ int inserirInicioRest(Lista_restaurantes *l, restaurante item)
 
     No_restaurante *no = (No_restaurante *)malloc(sizeof(No_restaurante));
 
+    item.codigo = sortearCodigoRest(l);
     no->valor = item;
-    no->valor.codigo = sortearCodigoRest(l);
     no->ant = NULL;
 
     if (listaVaziaRest(l) == 0)
@@ -103,7 +103,7 @@ int inserirInicioRest(Lista_restaurantes *l, restaurante item)
 }
 
 // insere no fim da lista
-int inserirFimRest(Lista_restaurantes *l, restaurante item)
+int inserirFimRest(Lista_restaurantes *l, restaurante *item)
 {
     if (l == NULL)
         return NULL_LIST;
@@ -111,8 +111,9 @@ int inserirFimRest(Lista_restaurantes *l, restaurante item)
     No_restaurante *no = (No_restaurante *)malloc(sizeof(No_restaurante));
     No_restaurante *aux = l->inicio;
 
-    no->valor = item;
-    no->valor.codigo = sortearCodigoRest(l);
+    item->codigo = sortearCodigoRest(l);
+    no->valor = *item;
+    no->prox = NULL;
 
     if (listaVaziaRest(l) != 0)
     {
@@ -129,8 +130,6 @@ int inserirFimRest(Lista_restaurantes *l, restaurante item)
         no->ant = NULL;
     }
 
-    no->prox = NULL;
-
     return 0;
 }
 
@@ -144,7 +143,7 @@ int inserirPosicaoRest(Lista_restaurantes *l, restaurante item, int pos) // att 
     if (pos <= 1)
         return inserirInicioRest(l, item);
     if (pos > tamanhoRest(l))
-        return inserirFimRest(l, item);
+        return inserirFimRest(l, &item);
 
     No_restaurante *no = l->inicio;
     No_restaurante *noaux = (No_restaurante *)malloc(sizeof(No_restaurante));
@@ -329,28 +328,27 @@ int removerPratoRest(Lista_restaurantes *l, char *nomePrato, restaurante *item)
     return 1;
 }
 
-// busca o restaurante correspondente ao codigo e retorna ele por parametro
 int buscarRestCodigo(Lista_restaurantes *l, int codigo, restaurante *item)
 {
     if (l == NULL)
         return NULL_LIST;
-    if (listaVaziaRest(l) == 0)
+    if (listaVaziaRest(l) == 0) 
         return EMPTY_LIST;
 
     No_restaurante *no = l->inicio;
 
-    while (no->valor.codigo != item->codigo) // enquanto nao encontro
+    while (no != NULL)
     {
-        if (no->prox == NULL) // se o proximo for nulo morre
-            return 1;
-
-        no = no->prox; // se nao segue
+        if (no->valor.codigo == codigo) 
+        {
+            copiarRestaurante(&no->valor, item);
+            return 0;
+        }
+        
+        no = no->prox;
     }
 
-    *item = no->valor;
-    // copiarRestaurante(&aux->valor, &(*item));
-
-    return 0;
+    return 1;
 }
 
 int buscarRestEmailCodigo(Lista_restaurantes *l, char *email, int codigo, restaurante *item) // revisar
@@ -554,26 +552,29 @@ int loginRestaurante(Lista_restaurantes *l, char *email, char *senha, restaurant
 int sortearCodigoRest(Lista_restaurantes *l)
 {
     int codigo = 0;
-    srand(time(NULL));
 
-    while (codigo == 0)
-    {
-        codigo = rand() % 9999;
-    }
-
-    if (l == NULL || listaVaziaRest(l) == 0)
+    if (l == NULL)
         return codigo;
 
+    srand(time(NULL));
+    codigo = rand() % 9999 + 1; // Adiciona 1 para evitar código 0
+
+    if (listaVaziaRest(l) == 0)
+        return codigo;
+    
     No_restaurante *no = l->inicio;
 
-    while (no->prox != NULL)
+    while (no != NULL) // Altera a condição do loop para verificar o final da lista
     {
         if (codigo == no->valor.codigo)
         {
-            codigo = rand() % 9999;
-            no = l->inicio;
+            codigo = rand() % 9999 + 1; // Gera novo código diferente do existente
+            no = l->inicio;             // Reinicia a verificação desde o início da lista
         }
-        no = no->prox;
+        else
+        {
+            no = no->prox; // Avança para o próximo nó na lista
+        }
     }
 
     return codigo;
@@ -646,4 +647,31 @@ void limparVariavelRest(restaurante *item)
     item->qtdHistorico = 0;
     item->status = -1;
     item->pedidosPendentes = NULL;
+}
+
+void salvarListaRest(Lista_restaurantes *l)
+{
+    FILE *arquivo = fopen("restaurantes.txt", "w");
+
+    if (arquivo == NULL)
+    {
+        printf("Erro ao abrir o arquivo!\n");
+        return;
+    }
+
+    No_restaurante *no = l->inicio;
+
+    while (no != NULL)
+    {
+        fprintf(arquivo, "%s;%s;%s;%s;%d;%d;%s;%s;%f;%d;%d;%f;%s;%s;%s;%f;%d;\n",
+                no->valor.nome, no->valor.email, no->valor.senha, no->valor.categoria,
+                no->valor.codigo, no->valor.status,
+                no->valor.cardapio->nome, no->valor.cardapio->descricao, no->valor.cardapio->preco, no->valor.qtdCardapio,
+                no->valor.historico->codigo, no->valor.historico->precoTotal, no->valor.historico->nome_rest,
+                no->valor.historico->pratosPed->nome, no->valor.historico->pratosPed->descricao, no->valor.historico->pratosPed->preco, no->valor.historico->qtdPratosPed,
+                no->valor.qtdHistorico);
+        no = no->prox;
+    }
+
+    fclose(arquivo);
 }

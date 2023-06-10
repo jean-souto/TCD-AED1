@@ -44,7 +44,7 @@ int tamanhoRest(Lista_restaurantes *l);
 
 // insercao
 int inserirInicioRest(Lista_restaurantes *l, restaurante item);
-int inserirFimRest(Lista_restaurantes *l, restaurante item);   
+int inserirFimRest(Lista_restaurantes *l, restaurante *item);   
 int inserirPosicaoRest(Lista_restaurantes *l, restaurante item, int pos);
 int inserirPratoRest(Lista_restaurantes *l, pratos novoPrato, restaurante *item);
 
@@ -82,3 +82,4 @@ int loginRestaurante(Lista_restaurantes *l, char *email, char *senha, restaurant
 int sortearCodigoRest(Lista_restaurantes *l);
 void copiarRestaurante(restaurante *A, restaurante *B);
 void limparVariavelRest(restaurante *item);
+void salvarListaRest(Lista_restaurantes *l);

@@ -101,6 +101,8 @@ int main()
     lista_principal_restaurantes = criar_listaRestaurantes();
 
     // criando testes
+    /*
+    
     restaurante teste;
     strcpy(teste.nome, "Fast Acai");
     strcpy(teste.email, "fast@gmail.com");
@@ -116,6 +118,15 @@ int main()
     printf("[ Cardapio ]\n");
     mostrarCardapio(lista_principal_restaurantes, &teste);
 
+    restaurante retorno;
+    int a = buscarRestEmail(lista_principal_restaurantes, teste.email, &retorno);
+    if (!a)
+    {
+        mostrarCardapio(lista_principal_restaurantes, &retorno);
+    }
+    
+    */
+
     // LOGIN ADM
     strcpy(loginADM, "souADM");
     strcpy(senhaADM, "123ADM");
@@ -128,12 +139,6 @@ int main()
 
     // AQUI COMEÇA O PROGRAMA EM SI
 
-    restaurante retorno;
-    int a = buscarRestEmail(lista_principal_restaurantes, teste.email, &retorno);
-    if (!a)
-    {
-        mostrarCardapio(lista_principal_restaurantes, &retorno);
-    }
 
     while (option != 0) // mantém o programa rodando até que seja escolhido sair
     {
@@ -678,22 +683,26 @@ int main()
 
                             inicializar_restaurante(&novo_restaurante);
 
-                            if ((inserirFimRest(lista_principal_restaurantes, novo_restaurante)) == 0)
+                            if ((inserirFimRest(lista_principal_restaurantes, &novo_restaurante)) == 0)
                             {
+                                mostrarListaRest(lista_principal_restaurantes);
                                 printf("\nDigite ate duas categorias que o restaurante se encaixa:\n"
-                                       "separe as duas por ';' (max 30 digitos)\n"
-                                       "Ex.: Acai e Sorvetes\n\tComida Japonesa; Doces\n");
+                                       "separe as duas por '/' (max 30 digitos)\n" // colocar cinza
+                                       "Ex.: Acai e Sorvetes\nComida Japonesa/ Doces\n"); // colocar cinza
                                 setbuf(stdin, NULL);
                                 scanf("%[^\n]s", categoria);
+
                                 if (alterarCategoria(lista_principal_restaurantes, novo_restaurante.codigo, categoria, &novo_restaurante) == 0)
                                 {
                                     printf("\nCadastro realizado com sucesso!\n");
+                                    //salvarListaRest(lista_principal_restaurantes);
                                     printf("MEU PERFIL\n");
                                     mostrarRestaurante(&novo_restaurante);
-                                } else {
+                                } else
                                     printf("Algo deu errado! Tente Novamente\n");
-                                }    
-                            }
+                            } else 
+                                printf("Algo deu errado! Tente Novamente\n");
+                            
                             limpar_variavel_rest(&novo_restaurante);
                             mostrarListaRest(lista_principal_restaurantes); // tirar dps
                         break;
