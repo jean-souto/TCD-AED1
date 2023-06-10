@@ -33,7 +33,7 @@ int filaVazia(Fila_PedidosPendentes *f)
     if (f == NULL)
         return NULL_QUEUE;
     if (f->qtd == 0)
-        return 0;
+        return EMPTY_QUEUE;
     else
         return 1;
 }
@@ -111,9 +111,9 @@ int tamanhoFila(Fila_PedidosPendentes *f)
     return f->qtd;
 }
 
-void mostrarPedidosPendentes(Fila_PedidosPendentes *f)
+void mostrarPedidosPendentes(Fila_PedidosPendentes *f) //mudar para mostrar respeitando a estrutura da fila
 {
-    if (f != NULL)
+    if (filaVazia(f) != 0)
     {
         printf("---------------------------------------------");
         No_pedidosPendentes *no = f->inicio;
