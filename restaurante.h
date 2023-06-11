@@ -57,10 +57,10 @@ int removerRestCodigo(Lista_restaurantes *l, int codigo);
 int removerPratoRest(Lista_restaurantes *l, char *nomePrato, float precoPrato, restaurante *item);
 
 // busca
+int buscarRestPos(Lista_restaurantes *l, int pos, restaurante *item);
 int buscarRestCodigo(Lista_restaurantes *l, int codigo, restaurante *item);
 int buscarRestEmailCodigo(Lista_restaurantes *l, char *email, int codigo, restaurante *item);
 int buscarRestNome(Lista_restaurantes *l, char *nome, restaurante *item);
-//int buscarRestPos(Lista_restaurantes *l, int pos, restaurante *item);
 int buscarRestEmail(Lista_restaurantes *l, char *email, restaurante *item);
 
 // visualização usuário
