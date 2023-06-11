@@ -33,6 +33,7 @@ void inicializar_cliente(Cliente *item); // usada ao criar um novo_cliente cadas
 void inicializar_restaurante(restaurante *item);
 void limpar_variavel_cliente(Cliente *item); // limpa a variavel para evitar erros ao sobrepor
 void limpar_variavel_rest(restaurante *item); // limpa a variavel para evitar erros ao sobrepor
+void limpar_variavel_prato(pratos *item);
 void limpaBuffer();
 
 // MENUS
@@ -98,6 +99,8 @@ int main()
     char cpf[12];
     char confirmSenha[15];
     char categoria[30];
+    int codigo_pedido;
+    float precoTotal_pedido;
 
     // inicializações
     lista_principal_clientes = criarCliente();
@@ -795,25 +798,26 @@ int main()
 
                         if (verify == 6) break; // sair e voltar ao menu anterior
                         
-                        int option2 = -1;
+                        option = -1;
 
-                        while (option2 != 0) 
+                        while (option != 0) 
                         {
-                            option2 = menu_restaurante();
+                            option = menu_restaurante();
                            
-                            switch (option2)
+                            switch (option)
                             {
                                 case 0: // voltar
                                     break;
 
                                 case 1:; // atualizar cardapio
-                                    int option3 = -1;
 
-                                    while (option3 != 0)
+                                    option = -1;
+
+                                    while (option != 0)
                                     {
-                                        option3 = menu_cardapio_restaurante();
+                                        option = menu_cardapio_restaurante();
 
-                                        switch (option3)
+                                        switch (option)
                                         {
                                             case 0:
                                                 printf("Saindo...\n");
@@ -844,7 +848,7 @@ int main()
                                                     printf("Item adicionado com sucesso!\n");
 
                                                 } else {
-                                                    printf("Tente Novamente\n");
+                                                    printf("Algum erro inesperado aconteceu. Tente Novamente\n");
                                                     break;
                                                 }
                                                 
@@ -922,13 +926,13 @@ int main()
                                     
                                     break;
 
-                                case 3: // historico de pedidos
-                                    /*
+                                case 3:; // historico de pedidos
+                                    
                                     int option5 = -1;
 
-                                    while ((option5 != 0))
+                                    while (option5 != 0)
                                     {
-                                        option5 = menu_historicoPedidos;
+                                        option5 = menu_historicoPedidos_restaurante();
 
                                         switch (option5)
                                         {
@@ -936,22 +940,84 @@ int main()
                                                 break;
 
                                             case 1: // todos os pedidos ja feitos no restaurante
+
+                                                if (buscarRestCodigo(lista_principal_restaurantes, logado_restaurante.codigo, &logado_restaurante) == 0)
+                                                {
+                                                    if (logado_restaurante.historico != NULL)
+                                                    {
+                                                        printf("Aqui estao os ultimos pedidos de %s\n", logado_restaurante.nome);
+                                                        mostrarHistoricoRest(logado_restaurante);
+                                                    } else
+                                                        printf("%s ainda nao tem pedidos concluidos\n", logado_restaurante.nome);
+                                                }
+
                                                 break;
 
-                                            case 2: // filtrar por mes
+                                            case 2: // filtrar por nome do prato
+
+                                                if (buscarRestCodigo(lista_principal_restaurantes, logado_restaurante.codigo, &logado_restaurante) == 0)
+                                                {
+                                                    if (logado_restaurante.historico != NULL)
+                                                    {
+                                                        printf("Nome do prato: ");
+                                                        limpaBuffer();
+                                                        scanf("%[^\n]s", &nome_prato);
+
+                                                        printf("Aqui estao os ultimos pedidos de %s\n", nome_prato);
+                                                        mostrarHistoricoRestPorNomePrato(&logado_restaurante, nome_prato);
+                                                    }
+                                                    else
+                                                        printf("%s ainda nao tem pedidos concluidos\n", logado_restaurante.nome);
+                                                }
+
                                                 break;
 
-                                            case 3: // filtrar por semana
+                                            case 3: // mostrar pedido buscado por codigo
+
+                                                if (buscarRestCodigo(lista_principal_restaurantes, logado_restaurante.codigo, &logado_restaurante) == 0)
+                                                {
+                                                    if (logado_restaurante.historico != NULL)
+                                                    {
+                                                        printf("Entre com codigo do pedido: ");
+                                                        limpaBuffer();
+                                                        scanf("%d", &codigo_pedido);
+                                                       
+                                                        printf("Aqui esta o pedido com codigo %d\n", codigo_pedido);
+                                                        mostrarPedidoPorCodigo(&logado_restaurante, codigo_pedido);                                   
+                                                    }
+                                                    else
+                                                        printf("%s ainda nao tem pedidos concluidos\n", logado_restaurante.nome);
+                                                }
                                                 break;
 
-                                            case 4: // filtrar por nome do prato
-                                                break;
+                                            case 4: // filtrar por preco total (menor que, maior que e exato)
 
-                                            case 5: // buscar pedido por codigo
+                                                /*
+                                                if (buscarRestCodigo(lista_principal_restaurantes, logado_restaurante.codigo, &logado_restaurante) == 0)
+                                                {
+                                                    if (logado_restaurante.historico != NULL)
+                                                    {
+                                                        printf("Entre com o preco do pedido: ");
+                                                        limpaBuffer();
+                                                        scanf("%d", &precoTotal_pedido);
+
+                                                        printf("Deseja ver pedidos com precos maiores, menores ou iguais: ");
+                                                        limpaBuffer();
+                                                        scanf("%[^\n]s", &nome_prato);
+
+                                                        printf("Aqui esta o pedido com codigo %d\n", codigo_pedido);
+                                                        mostrarPedidoPorCodigo(&logado_restaurante, codigo_pedido);
+                                                    }
+                                                    else
+                                                        printf("%s ainda nao tem pedidos concluidos\n", logado_restaurante.nome);
+                                                }
+                                                */
+
                                                 break;
+                                                
                                         }
                                     }
-                                    */
+                                    
                                     break;
 
                                 case 4: // configuracoes
@@ -1498,6 +1564,13 @@ void inicializar_restaurante(restaurante *item)
     item->pedidosPendentes = NULL;
 }
 
+void limpar_variavel_prato (pratos *item)
+{
+    strcpy(item->nome, "-");
+    strcpy(item->descricao, "-");
+    item->preco = -1;
+}
+
 int confirmarSenha(char *str1, char *str2)
 {
     if (strlen(str1) != strlen(str2))
@@ -1689,16 +1762,15 @@ int menu_historicoPedidos_restaurante()
         // system ("cls");
         printf("\n\nSelecione uma opcao: \n"
                "1. todos os pedidos ja feitos no restaurante\n"
-               "2. filtrar por mes\n"
-               "3. filtrar por semana\n"
-               "4. filtrar por nome do prato\n"
-               "5. buscar pedido por codigo\n"
+               "2. filtrar por nome do prato\n"
+               "3. mostrar pedido buscado por codigo\n"
+               "4. filtrar por preco total (menor que, maior que e exato)\n"
                "0. Voltar\n");
         printf("Opcao: ");
         scanf("%d", &op);
-        if (op < 0 || op > 5)
+        if (op < 0 || op > 4)
             printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 5);
+    } while (op < 0 || op > 4);
     return op;
 }
 

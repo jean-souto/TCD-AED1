@@ -67,6 +67,9 @@ void mostrarRestaurante(restaurante *item);
 void mostrarInfoRest(Lista_restaurantes *l); 
 // void mostrarHistoricoPedidos(Lista_restaurantes *l, char *nome);
 void mostrarCardapio(Lista_restaurantes *l, restaurante *item);
+void mostrarHistoricoRest(restaurante item);
+void mostrarHistoricoRestPorNomePrato(restaurante *item, char *nomePrato);
+void mostrarPedidoPorCodigo(restaurante *item, int codigoPedido);
 
 // visualização ADM
 void mostrarListaRest(Lista_restaurantes *l); 
