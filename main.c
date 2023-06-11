@@ -24,6 +24,8 @@ void copiarPedidoCpC(pedidos *A, pedidos *B); // criar possivel funcao que copia
 pedidosglobais* inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidos pedido_atual, Cliente cliente_atual, int *qtd);
 pedidosglobais* removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador, float nota);
 pedidos* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente, int *num_pedidos);
+int buscarPedidoAndamentoEntregador (pedidosglobais *pg, int qtd, int codigo_entregador, pedidos *em_andamento);
+void mostrarPedidosGlobais (pedidosglobais *pg, int qtd);
 
 // FUNÇÕES EXTRAS
 
@@ -41,6 +43,8 @@ void limpaBuffer();
 int menu_inicial(); // permite a escolha entre os diferentes usuários
 int menu_inicial_cliente(); // permite ao cliente escolher
 int menu_cliente(); // permite ao cliente escolher após logado
+int menu_pedido_cliente(); // permite ao cliente escolher após logado
+int menu_config_cliente(); // permite ao cliente escolher após logado
 int menu_inicial_restaurante(); // permite ao restaurante escolher
 int menu_restaurante();
 int menu_cardapio_restaurante();
@@ -50,6 +54,7 @@ int menu_configuracoes_restaurante();
 int menu_adm(); // permite ao adm escolher
 int menu_inicial_entregador(); // permite ao entregador escolher
 int menu_entregador(); // permite ao entregador escolher após logar
+int menu_config_entregador(); // permite ao entregador escolher após logar
 
 // MAIN
 
@@ -201,6 +206,7 @@ int main()
 
                             while (verify != 0)
                             {
+                                printf ("\n----------LOGIN----------\n");
                                 printf("\nDigite seu e-mail: ");
                                 setbuf(stdin, NULL);
                                 scanf("%[^\n]s", &email);
@@ -232,6 +238,7 @@ int main()
                                 if (verify == 5) break;
                                 if (verify == 6)
                                 {
+                                    printf ("\n----------ALTERAR SENHA----------\n");
                                     while (verify != 0)
                                     {
                                         printf("\nDigite seu email: ");
@@ -268,7 +275,12 @@ int main()
                                                 if (verify != 0) printf("\nSenhas diferentes. Tente novamente! ");
                                             }
                                         }
-                                        else printf("\nAlgo deu errado. Tente novamente!");
+                                        else 
+                                        {
+                                            printf("\nAlgo deu errado. Tente novamente!");
+                                            printf("\nDigite 1 para continuar ou 0 para sair: ");
+                                            scanf ("%d", &verify);
+                                        }
                                     }
                                 }
                                 if (verify == 0) verify = 1;
@@ -276,7 +288,7 @@ int main()
 
                             if (verify == 5) break; // sair e voltar ao menu anterior
 
-                            while ((option != 10) && (option != 11)) // voltar após selecionar voltar ou excluir a conta
+                            while (option != 7) // voltar após selecionar voltar
                             {
                                 option = menu_cliente();
 
@@ -286,65 +298,105 @@ int main()
                                         return 0;
                                     break;
 
-                                    case 1: // mostrar todos os restaurantes
-                                        mostrar_entregador (lista_principal_entregadores);
-                                        buscarEntregador (lista_principal_entregadores, &novoped_entregador);
-                                        mostrar_entregador (lista_principal_entregadores);
+                                    case 1: // fazer pedido
 
-                                        novoped_pedido.codigo = 123;
-                                        novoped_pedido.precoTotal = 125.25;
-                                        strcpy(novoped_pedido.nome_rest, "mariass");
-                                        novoped_pedido.qtdPratosPed = 2;
-                                        novoped_pedido.pratosPed = (pratos*) malloc (2*sizeof(pratos));
-                                        strcpy (novoped_pedido.pratosPed[0].nome, "teste1");
-                                        strcpy (novoped_pedido.pratosPed[0].descricao, "teste descricao 1");
-                                        novoped_pedido.pratosPed[0].preco = 50;
-                                        strcpy (novoped_pedido.pratosPed[1].nome, "teste2");
-                                        strcpy (novoped_pedido.pratosPed[1].descricao, "teste descricao 2");
-                                        novoped_pedido.pratosPed[1].preco = 75.25;
+                                        while (option != 4)
+                                        {
+                                            option = menu_pedido_cliente();
 
-                                        controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPratosPedidosAndamento);
-                                        limpar_variavel_entregador (&novoped_entregador);
-                                        inicializar_entregador (&novoped_entregador);
+                                            switch (option)
+                                            {
+                                                case 1: // mostrar todos os restaurantes
+                                                    mostrar_entregador (lista_principal_entregadores);
+                                                    buscarEntregador (lista_principal_entregadores, &novoped_entregador);
+                                                    mostrar_entregador (lista_principal_entregadores);
 
-                                        printf ("\nAqui estao todos os restaurantes disponiveis: \n");
-                                        mostrarListaRest (lista_principal_restaurantes);
-                                        // conferir se tá funcionando e então fazer uma forma de buscar o restaurante X para fazer o pedido
-                                    
+                                                    novoped_pedido.codigo = 123;
+                                                    novoped_pedido.precoTotal = 125.25;
+                                                    strcpy(novoped_pedido.nome_rest, "mariass");
+                                                    novoped_pedido.qtdPratosPed = 2;
+                                                    novoped_pedido.pratosPed = (pratos*) malloc (2*sizeof(pratos));
+                                                    strcpy (novoped_pedido.pratosPed[0].nome, "teste1");
+                                                    strcpy (novoped_pedido.pratosPed[0].descricao, "teste descricao 1");
+                                                    novoped_pedido.pratosPed[0].preco = 50;
+                                                    strcpy (novoped_pedido.pratosPed[1].nome, "teste2");
+                                                    strcpy (novoped_pedido.pratosPed[1].descricao, "teste descricao 2");
+                                                    novoped_pedido.pratosPed[1].preco = 75.25;
+
+                                                    controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPratosPedidosAndamento);
+                                                    limpar_variavel_entregador (&novoped_entregador);
+                                                    inicializar_entregador (&novoped_entregador);
+
+                                                    /*mostrar_entregador (lista_principal_entregadores);
+                                                    buscarEntregador (lista_principal_entregadores, &novoped_entregador);
+                                                    mostrar_entregador (lista_principal_entregadores);
+
+                                                    novoped_pedido.codigo = 456;
+                                                    novoped_pedido.precoTotal = 100.25;
+                                                    strcpy(novoped_pedido.nome_rest, "fernandaas");
+                                                    novoped_pedido.qtdPratosPed = 3;
+                                                    novoped_pedido.pratosPed = (pratos*) malloc (3*sizeof(pratos));
+                                                    strcpy (novoped_pedido.pratosPed[0].nome, "teste1");
+                                                    strcpy (novoped_pedido.pratosPed[0].descricao, "teste descricao 1");
+                                                    novoped_pedido.pratosPed[0].preco = 30;
+                                                    strcpy (novoped_pedido.pratosPed[1].nome, "teste2");
+                                                    strcpy (novoped_pedido.pratosPed[1].descricao, "teste descricao 2");
+                                                    novoped_pedido.pratosPed[1].preco = 30.25;
+                                                    strcpy (novoped_pedido.pratosPed[2].nome, "teste3");
+                                                    strcpy (novoped_pedido.pratosPed[2].descricao, "teste descricao 3");
+                                                    novoped_pedido.pratosPed[2].preco = 40;
+
+                                                    controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPratosPedidosAndamento);
+                                                    limpar_variavel_entregador (&novoped_entregador);
+                                                    inicializar_entregador (&novoped_entregador);*/
+
+                                                    printf ("\nAqui estao todos os restaurantes disponiveis: \n");
+                                                    mostrarListaRest (lista_principal_restaurantes);
+                                                    // conferir se tá funcionando e então fazer uma forma de buscar o restaurante X para fazer o pedido
+                                        
+                                                break;
+
+                                                case 2: // filtrar por categoria
+                                                    mostrar_entregador (lista_principal_entregadores);
+                                                    buscarEntregador (lista_principal_entregadores, &novoped_entregador);
+                                                    mostrar_entregador (lista_principal_entregadores);
+
+                                                    novoped_pedido.codigo = 456;
+                                                    novoped_pedido.precoTotal = 100.25;
+                                                    strcpy(novoped_pedido.nome_rest, "fernandaas");
+                                                    novoped_pedido.qtdPratosPed = 3;
+                                                    novoped_pedido.pratosPed = (pratos*) malloc (3*sizeof(pratos));
+                                                    strcpy (novoped_pedido.pratosPed[0].nome, "teste1");
+                                                    strcpy (novoped_pedido.pratosPed[0].descricao, "teste descricao 1");
+                                                    novoped_pedido.pratosPed[0].preco = 30;
+                                                    strcpy (novoped_pedido.pratosPed[1].nome, "teste2");
+                                                    strcpy (novoped_pedido.pratosPed[1].descricao, "teste descricao 2");
+                                                    novoped_pedido.pratosPed[1].preco = 30.25;
+                                                    strcpy (novoped_pedido.pratosPed[2].nome, "teste3");
+                                                    strcpy (novoped_pedido.pratosPed[2].descricao, "teste descricao 3");
+                                                    novoped_pedido.pratosPed[2].preco = 40;
+
+                                                    controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPratosPedidosAndamento);
+                                                    limpar_variavel_entregador (&novoped_entregador);
+                                                    inicializar_entregador (&novoped_entregador);
+                                                break;
+
+                                                case 3: // procurar por nome
+                                                break;
+
+                                                case 4: // voltar
+                                                break;
+                                            }
+                                        }
                                     break;
 
-                                    case 2: // filtrar por categoria
-                                        mostrar_entregador (lista_principal_entregadores);
-                                        buscarEntregador (lista_principal_entregadores, &novoped_entregador);
-                                        mostrar_entregador (lista_principal_entregadores);
-
-                                        novoped_pedido.codigo = 456;
-                                        novoped_pedido.precoTotal = 125.25;
-                                        strcpy(novoped_pedido.nome_rest, "mariass");
-                                        novoped_pedido.qtdPratosPed = 2;
-                                        novoped_pedido.pratosPed = (pratos*) malloc (2*sizeof(pratos));
-                                        strcpy (novoped_pedido.pratosPed[0].nome, "teste1");
-                                        strcpy (novoped_pedido.pratosPed[0].descricao, "teste descricao 1");
-                                        novoped_pedido.pratosPed[0].preco = 50;
-                                        strcpy (novoped_pedido.pratosPed[1].nome, "teste2");
-                                        strcpy (novoped_pedido.pratosPed[1].descricao, "teste descricao 2");
-                                        novoped_pedido.pratosPed[1].preco = 75.25;
-
-                                        controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPratosPedidosAndamento);
-                                        limpar_variavel_entregador (&novoped_entregador);
-                                        inicializar_entregador (&novoped_entregador);
-                                    break;
-
-                                    case 3: // procurar por nome
-                                    break;
-
-                                    case 4: // histórico
+                                    case 2: // histórico
                                         buscarItemCliente (lista_principal_clientes, logado_cliente.codigo, &logado_cliente);
                                         printf ("\nAqui estao seus ultimos pedidos: \n");
                                         mostrar_pedidos (logado_cliente);
                                     break;
 
-                                    case 5: // cartões (cadastrar e excluir)
+                                    case 3: // cartões (cadastrar e excluir)
                                         printf("\nVoce possui os seguintes cartoes cadastrados: \n");
                                         buscarItemCliente(lista_principal_clientes, logado_cliente.codigo, &logado_cliente);
                                         mostrar_pagamentos(logado_cliente);
@@ -400,7 +452,7 @@ int main()
                                         }
                                     break;
 
-                                    case 6: // endereços (cadastrar ou excluir)
+                                    case 4: // endereços (cadastrar ou excluir)
                                         printf("\nVoce possui os seguintes enderecos cadastrados: \n");
 
                                         buscarItemCliente(lista_principal_clientes, logado_cliente.codigo, &logado_cliente);
@@ -449,104 +501,10 @@ int main()
                                         }
                                     break;
 
-                                    case 7:; // alterar senha
-
-                                        int verify = -1;
-                                        char senha_atual[15];
-
-                                        while (verify != 0)
-                                        {
-                                            printf("\nDigite sua senha atual: ");
-                                            setbuf(stdin, NULL);
-                                            scanf("%[^\n]s", &senha_atual);
-
-                                            verify = strcmp(logado_cliente.senha_8d, senha_atual);
-
-                                            if (verify != 0)
-                                            {
-                                                printf("\nSenha atual incorreta! Digite 1 para continuar ou 2 para voltar: ");
-                                                scanf("%d", &verify);
-                                            }
-
-                                            if (verify == 2) break;
-                                        }
-
-                                        if (verify == 2) break;
-
-                                        verify = -1;
-
-                                        while (verify != 0)
-                                        {
-                                            char senha1[15];
-                                            char senha2[15];
-
-                                            printf("\nDigite sua nova senha: ");
-                                            setbuf(stdin, NULL);
-                                            scanf("%[^\n]s", &senha1);
-
-                                            printf("\nDigite sua nova senha novamente: ");
-                                            setbuf(stdin, NULL);
-                                            scanf("%[^\n]s", &senha2);
-
-                                            verify = alterarSenha(lista_principal_clientes, logado_cliente.codigo, senha1, senha2);
-
-                                            if (verify == 0)
-                                            {
-                                                printf("\nSenha alterada com sucesso!\n");
-                                                buscarItemCliente(lista_principal_clientes, logado_cliente.codigo, &logado_cliente);
-                                            }
-                                            if (verify != 0) printf("\nSenhas diferentes. Tente novamente!\n");
-                                        }
-
-                                    break;
-
-                                    case 8:; // alterar email
-
-                                        verify = -1;
-
-                                        while (verify != 0)
-                                        {
-                                            printf("\nDigite sua senha atual: ");
-                                            setbuf(stdin, NULL);
-                                            scanf("%[^\n]s", &senha_atual);
-
-                                            verify = strcmp(logado_cliente.senha_8d, senha_atual);
-
-                                            if (verify != 0)
-                                            {
-                                                printf("\nSenha atual incorreta! Digite 1 para continuar ou 2 para voltar: ");
-                                                scanf("%d", &verify);
-                                            }
-
-                                            if (verify == 2) break;
-                                        }
-
-                                        if (verify == 2) break;
-
-                                        verify = -1;
-
-                                        char novo_email[40];
-
-                                        printf("\nDigite seu novo e-mail: ");
-                                        setbuf(stdin, NULL);
-                                        scanf("%[^\n]s", &novo_email);
-
-                                        verify = alterarEmail(lista_principal_clientes, logado_cliente.codigo, novo_email);
-
-                                        if (verify == 0)
-                                        {
-                                            printf("\nE-mail alterado com sucesso!\n");
-                                            buscarItemCliente(lista_principal_clientes, logado_cliente.codigo, &logado_cliente);
-                                        }
-                                        if (verify != 0) printf("\nAlgo deu errado. Tente novamente!\n");
-
-                                    break;
-
-                                    case 9: // procura os pedidos em andamento com o nome do cliente, se tiver algum pergunta se esta concluido e, se sim, pede a nota do entregador
-
+                                    case 5: // pedidos em andamento cliente
                                         verify = 0;
 
-                                        em_andamento = buscarPedidoAndamento (controlePedidos, qtdPratosPedidosAndamento, logado_cliente.codigo, &verify);
+                                        em_andamento = buscarPedidoAndamento (controlePedidos, qtdPratosPedidosAndamento, logado_cliente.codigo, &verify); // problema está aqui quando tem mais de um pedido para a mesma pessoa
                                         
                                         int i, j;
 
@@ -576,11 +534,12 @@ int main()
                                                 i = 0;
                                                 printf ("Digite o numero do pedido que chegou (1, 2, 3...): ");
                                                 scanf ("%d", &i);
+                                                i--;
 
                                                 printf ("\nQual nota voce da para o entregador (0 - 5)? ");
                                                 scanf ("%f", &nota);
 
-                                                controlePedidos = removerControleGlobal(controlePedidos, em_andamento[i-1].codigo, &qtdPratosPedidosAndamento, lista_principal_clientes, lista_principal_entregadores, nota);
+                                                controlePedidos = removerControleGlobal(controlePedidos, em_andamento[i].codigo, &qtdPratosPedidosAndamento, lista_principal_clientes, lista_principal_entregadores, nota);
 
                                                 free(em_andamento);
                                             }
@@ -589,57 +548,177 @@ int main()
                                                 printf ("\nTudo bem! Nao esqueca de nos avisar caso chegue.\n");
                                             }
                                         }
-
-
                                     break;
 
-                                    case 10: // sair da conta (voltar)
+                                    case 6: // configuracoes
+
+                                        while ((option != 5) && (option != 15))
+                                        {
+                                            option = menu_config_cliente();
+
+                                            switch (option)
+                                            {
+                                                case 1:; // alterar senha
+
+                                                    int verify = -1;
+                                                    char senha_atual[15];
+
+                                                    while (verify != 0)
+                                                    {
+                                                        printf("\nDigite sua senha atual: ");
+                                                        setbuf(stdin, NULL);
+                                                        scanf("%[^\n]s", &senha_atual);
+
+                                                        verify = strcmp(logado_cliente.senha_8d, senha_atual);
+
+                                                        if (verify != 0)
+                                                        {
+                                                            printf("\nSenha atual incorreta! Digite 1 para continuar ou 2 para voltar: ");
+                                                            scanf("%d", &verify);
+                                                        }
+
+                                                        if (verify == 2) break;
+                                                    }
+
+                                                    if (verify == 2) break;
+
+                                                    verify = -1;
+
+                                                    while (verify != 0)
+                                                    {
+                                                        char senha1[15];
+                                                        char senha2[15];
+
+                                                        printf("\nDigite sua nova senha: ");
+                                                        setbuf(stdin, NULL);
+                                                        scanf("%[^\n]s", &senha1);
+
+                                                        printf("\nDigite sua nova senha novamente: ");
+                                                        setbuf(stdin, NULL);
+                                                        scanf("%[^\n]s", &senha2);
+
+                                                        verify = alterarSenha(lista_principal_clientes, logado_cliente.codigo, senha1, senha2);
+
+                                                        if (verify == 0)
+                                                        {
+                                                            printf("\nSenha alterada com sucesso!\n");
+                                                            buscarItemCliente(lista_principal_clientes, logado_cliente.codigo, &logado_cliente);
+                                                        }
+                                                        if (verify != 0) printf("\nSenhas diferentes. Tente novamente!\n");
+                                                    }
+
+                                                break;
+
+                                                case 2:; // alterar email
+
+                                                    verify = -1;
+
+                                                    while (verify != 0)
+                                                    {
+                                                        printf("\nDigite sua senha atual: ");
+                                                        setbuf(stdin, NULL);
+                                                        scanf("%[^\n]s", &senha_atual);
+
+                                                        verify = strcmp(logado_cliente.senha_8d, senha_atual);
+
+                                                        if (verify != 0)
+                                                        {
+                                                            printf("\nSenha atual incorreta! Digite 1 para continuar ou 2 para voltar: ");
+                                                            scanf("%d", &verify);
+                                                        }
+
+                                                        if (verify == 2) break;
+                                                    }
+
+                                                    if (verify == 2) break;
+
+                                                    verify = -1;
+
+                                                    char novo_email[40];
+
+                                                    printf("\nDigite seu novo e-mail: ");
+                                                    setbuf(stdin, NULL);
+                                                    scanf("%[^\n]s", &novo_email);
+
+                                                    verify = alterarEmail(lista_principal_clientes, logado_cliente.codigo, novo_email);
+
+                                                    if (verify == 0)
+                                                    {
+                                                        printf("\nE-mail alterado com sucesso!\n");
+                                                        buscarItemCliente(lista_principal_clientes, logado_cliente.codigo, &logado_cliente);
+                                                    }
+                                                    if (verify != 0) printf("\nAlgo deu errado. Tente novamente!\n");
+                                                break;
+
+                                                case 3: // mostrar dados
+
+                                                    buscarItemCliente(lista_principal_clientes, logado_cliente.codigo, &logado_cliente);
+                                                    printf ("\n-------------INFORMACOES-------------\n");
+                                                    printf ("Nome: %s\n", logado_cliente.nome);
+                                                    printf ("E-mail: %s\n", logado_cliente.email);
+                                                    printf ("CPF: %s\n", logado_cliente.cpf);
+
+                                                    printf ("\nDigite enter para continuar...");
+                                                    setbuf (stdin, NULL);
+                                                    getchar ();
+
+                                                break;
+
+                                                case 4: // apagar conta
+
+                                                    printf("\nVoce esta prestes a apagar sua conta e tudo que esta contido nela. Voce tem certeza? ");
+                                                    printf("\nDigite 1 para sim e 2 para nao: ");
+                                                    scanf("%d", &verify);
+
+                                                    if (verify == 1)
+                                                    {
+                                                        printf("\nMuito bem. Digite sua senha: ");
+                                                        setbuf(stdin, NULL);
+                                                        scanf("%[^\n]s", &senha_atual);
+
+                                                        verify = strcmp(logado_cliente.senha_8d, senha_atual);
+
+                                                        if (verify == 0)
+                                                        {
+                                                            verify = removerItemCliente(lista_principal_clientes, logado_cliente.codigo);
+
+                                                            if (verify == 0)
+                                                            {
+                                                                printf("\nFoi um prazer ter voce conosco! Sua conta foi excluida com sucesso.");
+                                                                limpar_variavel_cliente(&logado_cliente);
+                                                                option = 15;
+                                                            }
+                                                            else
+                                                            {
+                                                                printf("\nHouve algum erro. Tente novamente.");
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            printf("\nSenha incorreta. Tente novamente.");
+                                                            option = -1;
+                                                        }
+                                                        break;
+                                                    }
+
+                                                    if (verify != 1)
+                                                    {
+                                                        option = -1;
+                                                        break;
+                                                    }
+                                                break;
+
+                                                case 5: // voltar
+                                                break;
+                                            }
+                                        }
+                                        if (option == 15) option = 7;
                                     break;
 
-                                    case 11: // apagar conta
-                                        printf("\nVoce esta prestes a apagar sua conta e tudo que esta contido nela. Voce tem certeza? ");
-                                        printf("\nDigite 1 para sim e 2 para nao: ");
-                                        scanf("%d", &verify);
-
-                                        if (verify == 1)
-                                        {
-                                            printf("\nMuito bem. Digite sua senha: ");
-                                            setbuf(stdin, NULL);
-                                            scanf("%[^\n]s", &senha_atual);
-
-                                            verify = strcmp(logado_cliente.senha_8d, senha_atual);
-
-                                            if (verify == 0)
-                                            {
-                                                verify = removerItemCliente(lista_principal_clientes, logado_cliente.codigo);
-
-                                                if (verify == 0)
-                                                {
-                                                    printf("\nFoi um prazer ter voce conosco! Sua conta foi excluida com sucesso.");
-                                                    limpar_variavel_cliente(&logado_cliente);
-                                                }
-                                                else
-                                                {
-                                                    printf("\nHouve algum erro. Tente novamente.");
-                                                }
-                                            }
-                                            else
-                                            {
-                                                printf("\nSenha incorreta. Tente novamente.");
-                                                option = -1;
-                                            }
-                                            break;
-                                        }
-
-                                        if (verify != 1)
-                                        {
-                                            option = -1;
-                                            break;
-                                        }
+                                    case 7: // sair da conta (voltar)
                                     break;
                                 }
                             }
-
                         break;
 
                         case 3: // voltar
@@ -1182,7 +1261,7 @@ int main()
 
                             if (verify == 5) break;
 
-                            while ((option != 7) && (option != 8))
+                            while (option != 5)
                             {
                                 option = menu_entregador();
 
@@ -1192,28 +1271,32 @@ int main()
                                         return 0;
                                     break;
 
-                                    case 1: // mostrar corrida atual (pedido em andamento)
+                                    case 1:; // mostrar corrida atual (pedido em andamento)
+                                        pedidos em_andamento_entregador;
+                                        int verify = 0, i;
 
+                                        verify = buscarPedidoAndamentoEntregador (controlePedidos, qtdPratosPedidosAndamento, logado_entregador.codigo, &em_andamento_entregador);
+
+                                        if (verify == 0)
+                                        {
+                                            printf ("\nVoce nao esta em uma corrida atualmente! ");
+                                        }
+                                        else
+                                        {
+                                            printf ("\nAqui estao as informacoes sobre sua corrida atual:\n");
+                                            printf ("Nome do restaurante: %s\n", em_andamento_entregador.nome_rest);
+                                            printf ("Itens do pedido:\n");
+                                            for (i = 0; i < em_andamento_entregador.qtdPratosPed; i++)
+                                            {
+                                                printf ("%d. %s\n", i+1, em_andamento_entregador.pratosPed[i].nome);
+                                            }
+                                            printf ("\n\nDigite enter para continuar...");
+                                            setbuf (stdin, NULL);
+                                            getchar();
+                                        }
                                     break;
 
-                                    case 2: // mostrar dados pessoais
-                                        buscarItemEntregador (lista_principal_entregadores, logado_entregador.codigo, &logado_entregador);
-                                        
-                                        printf ("\n\n-------------INFORMACOES-------------\n");
-                                        printf ("\nNome: %s", logado_entregador.nome);
-                                        printf ("\nCPF: %s", logado_entregador.cpf);
-                                        printf ("\nE-mail: %s", logado_entregador.email);
-                                        printf ("\nSeu codigo de acesso eh: %d.", logado_entregador.codigo);
-                                        
-                                        if (logado_entregador.status == 1) printf ("\nVoce esta em uma corrida atualmente!\n ");
-                                        else printf ("\nVoce nao esta em uma corrida!\n");
-                                        
-                                        printf ("\nAperte enter para continuar ");
-                                        setbuf (stdin, NULL);
-                                        getchar();
-                                    break;
-
-                                    case 3: // mostrar nota
+                                    case 2: // mostrar nota
                                         buscarItemEntregador (lista_principal_entregadores, logado_entregador.codigo, &logado_entregador);
                                         printf ("\nVoce foi avaliado por %d clientes!", logado_entregador.rank.quantidade);
                                         printf ("\nSua nota eh %.1f! ", logado_entregador.rank.media);
@@ -1227,146 +1310,179 @@ int main()
                                         }
                                     break;
 
-                                    case 4: // mostrar historico
+                                    case 3: // mostrar historico
                                         buscarItemEntregador (lista_principal_entregadores, logado_entregador.codigo, &logado_entregador);
                                         printf ("\nAqui estao seus ultimos pedidos: \n");
                                         mostrar_pedidos_entregador (logado_entregador);
                                     break;
 
-                                    case 5: // alterar codigo de acesso // se estiver em corrida nao poderá alterar
-
-                                        verify = -1;
-
-                                        buscarItemEntregador(lista_principal_entregadores, logado_entregador.codigo, &logado_entregador);
-                                        if (logado_entregador.status == 1)
+                                    case 4:
+                                        while (option != 5 && option != 15 && option != 14)
                                         {
-                                            printf ("\nInfelizmente voce nao pode alterar seu codigo durante uma corrida! Tente novamente mais tarde.\n ");
-                                            verify = 0;
+                                            option = menu_config_entregador();
+
+                                            switch (option)
+                                            {
+                                                case 1: // mostrar dados pessoais
+                                                    buscarItemEntregador (lista_principal_entregadores, logado_entregador.codigo, &logado_entregador);
+                                                    
+                                                    printf ("\n\n-------------INFORMACOES-------------\n");
+                                                    printf ("\nNome: %s", logado_entregador.nome);
+                                                    printf ("\nCPF: %s", logado_entregador.cpf);
+                                                    printf ("\nE-mail: %s", logado_entregador.email);
+                                                    printf ("\nSeu codigo de acesso eh: %d.", logado_entregador.codigo);
+                                                    
+                                                    if (logado_entregador.status == 1) printf ("\nVoce esta em uma corrida atualmente!\n ");
+                                                    else printf ("\nVoce nao esta em uma corrida!\n");
+                                                    
+                                                    printf ("\nAperte enter para continuar ");
+                                                    setbuf (stdin, NULL);
+                                                    getchar();
+                                                break;
+
+                                                case 2: // alterar codigo de acesso // se estiver em corrida nao poderá alterar
+
+                                                    verify = -1;
+
+                                                    buscarItemEntregador(lista_principal_entregadores, logado_entregador.codigo, &logado_entregador);
+                                                    if (logado_entregador.status == 1)
+                                                    {
+                                                        printf ("\nInfelizmente voce nao pode alterar seu codigo durante uma corrida! Tente novamente mais tarde.\n ");
+                                                        verify = 0;
+                                                    }
+
+                                                    while (verify != 0)
+                                                    {
+                                                        printf ("\nDigite seu codigo de acesso atual: ");
+                                                        scanf ("%d", &cod_novo);
+
+                                                        if (cod_novo != logado_entregador.codigo)
+                                                        {
+                                                            verify = 1;
+                                                            printf ("\nCodigo incorreto. Tente novamente! ");
+                                                        }
+                                                        else
+                                                        {
+                                                            //verify = 0;
+                                                            printf ("\nCodigo reconhecido! ");
+                                                            verify = trocaCodigo (lista_principal_entregadores, logado_entregador.codigo, &cod_novo);
+                                                            buscarItemEntregador (lista_principal_entregadores, cod_novo, &logado_entregador);
+                                                            printf ("\nSeu novo codigo eh %d. \n", cod_novo);
+                                                        }
+
+                                                        if (verify != 0)
+                                                        {
+                                                            printf ("Digite 1 para continuar ou 0 para sair sem alterar: ");
+                                                            scanf ("%d", &verify);
+                                                        }
+                                                    }
+                                                break;
+
+                                                case 3: // alterar email
+                                                    
+                                                    verify = -1;
+
+                                                    while (verify != 0)
+                                                    {
+                                                        printf ("\nDigite seu codigo de acesso atual: ");
+                                                        scanf ("%d", &cod_novo);
+
+                                                        if (cod_novo != logado_entregador.codigo)
+                                                        {
+                                                            verify = 1;
+                                                            printf ("\nCodigo incorreto. Tente novamente! ");
+                                                        }
+                                                        else
+                                                        {
+                                                            //verify = 0;
+                                                            printf ("\nCodigo reconhecido! ");
+
+                                                            printf ("\nDigite seu novo e-mail: ");
+                                                            setbuf (stdin, NULL);
+                                                            scanf ("%[^\n]s", &email);
+
+                                                            verify = trocaEmail(lista_principal_entregadores, logado_entregador.codigo, email);
+                                                        }
+
+                                                        if (verify != 0)
+                                                        {
+                                                            printf ("Digite 1 para continuar ou 0 para sair sem alterar: ");
+                                                            scanf ("%d", &verify);
+                                                        }
+                                                        else printf ("\nE-mail alterado com sucesso! ");
+                                                    }
+                                                break;
+
+                                                case 4: // excluir conta // se estiver em corrida não poderá excluir
+
+                                                    verify = -1;
+                                                    
+                                                    buscarItemEntregador(lista_principal_entregadores, logado_entregador.codigo, &logado_entregador);
+                                                    if (logado_entregador.status == 1)
+                                                    {
+                                                        printf ("\nInfelizmente voce nao pode excluir sua conta durante uma corrida! Tente novamente mais tarde.\n ");
+                                                        verify = 0;
+                                                    }
+
+                                                    if (verify == 0)
+                                                    {
+                                                        option = -1;
+                                                        break;
+                                                    }
+
+                                                    printf("\nVoce esta prestes a apagar sua conta e tudo que esta contido nela. Voce tem certeza? ");
+                                                    printf("\nDigite 1 para sim e 2 para nao: ");
+                                                    scanf("%d", &verify);
+
+                                                    if (verify == 1)
+                                                    {
+                                                        codigo_loginE = 0;
+
+                                                        printf("\nMuito bem. Digite seu codigo de acesso: ");
+                                                        scanf("%d", &codigo_loginE);
+
+                                                        if (logado_entregador.codigo == codigo_loginE) verify = 0;
+
+                                                        if (verify == 0)
+                                                        {
+                                                            verify = removerItemEntregador (lista_principal_entregadores, codigo_loginE);
+
+                                                            if (verify == 0)
+                                                            {
+                                                                printf("\nFoi um prazer ter voce conosco! Sua conta foi excluida com sucesso.");
+                                                                limpar_variavel_entregador (&logado_entregador);
+                                                                option = 15;
+                                                            }
+                                                            else
+                                                            {
+                                                                printf("\nHouve algum erro. Tente novamente.");
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            printf("\nCodigo incorreto. Tente novamente.");
+                                                            option = -1;
+                                                        }
+                                                        break;
+                                                    }
+
+                                                    if (verify != 1)
+                                                    {
+                                                        option = -1;
+                                                        break;
+                                                    }
+                                                break;
+
+                                                case 5:
+                                                    option = 14;
+                                                break;
+                                            }
+
                                         }
-
-                                        while (verify != 0)
-                                        {
-                                            printf ("\nDigite seu codigo de acesso atual: ");
-                                            scanf ("%d", &cod_novo);
-
-                                            if (cod_novo != logado_entregador.codigo)
-                                            {
-                                                verify = 1;
-                                                printf ("\nCodigo incorreto. Tente novamente! ");
-                                            }
-                                            else
-                                            {
-                                                //verify = 0;
-                                                printf ("\nCodigo reconhecido! ");
-                                                verify = trocaCodigo (lista_principal_entregadores, logado_entregador.codigo, &cod_novo);
-                                                buscarItemEntregador (lista_principal_entregadores, cod_novo, &logado_entregador);
-                                                printf ("\nSeu novo codigo eh %d. \n", cod_novo);
-                                            }
-
-                                            if (verify != 0)
-                                            {
-                                                printf ("Digite 1 para continuar ou 0 para sair sem alterar: ");
-                                                scanf ("%d", &verify);
-                                            }
-                                        }
+                                        if (option == 15) option = 5;
                                     break;
 
-                                    case 6: // alterar email
-                                        
-                                        verify = -1;
-
-                                        while (verify != 0)
-                                        {
-                                            printf ("\nDigite seu codigo de acesso atual: ");
-                                            scanf ("%d", &cod_novo);
-
-                                            if (cod_novo != logado_entregador.codigo)
-                                            {
-                                                verify = 1;
-                                                printf ("\nCodigo incorreto. Tente novamente! ");
-                                            }
-                                            else
-                                            {
-                                                //verify = 0;
-                                                printf ("\nCodigo reconhecido! ");
-
-                                                printf ("\nDigite seu novo e-mail: ");
-                                                setbuf (stdin, NULL);
-                                                scanf ("%[^\n]s", &email);
-
-                                                verify = trocaEmail(lista_principal_entregadores, logado_entregador.codigo, email);
-                                            }
-
-                                            if (verify != 0)
-                                            {
-                                                printf ("Digite 1 para continuar ou 0 para sair sem alterar: ");
-                                                scanf ("%d", &verify);
-                                            }
-                                            else printf ("\nE-mail alterado com sucesso! ");
-                                        }
-                                    break;
-
-                                    case 7: // sair da conta
-                                    break;
-
-                                    case 8: // excluir conta // se estiver em corrida não poderá excluir
-
-                                        verify = -1;
-                                        
-                                        buscarItemEntregador(lista_principal_entregadores, logado_entregador.codigo, &logado_entregador);
-                                        if (logado_entregador.status == 1)
-                                        {
-                                            printf ("\nInfelizmente voce nao pode excluir sua conta durante uma corrida! Tente novamente mais tarde.\n ");
-                                            verify = 0;
-                                        }
-
-                                        if (verify == 0)
-                                        {
-                                            option = -1;
-                                            break;
-                                        }
-
-                                        printf("\nVoce esta prestes a apagar sua conta e tudo que esta contido nela. Voce tem certeza? ");
-                                        printf("\nDigite 1 para sim e 2 para nao: ");
-                                        scanf("%d", &verify);
-
-                                        if (verify == 1)
-                                        {
-                                            codigo_loginE = 0;
-
-                                            printf("\nMuito bem. Digite seu codigo de acesso: ");
-                                            scanf("%d", &codigo_loginE);
-
-                                            if (logado_entregador.codigo == codigo_loginE) verify = 0;
-
-                                            if (verify == 0)
-                                            {
-                                                verify = removerItemEntregador (lista_principal_entregadores, codigo_loginE);
-
-                                                if (verify == 0)
-                                                {
-                                                    printf("\nFoi um prazer ter voce conosco! Sua conta foi excluida com sucesso.");
-                                                    limpar_variavel_entregador (&logado_entregador);
-                                                }
-                                                else
-                                                {
-                                                    printf("\nHouve algum erro. Tente novamente.");
-                                                }
-                                            }
-                                            else
-                                            {
-                                                printf("\nCodigo incorreto. Tente novamente.");
-                                                option = -1;
-                                            }
-                                            break;
-                                        }
-
-                                        if (verify != 1)
-                                        {
-                                            option = -1;
-                                            break;
-                                        }
-
+                                    case 5: // sair da conta
                                     break;
                                 }
                             }
@@ -1402,6 +1518,17 @@ int main()
 
                         switch (option)
                         {
+                            case 0:
+                                return 0;
+                            break;
+
+                            case 1:
+                                mostrarPedidosGlobais(controlePedidos, qtdPratosPedidosAndamento);
+                            break;
+
+                            case 2:
+
+                            break;
                         }
                     }
                 }
@@ -1461,6 +1588,7 @@ pedidosglobais* inserirControleGlobal(pedidosglobais *pg, entregador entregador_
     copiarEntregador(&entregador_atual, &pg[i].entregador_do_pedido);
     copiarPedidoCpC(&pedido_atual, &pg[i].pedido_em_andamento);
     copiarCliente(&cliente_atual, &pg[i].comprador);
+
     return pg;
 }
 
@@ -1499,7 +1627,7 @@ pedidosglobais* removerControleGlobal(pedidosglobais *pg, int numero_pedido, int
     return pg;
 }
 
-pedidos* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente, int *num_pedidos)
+pedidos* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente, int *num_pedidos) // talvez o problema está aqui na hr de fazer o vetor em andamento // testar com um pedido só pra ver o q acontece
 {
     pedidos *em_andamento;
     int i = 0;
@@ -1518,6 +1646,33 @@ pedidos* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente,
         }
     }
     return em_andamento;
+}
+
+int buscarPedidoAndamentoEntregador (pedidosglobais *pg, int qtd, int codigo_entregador, pedidos *em_andamento)
+{
+    int i = 0;
+
+    for (i = 0; i < qtd; i++)
+    {
+        if (pg[i].entregador_do_pedido.codigo == codigo_entregador)
+        {
+            copiarPedidoCpC (&(pg[i].pedido_em_andamento), &(*em_andamento));
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void mostrarPedidosGlobais (pedidosglobais *pg, int qtd)
+{
+    int i;
+
+    for (i = 0; i < qtd; i++)
+    {
+        printf ("\n%d.\nNome restaurante: %s", i+1, pg[i].pedido_em_andamento.nome_rest);
+        printf ("\nNome entregador: %s", pg[i].entregador_do_pedido.nome);
+        printf ("\nNome cliente: %s\n", pg[i].comprador.nome);
+    }
 }
 
 // funções extras
@@ -1656,25 +1811,54 @@ int menu_cliente() // permite ao cliente escolher após logado
     int op = -1;
     do
     {
-        //system ("cls");
+        printf("\n\nSelecione uma opcao: \n");
+        printf("1. Fazer pedido\n");
+        printf("2. Historico de pedidos\n");
+        printf("3. Cartoes\n");
+        printf("4. Enderecos\n");
+        printf("5. Confirmar entrega\n");
+        printf("6. Configuracoes\n");
+        printf("7. Sair da conta\n");
+        printf("0. Sair do app\n");
+        printf("Opcao: ");
+        scanf("%d", &op);
+        if (op < 0 || op > 7) printf("\nDigite uma opcao valida\n\n");
+    } while (op < 0 || op > 7);
+    return op;
+}
+
+int menu_pedido_cliente() // permite ao cliente escolher após logado
+{
+    int op = -1;
+    do
+    {
         printf("\n\nSelecione uma opcao: \n");
         printf("1. Mostrar todos os restaurantes\n");
         printf("2. Filtrar por categoria\n");
         printf("3. Procurar por nome\n");
-        printf("4. Historico de pedidos\n");
-        printf("5. Cartoes\n");
-        printf("6. Enderecos\n");
-        printf("7. Alterar senha\n");
-        printf("8. Alterar e-mail\n");
-        printf ("9. Confirmar entrega\n");
-        printf("10. Sair da conta\n");
-        printf("11. Apagar conta\n");
-        printf("0. Sair do app\n");
+        printf("4. Voltar\n");
         printf("Opcao: ");
         scanf("%d", &op);
-        if (op < 0 || op > 11)
-            printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 11);
+        if (op < 1 || op > 4) printf("\nDigite uma opcao valida\n\n");
+    } while (op < 1 || op > 4);
+    return op;
+}
+
+int menu_config_cliente() // permite ao cliente escolher após logado
+{
+    int op = -1;
+    do
+    {
+        printf("\n\nSelecione uma opcao: \n");
+        printf("1. Alterar senha\n");
+        printf("2. Alterar e-mail\n");
+        printf("3. Mostrar dados pessoais\n");
+        printf("4. Apagar conta\n");
+        printf("5. Voltar\n");
+        printf("Opcao: ");
+        scanf("%d", &op);
+        if (op < 1 || op > 5) printf("\nDigite uma opcao valida\n\n");
+    } while (op < 1 || op > 5);
     return op;
 }
 
@@ -1806,7 +1990,7 @@ int menu_adm() // permite ao adm escolher
         printf("1. Mostrar lista de clientes\n");
         printf("2. Mostrar lista de entregadores\n");
         printf("3. Mostrar lista de restaurantes\n");
-        printf("4. Mostrar fila de pedidos universal\n");
+        printf("4. Mostrar fila de pedidos globais\n");
         printf("5. \n");
         printf("6. \n");
         printf("7. \n");
@@ -1848,18 +2032,34 @@ int menu_entregador() // permite ao entregador escolher após logar
         //system ("cls");
         printf("\n\nSelecione uma opcao: \n");
         printf("1. Mostrar corrida atual\n");
-        printf("2. Mostrar dados pessoais\n");
-        printf("3. Mostrar nota\n");
-        printf("4. Mostrar historico de entregas\n");
-        printf("5. Alterar codigo de acesso\n");
-        printf("6. Alterar e-mail\n");
-        printf("7. Sair da conta\n");
-        printf("8. Apagar conta\n");
+        printf("2. Mostrar nota\n");
+        printf("3. Mostrar historico de entregas\n");
+        printf("4. Configuracoes\n");
+        printf("5. Sair da conta\n");
         printf("0. Sair do app\n");
         printf("Opcao: ");
         scanf("%d", &op);
-        if (op < 0 || op > 8)
-            printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 8);
+        if (op < 0 || op > 5) printf("\nDigite uma opcao valida");
+    } while (op < 0 || op > 5);
+    return op;
+}
+
+int menu_config_entregador() // permite ao entregador escolher após logar
+{
+    int op = -1;
+    do
+    {
+        //system ("cls");
+        printf("\n\nSelecione uma opcao: \n");
+        printf("1. Mostrar dados pessoais\n");
+        printf("2. Alterar codigo de acesso\n");
+        printf("3. Alterar e-mail\n");
+        printf("4. Apagar conta\n");
+        printf("5. Voltar\n");
+        printf("Opcao: ");
+        scanf("%d", &op);
+        if (op < 1 || op > 5)
+            printf("\nDigite uma opcao valida");
+    } while (op < 1 || op > 5);
     return op;
 }
