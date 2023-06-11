@@ -238,8 +238,18 @@ int removerInicioRest(Lista_restaurantes *l)
 
     No_restaurante *no = l->inicio;
     l->inicio = no->prox;
+
     if (l->inicio->prox != NULL)
         l->inicio->ant = NULL;
+
+    free(no->valor.cardapio);
+    for (int i = 0; i < no->valor.qtdHistorico; i++)
+    {
+        free(no->valor.historico[i].pratosPed);
+    }
+    free(no->valor.historico);
+    limparFila(no->valor.pedidosPendentes);
+    free(no);
     free(no);
 
     return 0;
@@ -250,22 +260,32 @@ int removerFimRest(Lista_restaurantes *l)
 {
     if (l == NULL)
         return NULL_LIST;
+
     if (listaVaziaRest(l) == 0)
         return EMPTY_LIST;
 
-    No_restaurante *aux = l->inicio;
+    No_restaurante *no = l->inicio;
 
-    while (aux->prox != NULL)
+    while (no->prox != NULL)
     {
-        aux = aux->prox;
+        no = no->prox;
     }
 
     if (l->inicio->prox != NULL)
-        aux->ant->prox = NULL;
+        no->ant->prox = NULL;
     else
         l->inicio = NULL;
 
-    free(aux);
+    free(no->valor.cardapio);
+    for (int i = 0; i < no->valor.qtdHistorico; i++)
+    {
+        free(no->valor.historico[i].pratosPed);
+    }
+    free(no->valor.historico);
+    limparFila(no->valor.pedidosPendentes);
+    free(no);
+
+    free(no);
 
     return 0;
 }
@@ -274,31 +294,42 @@ int removerFimRest(Lista_restaurantes *l)
 int removerPosRest(Lista_restaurantes *l, int pos)
 {
     if (l == NULL)
-        return 3;
+        return NULL_LIST;
+
     if (listaVaziaRest(l) == 0)
-        return 0;
+        return EMPTY_LIST;
+
     if (pos == 0)
     {
         removerInicioRest(l);
         return 0;
     }
+
     if (pos >= tamanhoRest(l) - 1)
     {
         removerFimRest(l);
         return 0;
     }
 
-    No_restaurante *aux = l->inicio;
+    No_restaurante *no = l->inicio;
 
     while (pos > 0)
     {
-        aux = aux->prox;
+        no = no->prox;
         pos--;
     }
 
-    aux->prox->ant = aux->ant;
-    aux->ant->prox = aux->prox;
-    free(aux);
+    no->prox->ant = no->ant;
+    no->ant->prox = no->prox;
+
+    free(no->valor.cardapio);
+    for (int i = 0; i < no->valor.qtdHistorico; i++)
+    {
+        free(no->valor.historico[i].pratosPed);
+    }
+    free(no->valor.historico);
+    limparFila(no->valor.pedidosPendentes);
+    free(no);
 
     return 0;
 }
@@ -311,16 +342,17 @@ int removerRestCodigo(Lista_restaurantes *l, int codigo)
     if (listaVaziaRest(l) == 0)
         return EMPTY_LIST;
 
-    No_restaurante *aux;
-    aux = l->inicio;
+    No_restaurante *no = l->inicio;
+
     int pos = 0;
 
-    while (aux != NULL && aux->valor.codigo != codigo)
+    while ((no->prox != NULL) && (no->valor.codigo != codigo))
     {
         pos++;
-        aux = aux->prox;
+        no = no->prox;
     }
-    if (aux->valor.codigo == codigo)
+
+    if (no->valor.codigo == codigo)
     {
         removerPosRest(l, pos);
         return 0;
@@ -644,8 +676,42 @@ void mostrarListaRest(Lista_restaurantes *l)
     }
 }
 
+int alterarCodigoRest(Lista_restaurantes *l, int codigoAtual, int *novoCodigo)
+{
+    if (l == NULL)
+        return NULL_LIST;
+
+    if (listaVaziaRest(l) == 0)
+        return EMPTY_LIST;
+
+    No_restaurante *no = l->inicio;
+
+    while ((no != NULL) && (no->valor.codigo != codigoAtual))
+    {
+        no = no->prox;
+    }
+
+    if (no->valor.codigo == codigoAtual)
+    {
+        codigoAtual = sortearCodigoRest(l);
+        *novoCodigo = codigoAtual;
+        no->valor.codigo = codigoAtual;
+        return 0;
+    }
+    
+    return 1;
+}
+
+
+
 int alterarSenhaRest(Lista_restaurantes *l, int codigo, char *novaSenha, char *confirmNovaSenha, restaurante *item)
 {
+    if (l == NULL)
+        return NULL_LIST;
+
+    if (listaVaziaRest(l) == 0)
+        return EMPTY_LIST;
+
     No_restaurante *no = l->inicio;
 
     while (no != NULL && no->valor.codigo != codigo)
@@ -658,8 +724,33 @@ int alterarSenhaRest(Lista_restaurantes *l, int codigo, char *novaSenha, char *c
         if (strcmp(novaSenha, confirmNovaSenha) == 0)
         {
             strcpy(no->valor.senha, novaSenha);
+            *item = no->valor;
             return 0;
         }
+    }
+    return 1;
+}
+
+int alterarEmailRest(Lista_restaurantes *l, int codigo, char *novoEmail, restaurante *item)
+{
+    if (l == NULL)
+        return NULL_LIST;
+
+    if (listaVaziaRest(l) == 0)
+        return EMPTY_LIST;
+
+    No_restaurante *no = l->inicio;
+
+    while (no != NULL && no->valor.codigo != codigo)
+    {
+        no = no->prox;
+    }
+
+    if (no->valor.codigo == codigo)
+    {
+        strcpy(no->valor.email, novoEmail);
+        *item = no->valor;
+        return 0;
     }
 
     return 1;
@@ -672,9 +763,17 @@ int alterarCategoria(Lista_restaurantes *l, int codigo, char *categoria, restaur
     if (listaVaziaRest(l) == 0)
         return EMPTY_LIST;
 
-    if (buscarRestCodigo(l, codigo, item) == 0)
+    No_restaurante *no = l->inicio;
+
+    while (no != NULL && no->valor.codigo != codigo)
     {
-        strcpy(item->categoria, categoria);
+        no = no->prox;
+    }
+
+    if (no->valor.codigo == codigo)
+    {
+        strcpy(no->valor.categoria, categoria);
+        *item = no->valor;
         return 0;
     }
 

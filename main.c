@@ -1154,36 +1154,245 @@ int main()
                                 
 
                                 case 4: // configuracoes
-                                    /*
 
-                                    int option6 = -1;
-
-                                    while ((option6 != 0))
+                                    while ((option != 7) && (option != 17))
                                     {
-                                        option6 = menu_configuracoes_restaurante;
+                                        option = menu_configuracoes_restaurante();
 
-                                        switch (option6)
+                                        switch (option)
                                         {
-                                            case 0:
+
+                                            case 1: // mostrar dados pessoais
+
+                                            buscarRestCodigo(lista_principal_restaurantes, logado_restaurante.codigo, &logado_restaurante);
+                                            
+                                            printf("\n-------------INFORMACOES-------------\n");
+                                            mostrarRestaurante(&logado_restaurante);
+                                            printf("\nDigite enter para continuar...");
+                                            setbuf(stdin, NULL);
+                                            getchar();
+
+                                            break;
+
+                                            case 2: // alterar codigo de acesso
+
+                                            verify = -1;
+
+                                            buscarRestCodigo(lista_principal_restaurantes, logado_restaurante.codigo, &logado_restaurante);
+
+                                            while (verify != 0)
+                                            {
+                                                printf("\nDigite seu codigo de acesso atual: ");
+                                                scanf("%d", &cod_novo);
+
+                                                if (cod_novo != logado_restaurante.codigo)
+                                                {
+                                                    verify = 1;
+                                                    printf("\nCodigo incorreto. Tente novamente! ");
+                                                }
+                                                else
+                                                {
+                                                    printf("\nCodigo reconhecido! ");
+                                                    verify = alterarCodigoRest(lista_principal_restaurantes, logado_restaurante.codigo, &cod_novo);
+                                                    buscarRestCodigo(lista_principal_restaurantes, cod_novo, &logado_restaurante);
+                                                    printf("\nSeu novo codigo eh %d. \n", cod_novo);
+                                                }
+
+                                                if (verify != 0)
+                                                {
+                                                    printf("Deseja continuar? (Digite 1)\nPara sair sem alterar (Digite 0)\nOpcao: ");
+                                                    scanf("%d", &verify);
+                                                }
+                                            }
+
+                                            break;
+
+                                            case 3: // alterar senha
+
+                                            verify = -1;
+
+                                            printf("\n----------ALTERAR SENHA----------\n");
+                                            while (verify != 0)
+                                            {
+                                                printf("\nDigite sua senha atual: ");
+                                                setbuf(stdin, NULL);
+                                                scanf("%[^\n]s", &senha);
+
+                                                verify = strcmp(logado_restaurante.senha, senha);
+
+                                                if (verify != 0)
+                                                {
+                                                    printf("\nSenha atual incorreta! Digite 1 para continuar ou 2 para voltar: ");
+                                                    scanf("%d", &verify);
+                                                }
+
+                                                if (verify == 2)
+                                                    break;
+                                            }
+
+                                            if (verify == 2)
                                                 break;
 
-                                            case 1: // alterar codigo de acesso
+                                            verify = -1;
+
+                                            while (verify != 0)
+                                            {
+                                                printf("\nDigite sua nova senha: ");
+                                                setbuf(stdin, NULL);
+                                                scanf("%[^\n]s", &senha);
+
+                                                printf("\nDigite sua nova senha novamente: ");
+                                                setbuf(stdin, NULL);
+                                                scanf("%[^\n]s", &confirmSenha);
+
+                                                verify = alterarSenhaRest(lista_principal_restaurantes, logado_restaurante.codigo, senha, confirmSenha, &logado_restaurante);
+
+                                                if (verify == 0)
+                                                {
+                                                    printf("\nSenha alterada com sucesso!\n");
+                                                }
+                                                if (verify != 0)
+                                                    printf("\nSenhas diferentes. Tente novamente!\n");
+                                            }
+
+                                            break;
+
+                                            case 4: // alterar e-mail
+
+                                            verify = -1;
+
+                                            while (verify != 0)
+                                            {
+                                                printf("\nDigite sua senha atual: ");
+                                                setbuf(stdin, NULL);
+                                                scanf("%[^\n]s", &senha);
+
+                                                verify = strcmp(logado_restaurante.senha, senha);
+
+                                                if (verify != 0)
+                                                {
+                                                    printf("\nSenha atual incorreta! Digite 1 para continuar ou 2 para voltar: ");
+                                                    scanf("%d", &verify);
+                                                }
+
+                                                if (verify == 2)
+                                                    break;
+                                            }
+
+                                            if (verify == 2)
                                                 break;
 
-                                            case 2: // alterar senha
+                                            verify = -1;
+
+                                            printf("\nDigite seu novo e-mail: ");
+                                            setbuf(stdin, NULL);
+                                            scanf("%[^\n]s", &email);
+
+                                            verify = alterarEmailRest(lista_principal_restaurantes, logado_restaurante.codigo, email, &logado_restaurante);
+
+                                            if (verify == 0)
+                                            {
+                                                printf("\nE-mail alterado com sucesso!\n");
+                                            }
+                                            if (verify != 0)
+                                                printf("\nAlgo deu errado. Tente novamente!\n");
+
+                                            break;
+
+                                            case 5: // alterar categoria
+
+                                            verify = -1;
+
+                                            while (verify != 0)
+                                            {
+                                                printf("\nDigite o codigo do restaurante: ");
+                                                setbuf(stdin, NULL);
+                                                scanf("%d", &codigo_loginR);
+
+                                                verify = buscarRestCodigo(lista_principal_restaurantes, codigo_loginR, &logado_restaurante);
+
+                                                if (verify != 0)
+                                                {
+                                                    printf("\nCodigo nao encontrado!\nTentar novamente (Digite 1)\nVoltar (Digite 2)\n\n");
+                                                    setbuf(stdin, NULL);
+                                                    scanf("%d", &verify);
+                                                }
+
+                                                if (verify == 2)
+                                                    break;
+                                            }
+
+                                            if (verify == 2)
                                                 break;
 
-                                            case 3: // alterar e-mail
-                                                break;
+                                            printf("\nDigite sua nova categoria: ");
+                                            setbuf(stdin, NULL);
+                                            scanf("%[^\n]s", &categoria);
 
-                                            case 4: // sair da conta
-                                                break;
+                                            verify = alterarCategoria(lista_principal_restaurantes, logado_restaurante.codigo, categoria, &logado_restaurante);
 
-                                            case 5: // apagar conta
+                                            if (verify == 0)
+                                            {
+                                                printf("\nCategoria alterada com sucesso!\n");
+                                            }
+                                            if (verify != 0)
+                                                printf("\nAlgo deu errado. Tente novamente!\n");
+
+                                            break;
+
+                                            case 6: // apagar conta
+
+                                            printf("\nVoce esta prestes a apagar esta conta e tudo que esta contido nela. Voce tem certeza? ");
+                                            printf("\n1. Sim\n2. Nao\nOpcao: ");
+                                            scanf("%d", &verify);
+
+                                            if (verify == 1)
+                                            {
+                                                printf("\nMuito bem. Digite sua senha: ");
+                                                setbuf(stdin, NULL);
+                                                scanf("%[^\n]s", senha);
+
+                                                verify = strcmp(logado_restaurante.senha, senha);
+
+                                                if (verify == 0)
+                                                {
+                                                    verify = removerRestCodigo(lista_principal_restaurantes, logado_restaurante.codigo);
+                                                    printf("tTRAAAAAATRAAAAAA\n");
+                                                    if (verify == 0)
+                                                    {
+                                                        printf("\nFoi um prazer ter voce conosco! Sua conta foi excluida com sucesso.");
+                                                        limpar_variavel_rest(&logado_restaurante);
+                                                        option = 17;
+                                                    }
+                                                    else
+                                                    {
+                                                        printf("\nHouve algum erro. Tente novamente.");
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    printf("\nSenha incorreta. Tente novamente.");
+                                                    option = -1;
+                                                }
                                                 break;
+                                            }
+
+                                            if (verify != 1)
+                                            {
+                                                option = -1;
+                                                break;
+                                            }
+
+                                            break;
+
+                                            case 7: // voltar
+                                            option = 17;
+                                            break;
                                         }
                                     }
-                                    */
+                                    if (option == 17) option == 5;
+                                    
+                                    
                                 break;
 
                                 case 5: //sair da conta (voltar)
@@ -2077,18 +2286,18 @@ int menu_configuracoes_restaurante()
     {
         // system ("cls");
         printf("\n\nSelecione uma opcao: \n"
-               "1. alterar codigo de acesso\n"
-               "2. alterar senha\n"
-               "3. alterar e-mail\n"
-               "4. alterar categoria\n"
-               "5. sair da conta\n"
+               "1. mostrar dados pessoais\n"
+               "2. alterar codigo de acesso\n"
+               "3. alterar senha\n"
+               "4. alterar e-mail\n"
+               "5. alterar categoria\n"
                "6. apagar conta\n"
-               "0. Voltar\n");
+               "7. Voltar\n");
         printf("Opcao: ");
         scanf("%d", &op);
-        if (op < 0 || op > 6)
+        if (op < 0 || op > 7)
             printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 6);
+    } while (op < 0 || op > 7);
     return op;
 }
 

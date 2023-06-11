@@ -76,8 +76,9 @@ void mostrarPedidoPorCodigo(restaurante *item, int codigoPedido);
 void mostrarListaRest(Lista_restaurantes *l); 
 
 //alteracoes de usuario
+int alterarCodigoRest(Lista_restaurantes *l, int codigoAtual, int *novoCodigo);
 int alterarSenhaRest(Lista_restaurantes *l, int codigo, char *novaSenha, char *confirmNovaSenha, restaurante *item);
-// int alterarEmailRest(Lista_restaurantes *l, int codigo, char *novoEmail, char *confirmNovoEmail, restaurante *item);
+int alterarEmailRest(Lista_restaurantes *l, int codigo, char *novoEmail, restaurante *item);
 int alterarCategoria(Lista_restaurantes *l, int codigo, char *categoria, restaurante *item);
 
 // outros

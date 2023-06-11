@@ -161,8 +161,9 @@ int removerFimCliente (Lista_cliente *l) // remove no fim da lista
 
 int removerPosiCliente (Lista_cliente *l, int pos) // remove uma posicao X da lista, se pos >= tamanho da lista ela remove o último elemento
 {
-    if (l == NULL) return 3;
-    if (listaVaziaCliente(l) == 0) return 0;
+    if (l == NULL) return NULL_LIST;
+    if (listaVaziaCliente(l) == 0) return EMPTY_LIST;
+    
     if (pos == 0) 
     {
         removerInicioCliente(l); 
