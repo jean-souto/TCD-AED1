@@ -324,6 +324,36 @@ int main()
                                                     limpar_variavel_entregador (&novoped_entregador);
                                                     inicializar_entregador (&novoped_entregador);
 
+                                                    /*mostrar_entregador (lista_principal_entregadores);
+                                                    buscarEntregador (lista_principal_entregadores, &novoped_entregador);
+                                                    mostrar_entregador (lista_principal_entregadores);
+
+                                                    novoped_pedido.codigo = 456;
+                                                    novoped_pedido.precoTotal = 100.25;
+                                                    strcpy(novoped_pedido.nome_rest, "fernandaas");
+                                                    novoped_pedido.qtdPratosPed = 3;
+                                                    novoped_pedido.pratosPed = (pratos*) malloc (3*sizeof(pratos));
+                                                    strcpy (novoped_pedido.pratosPed[0].nome, "teste1");
+                                                    strcpy (novoped_pedido.pratosPed[0].descricao, "teste descricao 1");
+                                                    novoped_pedido.pratosPed[0].preco = 30;
+                                                    strcpy (novoped_pedido.pratosPed[1].nome, "teste2");
+                                                    strcpy (novoped_pedido.pratosPed[1].descricao, "teste descricao 2");
+                                                    novoped_pedido.pratosPed[1].preco = 30.25;
+                                                    strcpy (novoped_pedido.pratosPed[2].nome, "teste3");
+                                                    strcpy (novoped_pedido.pratosPed[2].descricao, "teste descricao 3");
+                                                    novoped_pedido.pratosPed[2].preco = 40;
+
+                                                    controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPratosPedidosAndamento);
+                                                    limpar_variavel_entregador (&novoped_entregador);
+                                                    inicializar_entregador (&novoped_entregador);*/
+
+                                                    printf ("\nAqui estao todos os restaurantes disponiveis: \n");
+                                                    mostrarListaRest (lista_principal_restaurantes);
+                                                    // conferir se tá funcionando e então fazer uma forma de buscar o restaurante X para fazer o pedido
+                                        
+                                                break;
+
+                                                case 2: // filtrar por categoria
                                                     mostrar_entregador (lista_principal_entregadores);
                                                     buscarEntregador (lista_principal_entregadores, &novoped_entregador);
                                                     mostrar_entregador (lista_principal_entregadores);
@@ -346,14 +376,6 @@ int main()
                                                     controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPratosPedidosAndamento);
                                                     limpar_variavel_entregador (&novoped_entregador);
                                                     inicializar_entregador (&novoped_entregador);
-
-                                                    printf ("\nAqui estao todos os restaurantes disponiveis: \n");
-                                                    mostrarListaRest (lista_principal_restaurantes);
-                                                    // conferir se tá funcionando e então fazer uma forma de buscar o restaurante X para fazer o pedido
-                                        
-                                                break;
-
-                                                case 2: // filtrar por categoria
                                                 break;
 
                                                 case 3: // procurar por nome
@@ -479,7 +501,7 @@ int main()
                                     case 5: // pedidos em andamento cliente
                                         verify = 0;
 
-                                        em_andamento = buscarPedidoAndamento (controlePedidos, qtdPratosPedidosAndamento, logado_cliente.codigo, &verify);
+                                        em_andamento = buscarPedidoAndamento (controlePedidos, qtdPratosPedidosAndamento, logado_cliente.codigo, &verify); // problema está aqui quando tem mais de um pedido para a mesma pessoa
                                         
                                         int i, j;
 
@@ -1501,9 +1523,6 @@ pedidosglobais* inserirControleGlobal(pedidosglobais *pg, entregador entregador_
     copiarPedidoCpC(&pedido_atual, &pg[i].pedido_em_andamento);
     copiarCliente(&cliente_atual, &pg[i].comprador);
 
-    printf ("%s AQUI OH BUCETA\n", pg[i].pedido_em_andamento.nome_rest);
-    printf ("%s AQUI OH BUCETA2", pedido_atual.nome_rest);
-
     return pg;
 }
 
@@ -1542,7 +1561,7 @@ pedidosglobais* removerControleGlobal(pedidosglobais *pg, int numero_pedido, int
     return pg;
 }
 
-pedidos* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente, int *num_pedidos)
+pedidos* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente, int *num_pedidos) // talvez o problema está aqui na hr de fazer o vetor em andamento // testar com um pedido só pra ver o q acontece
 {
     pedidos *em_andamento;
     int i = 0;
@@ -1899,7 +1918,7 @@ int menu_adm() // permite ao adm escolher
         printf("1. Mostrar lista de clientes\n");
         printf("2. Mostrar lista de entregadores\n");
         printf("3. Mostrar lista de restaurantes\n");
-        printf("4. Mostrar fila de pedidos universal\n");
+        printf("4. Mostrar fila de pedidos globais\n");
         printf("5. \n");
         printf("6. \n");
         printf("7. \n");
