@@ -47,7 +47,7 @@ int inserirInicioRest(Lista_restaurantes *l, restaurante item);
 int inserirFimRest(Lista_restaurantes *l, restaurante *item);   
 int inserirPosicaoRest(Lista_restaurantes *l, restaurante item, int pos);
 int inserirPratoRest(Lista_restaurantes *l, pratos novoPrato, restaurante *item);
-int inserirPedidoHistorico(Lista_restaurantes *l, pedidos novoPedido, restaurante *item);
+int inserirPedidoHistoricoRest(Lista_restaurantes *l, pedidos novoPedido, restaurante *item);
 
 // remocao
 int removerInicioRest(Lista_restaurantes *l);
