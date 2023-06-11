@@ -394,6 +394,36 @@ int removerPratoRest(Lista_restaurantes *l, char *nomePrato, float precoPrato, r
     return 1;
 }
 
+int buscarRestPos(Lista_restaurantes *l, int pos, restaurante *item)
+{
+    if (l == NULL)
+        return NULL_LIST;
+
+    if (listaVaziaRest(l) == 0)
+        return EMPTY_LIST;
+
+    if (pos < 0)
+        return 1;
+
+    No_restaurante *no = l->inicio;
+    int count = 0;
+
+    while (no != NULL && count < pos)
+    {
+        no = no->prox;
+        count++;
+    }
+
+    if (count < pos)
+    {
+        *item = no->valor;
+        return 0;
+    }
+
+    return 1;
+    
+}
+
 int buscarRestCodigo(Lista_restaurantes *l, int codigo, restaurante *item)
 {
     if (l == NULL)
