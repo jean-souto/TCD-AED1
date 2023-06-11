@@ -351,8 +351,16 @@ int main()
                                                         printf ("\nAqui estao todos os restaurantes disponiveis: \n");
                                                         mostrarListaRest (lista_principal_restaurantes);
 
+                                                        printf ("\nDigite 0 para voltar ou 1 para acessar algum restaurante: ");
+                                                        scanf ("%d", &verify);
 
-                                                        
+                                                        if (verify != 0)
+                                                        {
+                                                            printf ("\nDigite qual o numero do restaurante que voce deseja visualizar: ");
+                                                            scanf ("%d", &verify);
+
+                                                            // aqui virar a buscar por pos
+                                                        }
                                                     }
                                                 
                                                     // conferir se tá funcionando e então fazer uma forma de buscar o restaurante X para fazer o pedido
