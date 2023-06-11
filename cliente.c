@@ -110,8 +110,11 @@ int removerInicioCliente (Lista_cliente *l) // remove no inicio da lista
     {
         //printf ("Caso 1");
         l->inicio = NULL;
+
         free(aux->valor.enderecos);
         free(aux->valor.pagamentos);
+        for (int i = 0; i < aux->valor.quant_pedidos; i++) {
+            free(aux->valor.historico[i].pratosPed); }
         free(aux->valor.historico);
         free(aux);
     }
@@ -120,8 +123,11 @@ int removerInicioCliente (Lista_cliente *l) // remove no inicio da lista
         //printf ("Caso 2");
         l->inicio = aux->prox;
         aux->prox->ant = NULL;
+
         free(aux->valor.enderecos);
         free(aux->valor.pagamentos);
+        for (int i = 0; i < aux->valor.quant_pedidos; i++) {
+            free(aux->valor.historico[i].pratosPed); }
         free(aux->valor.historico);
         free(aux);
     }
@@ -142,10 +148,14 @@ int removerFimCliente (Lista_cliente *l) // remove no fim da lista
 
     if (l->inicio->prox != NULL) aux->ant->prox = NULL;
     else l->inicio = NULL;
+
     free(aux->valor.enderecos);
     free(aux->valor.pagamentos);
+    for (int i = 0; i < aux->valor.quant_pedidos; i++) {
+        free(aux->valor.historico[i].pratosPed); }
     free(aux->valor.historico);
     free(aux);
+
     return 0;
 }
 
@@ -174,8 +184,11 @@ int removerPosiCliente (Lista_cliente *l, int pos) // remove uma posicao X da li
     
     aux->prox->ant = aux->ant;
     aux->ant->prox = aux->prox;
+
     free(aux->valor.enderecos);
     free(aux->valor.pagamentos);
+    for (int i = 0; i < aux->valor.quant_pedidos; i++) {
+        free(aux->valor.historico[i].pratosPed); }
     free(aux->valor.historico);
     free(aux);
 

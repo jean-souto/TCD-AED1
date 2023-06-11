@@ -112,12 +112,18 @@ int removerInicioEntregador (Lista_entregadores *l) // remove no inicio da lista
     if (l->inicio->prox == NULL)
     {
         l->inicio = NULL;
+        for (int i = 0; i < aux->valor.quant_pedidos; i++) {
+            free(aux->valor.historico[i].pratosPed); }
+        free(aux->valor.historico);
         free(aux);
     }
     else
     {
         l->inicio = aux->prox;
         aux->prox->ant = NULL;
+        for (int i = 0; i < aux->valor.quant_pedidos; i++) {
+            free(aux->valor.historico[i].pratosPed); }
+        free(aux->valor.historico);
         free(aux);
     }
     return 0;
@@ -137,6 +143,10 @@ int removerFimEntregador (Lista_entregadores *l) // remove no fim da lista
 
     if (l->inicio->prox != NULL) aux->ant->prox = NULL;
     else l->inicio = NULL;
+
+    for (int i = 0; i < aux->valor.quant_pedidos; i++) {
+        free(aux->valor.historico[i].pratosPed); }
+    free(aux->valor.historico);
     free(aux);
     return 0;
 }

@@ -159,6 +159,15 @@ int main()
         switch (option)
         {
             case 0: // sair
+                limparCliente(lista_principal_clientes);
+                free(lista_principal_clientes);
+                limparEntregador(lista_principal_entregadores);
+                free(lista_principal_entregadores);
+                //limparRest(lista_principal_restaurantes);
+                //free(lista_principal_restaurantes);
+                
+                printf ("aqui sera inserido uma mensagem sobre o codigo, mas resumida");
+                
                 return 0;
             break;
 
@@ -171,6 +180,15 @@ int main()
                     switch (option)
                     {
                         case 0: // sair
+                            limparCliente(lista_principal_clientes);
+                            free(lista_principal_clientes);
+                            limparEntregador(lista_principal_entregadores);
+                            free(lista_principal_entregadores);
+                            //limparRest(lista_principal_restaurantes);
+                            //free(lista_principal_restaurantes);
+
+                            printf ("aqui sera inserido uma mensagem sobre o codigo, mas resumida");
+                            
                             return 0;
                         break;
 
@@ -304,6 +322,15 @@ int main()
                                 switch (option) // opções do cliente após logar
                                 {
                                     case 0: // sair
+                                        limparCliente(lista_principal_clientes);
+                                        free(lista_principal_clientes);
+                                        limparEntregador(lista_principal_entregadores);
+                                        free(lista_principal_entregadores);
+                                        //limparRest(lista_principal_restaurantes);
+                                        //free(lista_principal_restaurantes);
+                                        
+                                        printf ("aqui sera inserido uma mensagem sobre o codigo, mas resumida");
+                                        
                                         return 0;
                                     break;
 
@@ -754,6 +781,15 @@ int main()
                     switch (option)
                     {
                         case 0: // Sair
+                            limparCliente(lista_principal_clientes);
+                            free(lista_principal_clientes);
+                            limparEntregador(lista_principal_entregadores);
+                            free(lista_principal_entregadores);
+                            //limparRest(lista_principal_restaurantes);
+                            //free(lista_principal_restaurantes);
+                            
+                            printf ("aqui sera inserido uma mensagem sobre o codigo, mas resumida");
+                            
                             return 0;
                         break;
 
@@ -906,6 +942,15 @@ int main()
                             switch (option)
                             {
                                 case 0: // sair
+                                    limparCliente(lista_principal_clientes);
+                                    free(lista_principal_clientes);
+                                    limparEntregador(lista_principal_entregadores);
+                                    free(lista_principal_entregadores);
+                                    //limparRest(lista_principal_restaurantes);
+                                    //free(lista_principal_restaurantes);
+
+                                    printf ("aqui sera inserido uma mensagem sobre o codigo, mas resumida");
+
                                     return 0;
                                 break;
 
@@ -1166,6 +1211,15 @@ int main()
                     {
 
                         case 0: // sair
+                            limparCliente(lista_principal_clientes);
+                            free(lista_principal_clientes);
+                            limparEntregador(lista_principal_entregadores);
+                            free(lista_principal_entregadores);
+                            //limparRest(lista_principal_restaurantes);
+                            //free(lista_principal_restaurantes);
+                            
+                            printf ("aqui sera inserido uma mensagem sobre o codigo, mas resumida");
+                            
                             return 0;
                         break;
 
@@ -1275,6 +1329,15 @@ int main()
                                 switch (option)
                                 {
                                     case 0: // sair
+                                        limparCliente(lista_principal_clientes);
+                                        free(lista_principal_clientes);
+                                        limparEntregador(lista_principal_entregadores);
+                                        free(lista_principal_entregadores);
+                                        //limparRest(lista_principal_restaurantes);
+                                        //free(lista_principal_restaurantes);
+                                        
+                                        printf ("aqui sera inserido uma mensagem sobre o codigo, mas resumida");
+
                                         return 0;
                                     break;
 
@@ -1534,13 +1597,22 @@ int main()
 
                 printf("\nBem-vindo, ADM!");
 
-                while (option != 9)
+                while (option != 8)
                 {
                     option = menu_adm();
 
                     switch (option)
                     {
-                        case 0:
+                        case 0: // sair
+                            limparCliente(lista_principal_clientes);
+                            free(lista_principal_clientes);
+                            limparEntregador(lista_principal_entregadores);
+                            free(lista_principal_entregadores);
+                            //limparRest(lista_principal_restaurantes);
+                            //free(lista_principal_restaurantes);
+                            
+                            printf ("aqui sera inserido uma mensagem sobre o codigo, mas resumida");
+                            
                             return 0;
                         break;
 
@@ -1568,16 +1640,14 @@ int main()
                         case 7: // inicializar restaurante
                         break;
 
-                        case 8: // dados criação do app
-                        break;
-
-                        case 9: // voltar
+                        case 8: // voltar
                         break;
                     }
                 }
             break;
 
-            default:
+            case 5: // sobre
+                // aqui será inserido uma mensagem completa sobre o codigo e coisas do tipo
             break;
             
         }
@@ -1587,8 +1657,10 @@ int main()
     free(lista_principal_clientes);
     limparEntregador(lista_principal_entregadores);
     free(lista_principal_entregadores);
-    limparRest(lista_principal_restaurantes);
-    free(lista_principal_restaurantes);
+    //limparRest(lista_principal_restaurantes);
+    //free(lista_principal_restaurantes);
+    
+    printf ("aqui sera inserido uma mensagem sobre o codigo, mas resumida");
 
     return 0;
 }
@@ -1816,12 +1888,13 @@ int menu_inicial() // permite a escolha entre os diferentes usuários
         printf("2. Sou restaurante\n");
         printf("3. Sou entregador\n");
         printf("4. Sou administrador\n");
+        printf("5. Sobre o app\n");
         printf("0. Sair\n");
         printf("Opcao: ");
         scanf("%d", &op);
-        if (op < 0 || op > 4)
+        if (op < 0 || op > 5)
             printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 4);
+    } while (op < 0 || op > 5);
     return op;
 }
 
@@ -2032,14 +2105,13 @@ int menu_adm() // permite ao adm escolher
         printf("5. Inicializar clientes\n");
         printf("6. Inicializar entregadores\n");
         printf("7. Inicializar restaurantes\n");
-        printf("8. Mostrar dados de criacao do app\n");
-        printf("9. Sair da conta\n");
+        printf("8. Sair da conta\n");
         printf("0. Sair do app\n");
         printf("Opcao: ");
         scanf("%d", &op);
-        if (op < 0 || op > 9)
+        if (op < 0 || op > 8)
             printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 9);
+    } while (op < 0 || op > 8);
     return op;
 }
 
