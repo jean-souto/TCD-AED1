@@ -33,7 +33,7 @@ int filaVazia(Fila_PedidosPendentes *f)
     if (f == NULL)
         return NULL_QUEUE;
     if (f->qtd == 0)
-        return EMPTY_QUEUE;
+        return 0;
     else
         return 1;
 }
@@ -68,15 +68,19 @@ int removerPedidoPendente(Fila_PedidosPendentes *f)
     if (f == NULL)
         return NULL_QUEUE;
     if (filaVazia(f) == 0)
-        return EMPTY_QUEUE;
-
+        return 0;
+    printf("33\n");
     No_pedidosPendentes *no = f->inicio;
-    f->inicio = no->proximo;
-    free(no);
-
-    if (f->inicio == NULL)
+    if (no->proximo == NULL)
+    {
+        printf("34\n");
+        f->inicio = NULL;
         f->fim = NULL;
+    } else
+        printf("35\n");
+        f->inicio = no->proximo;
 
+    free(no);
     f->qtd--;
 
     return 0;
@@ -98,7 +102,6 @@ void limparFila(Fila_PedidosPendentes *f)
 {
     while (filaVazia(f) != 0)
         removerPedidoPendente(f);
-
     free(f);
     f = NULL;
 }
