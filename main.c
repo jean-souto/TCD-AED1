@@ -1005,10 +1005,10 @@ int main()
                                         {
 
                                             case 1: // mostrar a fila toda
-                                                if (filaVazia(fila_pedidosPendentes) != EMPTY_QUEUE)
+                                                if (filaVazia(logado_restaurante.pedidosPendentes) != EMPTY_QUEUE)
                                                 {
                                                     printf("PEDIDOS PENDENTES\n");
-                                                    mostrarPedidosPendentes(fila_pedidosPendentes);
+                                                    mostrarPedidosPendentes(logado_restaurante.pedidosPendentes);
                                                 }
                                                 else
                                                     printf("Nao ha pedidos pendentes por enquanto... ;)\n");
@@ -1016,10 +1016,10 @@ int main()
                                             break;
 
                                             case 2: // mostrar apenas o proximo
-                                                if (filaVazia(fila_pedidosPendentes) != EMPTY_QUEUE)
+                                                if (filaVazia(logado_restaurante.pedidosPendentes) != EMPTY_QUEUE)
                                                 {
                                                     printf("PROXIMO PEDIDO\n");
-                                                    consultarProxPedido(fila_pedidosPendentes, &pedidoPendente);
+                                                    consultarProxPedido(logado_restaurante.pedidosPendentes, &pedidoPendente);
                                                 }
                                                 else
                                                     printf("Nao ha nenhum pedido pendente por enquanto... ;)\n");
@@ -1317,47 +1317,46 @@ int main()
 
                                             case 6: // apagar conta
 
-                                            printf("\nVoce esta prestes a apagar esta conta e tudo que esta contido nela. Voce tem certeza? ");
-                                            printf("\n1. Sim\n2. Nao\nOpcao: ");
-                                            scanf("%d", &verify);
+                                                printf("\nVoce esta prestes a apagar esta conta e tudo que esta contido nela. Voce tem certeza? ");
+                                                printf("\n1. Sim\n2. Nao\nOpcao: ");
+                                                scanf("%d", &verify);
 
-                                            if (verify == 1)
-                                            {
-                                                printf("\nMuito bem. Digite sua senha: ");
-                                                setbuf(stdin, NULL);
-                                                scanf("%[^\n]s", senha);
-
-                                                verify = strcmp(logado_restaurante.senha, senha);
-
-                                                if (verify == 0)
+                                                if (verify == 1)
                                                 {
-                                                    verify = removerRestCodigo(lista_principal_restaurantes, logado_restaurante.codigo);
-                                                    printf("tTRAAAAAATRAAAAAA\n");
+                                                    printf("\nMuito bem. Digite sua senha: ");
+                                                    setbuf(stdin, NULL);
+                                                    scanf("%[^\n]s", senha);
+
+                                                    verify = strcmp(logado_restaurante.senha, senha);
+
                                                     if (verify == 0)
                                                     {
-                                                        printf("\nFoi um prazer ter voce conosco! Sua conta foi excluida com sucesso.");
-                                                        limpar_variavel_rest(&logado_restaurante);
-                                                        option = 17;
+                                                        verify = removerRestCodigo(lista_principal_restaurantes, logado_restaurante.codigo);
+
+                                                        if (verify == 0)
+                                                        {
+                                                            printf("\nFoi um prazer ter voce conosco! Sua conta foi excluida com sucesso.");
+                                                            limpar_variavel_rest(&logado_restaurante);
+                                                            option = 17;
+                                                        }
+                                                        else
+                                                        {
+                                                            printf("\nHouve algum erro. Tente novamente.");
+                                                        }
                                                     }
                                                     else
                                                     {
-                                                        printf("\nHouve algum erro. Tente novamente.");
+                                                        printf("\nSenha incorreta. Tente novamente.");
+                                                        option = -1;
                                                     }
+                                                    break;
                                                 }
-                                                else
+
+                                                if (verify != 1)
                                                 {
-                                                    printf("\nSenha incorreta. Tente novamente.");
                                                     option = -1;
+                                                    break;
                                                 }
-                                                break;
-                                            }
-
-                                            if (verify != 1)
-                                            {
-                                                option = -1;
-                                                break;
-                                            }
-
                                             break;
 
                                             case 7: // voltar
@@ -1365,9 +1364,7 @@ int main()
                                             break;
                                         }
                                     }
-                                    if (option == 17) option == 5;
-                                    
-                                    
+                                    if (option == 17) option = 5;
                                 break;
 
                                 case 5: //sair da conta (voltar)
@@ -2013,7 +2010,7 @@ void inicializar_restaurante(restaurante *item)
     item->historico = NULL;
     item->qtdHistorico = 0;
     item->status = -1;
-    item->pedidosPendentes = NULL;
+    item->pedidosPendentes = criar_filaPedidosPendentes();
 }
 
 void limpar_variavel_prato (pratos *item)

@@ -233,14 +233,21 @@ int removerInicioRest(Lista_restaurantes *l)
 {
     if (l == NULL)
         return NULL_LIST;
+
     if (listaVaziaRest(l) == 0)
         return EMPTY_LIST;
 
     No_restaurante *no = l->inicio;
-    l->inicio = no->prox;
 
-    if (l->inicio->prox != NULL)
-        l->inicio->ant = NULL;
+    if (no->prox == NULL)
+    {
+        l->inicio = NULL;
+    }
+    else
+    {
+        l->inicio = no->prox;
+        no->prox->ant = NULL;
+    }
 
     free(no->valor.cardapio);
     for (int i = 0; i < no->valor.qtdHistorico; i++)
@@ -250,7 +257,7 @@ int removerInicioRest(Lista_restaurantes *l)
     free(no->valor.historico);
     limparFila(no->valor.pedidosPendentes);
     free(no);
-    free(no);
+    
 
     return 0;
 }
@@ -265,7 +272,6 @@ int removerFimRest(Lista_restaurantes *l)
         return EMPTY_LIST;
 
     No_restaurante *no = l->inicio;
-
     while (no->prox != NULL)
     {
         no = no->prox;
@@ -283,8 +289,6 @@ int removerFimRest(Lista_restaurantes *l)
     }
     free(no->valor.historico);
     limparFila(no->valor.pedidosPendentes);
-    free(no);
-
     free(no);
 
     return 0;
@@ -346,7 +350,7 @@ int removerRestCodigo(Lista_restaurantes *l, int codigo)
 
     int pos = 0;
 
-    while ((no->prox != NULL) && (no->valor.codigo != codigo))
+    while ((no != NULL) && (no->valor.codigo != codigo))
     {
         pos++;
         no = no->prox;
