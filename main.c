@@ -99,6 +99,7 @@ int main()
 
     // declarações gerais
     int option = -1;
+    int verify = -1;
     char email[40];
     char senha[15];
     char cpf[12];
@@ -116,7 +117,7 @@ int main()
     // criando testes
     
     
-    restaurante teste;
+    /*restaurante teste;
     strcpy(teste.nome, "Fast Acai");
     strcpy(teste.email, "fast@gmail.com");
     strcpy(teste.senha, "bem vinde");
@@ -136,7 +137,7 @@ int main()
     if (!a)
     {
         mostrarCardapio(lista_principal_restaurantes, &retorno);
-    }
+    }*/
     
 
     // LOGIN ADM
@@ -229,7 +230,7 @@ int main()
 
                         case 2:; // ja tenho cadastro
 
-                            int verify = -1;
+                            verify = -1;
 
                             while (verify != 0)
                             {
@@ -343,51 +344,17 @@ int main()
                                             switch (option)
                                             {
                                                 case 1: // mostrar todos os restaurantes
-                                                    mostrar_entregador (lista_principal_entregadores);
-                                                    buscarEntregador (lista_principal_entregadores, &novoped_entregador);
-                                                    mostrar_entregador (lista_principal_entregadores);
+                                                    verify = -1;
 
-                                                    novoped_pedido.codigo = 123;
-                                                    novoped_pedido.precoTotal = 125.25;
-                                                    strcpy(novoped_pedido.nome_rest, "mariass");
-                                                    novoped_pedido.qtdPratosPed = 2;
-                                                    novoped_pedido.pratosPed = (pratos*) malloc (2*sizeof(pratos));
-                                                    strcpy (novoped_pedido.pratosPed[0].nome, "teste1");
-                                                    strcpy (novoped_pedido.pratosPed[0].descricao, "teste descricao 1");
-                                                    novoped_pedido.pratosPed[0].preco = 50;
-                                                    strcpy (novoped_pedido.pratosPed[1].nome, "teste2");
-                                                    strcpy (novoped_pedido.pratosPed[1].descricao, "teste descricao 2");
-                                                    novoped_pedido.pratosPed[1].preco = 75.25;
+                                                    while (verify != 0)
+                                                    {
+                                                        printf ("\nAqui estao todos os restaurantes disponiveis: \n");
+                                                        mostrarListaRest (lista_principal_restaurantes);
 
-                                                    controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPratosPedidosAndamento);
-                                                    limpar_variavel_entregador (&novoped_entregador);
-                                                    inicializar_entregador (&novoped_entregador);
 
-                                                    /*mostrar_entregador (lista_principal_entregadores);
-                                                    buscarEntregador (lista_principal_entregadores, &novoped_entregador);
-                                                    mostrar_entregador (lista_principal_entregadores);
-
-                                                    novoped_pedido.codigo = 456;
-                                                    novoped_pedido.precoTotal = 100.25;
-                                                    strcpy(novoped_pedido.nome_rest, "fernandaas");
-                                                    novoped_pedido.qtdPratosPed = 3;
-                                                    novoped_pedido.pratosPed = (pratos*) malloc (3*sizeof(pratos));
-                                                    strcpy (novoped_pedido.pratosPed[0].nome, "teste1");
-                                                    strcpy (novoped_pedido.pratosPed[0].descricao, "teste descricao 1");
-                                                    novoped_pedido.pratosPed[0].preco = 30;
-                                                    strcpy (novoped_pedido.pratosPed[1].nome, "teste2");
-                                                    strcpy (novoped_pedido.pratosPed[1].descricao, "teste descricao 2");
-                                                    novoped_pedido.pratosPed[1].preco = 30.25;
-                                                    strcpy (novoped_pedido.pratosPed[2].nome, "teste3");
-                                                    strcpy (novoped_pedido.pratosPed[2].descricao, "teste descricao 3");
-                                                    novoped_pedido.pratosPed[2].preco = 40;
-
-                                                    controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPratosPedidosAndamento);
-                                                    limpar_variavel_entregador (&novoped_entregador);
-                                                    inicializar_entregador (&novoped_entregador);*/
-
-                                                    printf ("\nAqui estao todos os restaurantes disponiveis: \n");
-                                                    mostrarListaRest (lista_principal_restaurantes);
+                                                        
+                                                    }
+                                                
                                                     // conferir se tá funcionando e então fazer uma forma de buscar o restaurante X para fazer o pedido
                                         
                                                 break;
@@ -605,7 +572,7 @@ int main()
                                             {
                                                 case 1:; // alterar senha
 
-                                                    int verify = -1;
+                                                    verify = -1;
                                                     char senha_atual[15];
 
                                                     while (verify != 0)
@@ -848,7 +815,7 @@ int main()
                         break;
 
                     case 2:; // Ja tenho cadastro
-                        int verify = -1;
+                        verify = -1;
 
                         while (verify != 0)
                         {
@@ -1411,7 +1378,7 @@ int main()
                 while (option != 3) // voltar
                 {
                     option = menu_inicial_entregador();
-                    int verify = -1;
+                    verify = -1;
 
                     switch (option)
                     {
@@ -1548,8 +1515,11 @@ int main()
                                     break;
 
                                     case 1:; // mostrar corrida atual (pedido em andamento)
+                                        
                                         pedidos em_andamento_entregador;
-                                        int verify = 0, i;
+                                        int i;
+                                        
+                                        verify = 0;
 
                                         verify = buscarPedidoAndamentoEntregador (controlePedidos, qtdPratosPedidosAndamento, logado_entregador.codigo, &em_andamento_entregador);
 
@@ -1775,7 +1745,7 @@ int main()
 
                 char teste_login[15];
                 char teste_senha[15];
-                int verify = -1;
+                verify = -1;
 
                 while(verify != 0)
                 {
