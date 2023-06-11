@@ -176,7 +176,6 @@ int inserirPratoRest(Lista_restaurantes *l, pratos novoPrato, restaurante *item)
 
     if (buscarRestNome(l, item->nome, item) == 0) // verifica se o nome está na lista
     {
-        printf("%s\n", item->cardapio->nome);
         // verifica se é a primeira inserção e da um malloc.
         if (item->cardapio == NULL)
         {
@@ -191,6 +190,37 @@ int inserirPratoRest(Lista_restaurantes *l, pratos novoPrato, restaurante *item)
         {
             item->cardapio[item->qtdCardapio] = novoPrato;
             item->qtdCardapio++;
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+int inserirPedidoHistorico(Lista_restaurantes *l, pedidos novoPedido, restaurante *item)
+{
+    if (l == NULL)
+        return NULL_LIST;
+
+    if (listaVaziaRest(l) == 0)
+        return EMPTY_LIST;
+
+    if (buscarRestNome(l, item->nome, item) == 0) // verifica se o nome está na lista
+    {
+        // verifica se é a primeira inserção e da um malloc.
+        if (item->historico == NULL)
+        {
+            item->historico = (pedidos *)malloc(sizeof(pedidos));
+        }
+        else
+        {
+            item->historico = (pedidos *)realloc(item->historico, (item->qtdHistorico + 1) * sizeof(pedidos));
+        }
+
+        if (item->historico != NULL)
+        {
+            item->historico[item->qtdHistorico] = novoPedido;
+            item->qtdHistorico++;
             return 0;
         }
     }
