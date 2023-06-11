@@ -822,15 +822,15 @@ int main()
                             }
 
                             printf("\nTentar Novamente (Digite 0)\n"
-                                   "Esqueceu a senha? (Digite 5)\n"
-                                   "Voltar (Digite 6)\n");
+                                   "Voltar (Digite 5)\n"
+                                   "Esqueceu a senha? (Digite 6)\n");
                             scanf("%d", &verify);
 
-                            if (verify == 6)
-                                break;
+                            if (verify == 5) break;
 
-                            if (verify == 5)
+                            if (verify == 6)
                             {
+                                printf("\n----------ALTERAR SENHA----------\n");
                                 while (verify != 0)
                                 {
                                     printf("\nDigite o email: ");
@@ -863,50 +863,47 @@ int main()
                                             verify = alterarSenhaRest(lista_principal_restaurantes, codigo_loginR, senha, confirmSenha, &login_restaurante);
 
                                             if (verify == 0)
-                                                printf("\nSenha alterada com sucesso! "); //ver pq nao deixa logar depois de alterar a senha mesmo falando que mudou
-                                            else
+                                                printf("\nSenha alterada com sucesso! ");
+                                            if (verify != 0)
                                                 printf("\nSenhas diferentes. Tente novamente! ");
                                         }
                                     }
                                     else
+                                    {
                                         printf("\nAlgo deu errado. Tente novamente!");
+                                        printf("\nDigite 1 para continuar ou 0 para sair: ");
+                                        scanf ("%d", &verify);
+                                    }
                                 }
                             }
                             if (verify == 0) verify = 1;
                         }
 
-                        if (verify == 6) break; // sair e voltar ao menu anterior
-                        
-                        option = -1;
+                        if (verify == 5) break; // sair e voltar ao menu anterior
 
-                        while (option != 0) 
+                        while (option != 5) 
                         {
                             option = menu_restaurante();
                            
                             switch (option)
                             {
-                                case 0: // voltar
-                                    break;
+                                case 0: // sair
+                                    return 0;
+                                break;
 
-                                case 1:; // atualizar cardapio
+                                case 1: // atualizar cardapio
 
-                                    option = -1;
-
-                                    while (option != 0)
+                                    while (option != 4)
                                     {
                                         option = menu_cardapio_restaurante();
 
                                         switch (option)
                                         {
-                                            case 0:
-                                                printf("Saindo...\n");
-                                                break;
-
                                             case 1:
 
                                                 printf("CARDAPIO:\n");
                                                 mostrarCardapio(lista_principal_restaurantes, &logado_restaurante);
-                                                break;
+                                            break;
 
                                             case 2:
 
@@ -931,7 +928,7 @@ int main()
                                                     break;
                                                 }
                                                 
-                                                break;
+                                            break;
                                             
                                             case 3:
 
@@ -952,71 +949,61 @@ int main()
                                                     printf("Item nao encontrado.\n");
                                                     break;
                                                 }
+                                            break;
                                                 
-                                                break;
-                                                
-
-                                            default:
-                                                printf("Opcao invalida. Tente novamente.\n");
-                                                break;
+                                            case 4: // voltar 
+                                            break;
                                         }
                                     }
-
-                                    break;
+                                break;
 
                                 case 2:; // pedidos pendentes
 
-                                    int option4 = -1;
-
-                                    while ((option4 != 0))
+                                    while ((option != 3) && (option != 16))
                                     {
-                                        option4 = menu_pedidosPendentes_restaurante();
+                                        option = menu_pedidosPendentes_restaurante();
 
-                                        switch (option4)
+                                        switch (option)
                                         {
-                                            case 0: // voltar
-                                                break;
 
                                             case 1: // mostrar a fila toda
                                                 if (filaVazia(fila_pedidosPendentes) != EMPTY_QUEUE)
                                                 {
                                                     printf("PEDIDOS PENDENTES\n");
                                                     mostrarPedidosPendentes(fila_pedidosPendentes);
-                                                } else 
+                                                }
+                                                else
                                                     printf("Nao ha pedidos pendentes por enquanto... ;)\n");
-                                                
-                                                break;
+
+                                            break;
 
                                             case 2: // mostrar apenas o proximo
                                                 if (filaVazia(fila_pedidosPendentes) != EMPTY_QUEUE)
                                                 {
                                                     printf("PROXIMO PEDIDO\n");
                                                     consultarProxPedido(fila_pedidosPendentes, &pedidoPendente);
-                                                } else
+                                                }
+                                                else
                                                     printf("Nao ha nenhum pedido pendente por enquanto... ;)\n");
 
-                                                break;
+                                            break;
 
-                                            default:
-                                                printf("Opcao invalida. Tente novamente.\n");
-                                                break;
+                                            case 3:
+                                            option = 16;
+                                            break;
                                         }
                                     }
-                                    
-                                    break;
+
+                                break;
 
                                 case 3:; // historico de pedidos
-                                    
-                                    int option5 = -1;
 
-                                    while (option5 != 0)
+                                    while ((option != 5) && (option != 15))
                                     {
-                                        option5 = menu_historicoPedidos_restaurante();
+                                        option = menu_historicoPedidos_restaurante();
 
-                                        switch (option5)
+                                        switch (option)
                                         {
-                                            case 0:
-                                                break;
 
                                             case 1: // todos os pedidos ja feitos no restaurante
 
@@ -1030,7 +1017,7 @@ int main()
                                                         printf("%s ainda nao tem pedidos concluidos\n", logado_restaurante.nome);
                                                 }
 
-                                                break;
+                                            break;
 
                                             case 2: // filtrar por nome do prato
 
@@ -1049,7 +1036,7 @@ int main()
                                                         printf("%s ainda nao tem pedidos concluidos\n", logado_restaurante.nome);
                                                 }
 
-                                                break;
+                                            break;
 
                                             case 3: // mostrar pedido buscado por codigo
 
@@ -1067,7 +1054,7 @@ int main()
                                                     else
                                                         printf("%s ainda nao tem pedidos concluidos\n", logado_restaurante.nome);
                                                 }
-                                                break;
+                                            break;
 
                                             case 4: // filtrar por preco total (menor que, maior que e exato)
 
@@ -1092,12 +1079,16 @@ int main()
                                                 }
                                                 */
 
-                                                break;
-                                                
+                                            break;
+
+                                            case 5:
+                                            option = 15;
+                                            break;
                                         }
                                     }
-                                    
-                                    break;
+
+                                break;
+                                
 
                                 case 4: // configuracoes
                                     /*
@@ -1130,23 +1121,21 @@ int main()
                                         }
                                     }
                                     */
-                                break;       
-                           }
-                           break;
-                           
+                                break;
+
+                                case 5: //sair da conta (voltar)
+                                break;     
+                            }
                         }
+                    break;
                         
                     case 3: // Voltar
-                        break;
-
-                    default:
-                        break;
-                    }
+                    break;
                 }
+            }
+        break;
 
-            break;
-
-            case 3:; // sou entregador
+        case 3:; // sou entregador
 
                 option = -1;
 
@@ -1892,12 +1881,13 @@ int menu_restaurante()
                "2. Pedidos Pendentes\n"
                "3. Historico de Pedidos\n"
                "4. Configuracoes\n"
-               "0. Sair da conta\n"); // segue para o menu de configuracoes
+               "5. Sair da Conta\n"
+               "0. Sair do App\n"); // segue para o menu de configuracoes
         printf("Opcao: ");
         scanf("%d", &op);
-        if (op < 0 || op > 4)
+        if (op < 0 || op > 5)
             printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 4);
+    } while (op < 0 || op > 5);
     return op;
 }
 
@@ -1911,12 +1901,12 @@ int menu_cardapio_restaurante()
                "1. Mostrar Cardapio\n"
                "2. Inserir Prato\n"
                "3. Remover Prato\n"
-               "0. Voltar\n"); 
+               "4. Voltar\n"); 
         printf("Opcao: ");
         scanf("%d", &op);
-        if (op < 0 || op > 3)
+        if (op < 0 || op > 4)
             printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 3);
+    } while (op < 0 || op > 4);
     return op;
 }
 
@@ -1929,12 +1919,12 @@ int menu_pedidosPendentes_restaurante()
         printf("\n\nSelecione uma opcao: \n"
                "1. Mostrar todos os pedidos pendentes\n"
                "2. Mostrar proximo pedido a ser executado\n"
-               "0. Voltar\n");
+               "3. Voltar\n");
         printf("Opcao: ");
         scanf("%d", &op);
-        if (op < 0 || op > 2)
+        if (op < 0 || op > 3)
             printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 2);
+    } while (op < 0 || op > 3);
     return op;
 }
 
@@ -1949,12 +1939,12 @@ int menu_historicoPedidos_restaurante()
                "2. filtrar por nome do prato\n"
                "3. mostrar pedido buscado por codigo\n"
                "4. filtrar por preco total (menor que, maior que e exato)\n"
-               "0. Voltar\n");
+               "5. Voltar\n");
         printf("Opcao: ");
         scanf("%d", &op);
-        if (op < 0 || op > 4)
+        if (op < 0 || op > 5)
             printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 4);
+    } while (op < 0 || op > 5);
     return op;
 }
 

@@ -460,7 +460,7 @@ void mostrarCardapio(Lista_restaurantes *l, restaurante *item)
             printf("%s\n"
                    "%s\n"
                    "%0.2f\n",
-                   item->cardapio->nome, item->cardapio->descricao, item->cardapio->preco);
+                   item->cardapio[i].nome, item->cardapio[i].descricao, item->cardapio[i].preco);
         }
     }
 }
@@ -616,16 +616,18 @@ void mostrarListaRest(Lista_restaurantes *l)
 
 int alterarSenhaRest(Lista_restaurantes *l, int codigo, char *novaSenha, char *confirmNovaSenha, restaurante *item)
 {
-    if (l == NULL)
-        return NULL_LIST;
-    if (listaVaziaRest(l) == 0)
-        return EMPTY_LIST;
+    No_restaurante *no = l->inicio;
 
-    if (buscarRestCodigo(l, codigo, item) == 0)
+    while (no != NULL && no->valor.codigo != codigo)
+    {
+        no = no->prox;
+    }
+
+    if (no->valor.codigo == codigo)
     {
         if (strcmp(novaSenha, confirmNovaSenha) == 0)
         {
-            strcpy(item->senha, novaSenha);
+            strcpy(no->valor.senha, novaSenha);
             return 0;
         }
     }
