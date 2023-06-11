@@ -540,7 +540,7 @@ void copiarCliente (Cliente *A, Cliente *B) // função de auxílio. copia todas
     }
 }
 
-int buscarItemCliente (Lista_cliente *l, int codigo, Cliente *item) // busca o entregador correspondente ao codigo e retorna ele por parametro
+int buscarItemCliente (Lista_cliente *l, int codigo, Cliente *item) // busca o cliente correspondente ao codigo e retorna ele por parametro
 {
     if (l == NULL) return NULL_LIST;
     if (listaVaziaCliente(l) == 0) return EMPTY_LIST;
