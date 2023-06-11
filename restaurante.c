@@ -654,6 +654,7 @@ void mostrarPedidoPorCodigo(restaurante *item, int codigoPedido)
 // mostra as principais informações de cada restaurante para ADM
 void mostrarListaRest(Lista_restaurantes *l)
 {
+    int i = 1;
     if (l != NULL)
     {
         printf("[");
@@ -664,12 +665,13 @@ void mostrarListaRest(Lista_restaurantes *l)
 
             do
             {
-                printf(" {%s, ", no->valor.nome);
+                printf("%d. {%s, ", i, no->valor.nome);
                 printf("%s, ", no->valor.email);
                 printf("%s, ", no->valor.categoria);
                 printf("%d, ", no->valor.codigo);
                 printf("%d} ", no->valor.status);
                 no = no->prox;
+                i++;
             } while (no != NULL);
         }
         printf(" ]\n");

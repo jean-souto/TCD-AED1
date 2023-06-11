@@ -116,7 +116,7 @@ int main()
     // criando testes
     
     
-    restaurante teste;
+    /*restaurante teste;
     strcpy(teste.nome, "Fast Acai");
     strcpy(teste.email, "fast@gmail.com");
     strcpy(teste.senha, "bem vinde");
@@ -136,7 +136,7 @@ int main()
     if (!a)
     {
         mostrarCardapio(lista_principal_restaurantes, &retorno);
-    }
+    }*/
     
 
     // LOGIN ADM
@@ -343,7 +343,7 @@ int main()
                                             switch (option)
                                             {
                                                 case 1: // mostrar todos os restaurantes
-                                                    mostrar_entregador (lista_principal_entregadores);
+                                                    /*mostrar_entregador (lista_principal_entregadores);
                                                     buscarEntregador (lista_principal_entregadores, &novoped_entregador);
                                                     mostrar_entregador (lista_principal_entregadores);
 
@@ -361,7 +361,7 @@ int main()
 
                                                     controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPratosPedidosAndamento);
                                                     limpar_variavel_entregador (&novoped_entregador);
-                                                    inicializar_entregador (&novoped_entregador);
+                                                    inicializar_entregador (&novoped_entregador);*/
 
                                                     /*mostrar_entregador (lista_principal_entregadores);
                                                     buscarEntregador (lista_principal_entregadores, &novoped_entregador);
