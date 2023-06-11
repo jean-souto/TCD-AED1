@@ -171,7 +171,8 @@ int main()
                             return 0;
                         break;
 
-                        case 1: // quero me cadastrar
+                        case 1:; // quero me cadastrar
+                            int i = 0;
 
                             printf("\nMuito bem! Vamos realizar seu cadastro: \n");
 
@@ -187,9 +188,17 @@ int main()
                             setbuf(stdin, NULL);
                             scanf("%[^\n]s", novo_cliente.cpf);
 
-                            printf("\nDigite sua senha (8 digitos): ");
-                            setbuf(stdin, NULL);
-                            scanf("%[^\n]s", novo_cliente.senha_8d);
+                            do
+                            {
+                                printf("\nDigite sua senha (ate 8 digitos): ");
+                                setbuf(stdin, NULL);
+                                scanf("%[^\n]s", novo_cliente.senha_8d);
+
+                                i = strlen(novo_cliente.senha_8d);
+
+                                if (i > 8) printf ("\nSenha muito grande. Tente novamente!");
+                            }while(i > 8);
+
                             inicializar_cliente(&novo_cliente);
 
                             if ((inserirFimCliente(lista_principal_clientes, novo_cliente)) == 0) printf("\nCadastro realizado com sucesso!\n");
@@ -501,18 +510,21 @@ int main()
                                     case 5: // pedidos em andamento cliente
                                         verify = 0;
 
-                                        em_andamento = buscarPedidoAndamento (controlePedidos, qtdPratosPedidosAndamento, logado_cliente.codigo, &verify); // problema está aqui quando tem mais de um pedido para a mesma pessoa
+                                        int nun_ped = 0;
+
+                                        em_andamento = buscarPedidoAndamento (controlePedidos, qtdPratosPedidosAndamento, logado_cliente.codigo, &nun_ped); // problema está aqui quando tem mais de um pedido para a mesma pessoa
                                         
                                         int i, j;
 
-                                        if (verify == 0)
+                                        if (nun_ped == 0)
                                         {
                                             printf ("\nVoce nao possui pedidos em andamento. Esta na hora de fazer um! ");
+                                            free(em_andamento);
                                         }
                                         else
                                         {
-                                            printf ("\nVoce possui %d pedidos em andamento!", verify);
-                                            for (i = 0; i < verify; i++)
+                                            printf ("\nVoce possui %d pedidos em andamento!", nun_ped);
+                                            for (i = 0; i < nun_ped; i++)
                                             {
                                                 printf ("\n%d: %s\n", i+1, em_andamento[i].nome_rest);
                                                 printf ("Total: %.2f\n", em_andamento[i].precoTotal);
@@ -529,14 +541,20 @@ int main()
                                             {
                                                 float nota = 0;
                                                 i = 0;
-                                                printf ("Digite o numero do pedido que chegou (1, 2, 3...): ");
-                                                scanf ("%d", &i);
-                                                i--;
+                                                do 
+                                                {
+                                                    printf ("Digite o numero do pedido que chegou (1, 2, 3... ou 0 para voltar): ");
+                                                    scanf ("%d", &i);
+
+                                                    if (i < 0 || i > nun_ped) printf ("\nOpcao invalida. Tente novamente! ");
+                                                }while(i < 0 || i > nun_ped); 
+                                                if (i == 0) break;
+                                                i = em_andamento[i-1].codigo;
 
                                                 printf ("\nQual nota voce da para o entregador (0 - 5)? ");
                                                 scanf ("%f", &nota);
 
-                                                controlePedidos = removerControleGlobal(controlePedidos, em_andamento[i].codigo, &qtdPratosPedidosAndamento, lista_principal_clientes, lista_principal_entregadores, nota);
+                                                controlePedidos = removerControleGlobal(controlePedidos, i, &qtdPratosPedidosAndamento, lista_principal_clientes, lista_principal_entregadores, nota);
 
                                                 free(em_andamento);
                                             }
@@ -1433,44 +1451,75 @@ int main()
 
                 char teste_login[15];
                 char teste_senha[15];
+                int verify = -1;
 
-                printf("\nDigite o login de administrador: ");
-                setbuf(stdin, NULL);
-                scanf("%[^\n]s", &teste_login);
-
-                printf("\nDigite a senha de administrador: ");
-                setbuf(stdin, NULL);
-                scanf("%[^\n]s", &teste_senha);
-
-                if ((strcmp(teste_login, loginADM) == 0) && strcmp(teste_senha, senhaADM) == 0)
+                while(verify != 0)
                 {
-                    printf("\nBem-vindo, ADM!\n");
+                    printf ("\n------------LOGIN------------\n");
 
-                    while (option != 9)
+                    printf("\nDigite o login de administrador: ");
+                    setbuf(stdin, NULL);
+                    scanf("%[^\n]s", &teste_login);
+
+                    printf("\nDigite a senha de administrador: ");
+                    setbuf(stdin, NULL);
+                    scanf("%[^\n]s", &teste_senha);
+
+                    if ((strcmp(teste_login, loginADM) == 0) && strcmp(teste_senha, senhaADM) == 0) verify = 0;
+                    else
                     {
-                        option = menu_adm();
+                        printf ("\nLogin ou senha errados. Tente novamente!\n");
+                        printf ("Digite 0 para continuar ou 1 para sair: ");
+                        scanf ("%d", &verify);
+                        if (verify == 0) verify = -1;
+                    }
+                    if (verify != 0 && verify != -1) break;
+                }
+                if (verify != 0) break;
 
-                        switch (option)
-                        {
-                            case 0:
-                                return 0;
-                            break;
+                printf("\nBem-vindo, ADM!");
 
-                            case 1:
-                                mostrarPedidosGlobais(controlePedidos, qtdPratosPedidosAndamento);
-                            break;
+                while (option != 9)
+                {
+                    option = menu_adm();
 
-                            case 2:
+                    switch (option)
+                    {
+                        case 0:
+                            return 0;
+                        break;
 
-                            break;
-                        }
+                        case 1: // mostrar clientes
+                            mostrar_tudo_cliente (lista_principal_clientes);
+                        break;
+
+                        case 2: // mostrar entregadores
+                            mostrar_tudo_entregador (lista_principal_entregadores);
+                        break;
+
+                        case 3: // mostrar restaurantes
+                        break;
+
+                        case 4: // mostrar pedidos em andamento
+                            mostrarPedidosGlobais (controlePedidos, qtdPratosPedidosAndamento);
+                        break;
+
+                        case 5: // inicializar clientes
+                        break;
+
+                        case 6: // inicializar entregadores
+                        break;
+
+                        case 7: // inicializar restaurante
+                        break;
+
+                        case 8: // dados criação do app
+                        break;
+
+                        case 9: // voltar
+                        break;
                     }
                 }
-                else
-                {
-                   printf("\nLogin ou senha incorretos!\n");
-                }
-
             break;
 
             default:
@@ -1913,18 +1962,17 @@ int menu_adm() // permite ao adm escolher
     int op = -1;
     do
     {
-        //system ("cls");
         printf("\n\nSelecione uma opcao: \n");
         printf("1. Mostrar lista de clientes\n");
         printf("2. Mostrar lista de entregadores\n");
         printf("3. Mostrar lista de restaurantes\n");
-        printf("4. Mostrar fila de pedidos globais\n");
-        printf("5. \n");
-        printf("6. \n");
-        printf("7. \n");
-        printf("8. \n");
+        printf("4. Mostrar pedidos em andamento\n");
+        printf("5. Inicializar clientes\n");
+        printf("6. Inicializar entregadores\n");
+        printf("7. Inicializar restaurantes\n");
+        printf("8. Mostrar dados de criacao do app\n");
         printf("9. Sair da conta\n");
-        printf("0. Sair\n");
+        printf("0. Sair do app\n");
         printf("Opcao: ");
         scanf("%d", &op);
         if (op < 0 || op > 9)

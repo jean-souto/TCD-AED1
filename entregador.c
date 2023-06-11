@@ -341,16 +341,19 @@ void mostrar_tudo_entregador (Lista_entregadores *l) // mostra TODAS as informaÃ
     {   
         if (listaVaziaEntregador(l) != 0)
         {
+            printf ("\nAs informacoes serao mostradas na ordem: {codigo, nome, cpf, email, nota, quantidade de corridas, status}{historico de pedidos}:\n\n");
             No_entregador *aux = l->inicio;
             do
             {
-                printf("{%d, ", aux->valor.codigo);
+                printf("[{%d, ", aux->valor.codigo);
                 printf("%s, ", aux->valor.nome);
                 printf("%s, ", aux->valor.cpf);
                 printf("%s, ", aux->valor.email);
                 printf("%.2f, ", aux->valor.rank.media);
                 printf("%d, ", aux->valor.corridas);
-                printf("%d}\n", aux->valor.status);
+                printf("%d} ", aux->valor.status);
+                mostrar_pedidos_entregador (aux->valor);
+                printf ("]\n");
                 aux = aux->prox;
             }while(aux != NULL);
         }
@@ -541,10 +544,10 @@ void mostrar_pedidos_entregador (entregador item)
 {
     int i = 0;
     int j = 0;
-    printf (" ( ");
+    printf ("( ");
     for (i = 0; i < item.quant_pedidos; i++)
     {
-        printf ("[%d, ", item.historico->codigo);
+        printf ("{%d, ", item.historico->codigo);
         printf ("%s, ", item.historico->nome_rest);
         printf ("%.2f /", item.historico->precoTotal);
 
@@ -553,7 +556,7 @@ void mostrar_pedidos_entregador (entregador item)
             printf (" %s, ", item.historico->pratosPed[j].nome);
             printf ("%.2f /", item.historico->pratosPed[j].preco);
         }
-        printf ("] ");
+        printf ("} ");
     }
     printf (") ");
 }

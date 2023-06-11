@@ -370,10 +370,10 @@ void mostrar_pedidos (Cliente item)
 {
     int i = 0;
     int j = 0;
-    printf (" ( ");
+    printf ("( ");
     for (i = 0; i < item.quant_pedidos; i++)
     {
-        printf ("[%d, ", item.historico->codigo);
+        printf ("{%d, ", item.historico->codigo);
         printf ("%s, ", item.historico->nome_rest);
         printf ("%.2f /", item.historico->precoTotal);
 
@@ -382,7 +382,7 @@ void mostrar_pedidos (Cliente item)
             printf (" %s, ", item.historico->pratosPed[j].nome);
             printf ("%.2f /", item.historico->pratosPed[j].preco);
         }
-        printf ("] ");
+        printf ("} ");
     }
     printf (") ");
 }
@@ -397,7 +397,7 @@ void mostrar_enderecos (Cliente item)
         printf ("%s, ", item.enderecos[i].numero);
         printf ("%s} ", item.enderecos[i].cep);
     }
-    printf (")");
+    printf (") ");
 }
 
 void mostrar_tudo_cliente (Lista_cliente *l) // mostra TODAS as informações do entregador
@@ -406,23 +406,22 @@ void mostrar_tudo_cliente (Lista_cliente *l) // mostra TODAS as informações do
     {   
         if (listaVaziaCliente(l) != 0)
         {
-            printf ("[ ");
+            printf ("\nAs informacoes serao mostradas na ordem: {nome, email, cpf, codigo, valor gasto, quantidade de pedidos}{pagamentos}{enderecos}{historico de pedidos}:\n\n");
             No_cliente *aux = l->inicio;
             do
             {
-                printf("{%s, ", aux->valor.nome);
+                printf("[{%s, ", aux->valor.nome);
                 printf("%s, ", aux->valor.email);
                 printf("%s, ", aux->valor.cpf);
                 printf("%d, ", aux->valor.codigo);
                 printf("%.2f, ", aux->valor.gasto_total);
                 printf("%d} ", aux->valor.quant_pedidos);
                 mostrar_pagamentos(aux->valor);
-                mostrar_pedidos(aux->valor);
                 mostrar_enderecos(aux->valor);
-                printf("\n");
+                mostrar_pedidos(aux->valor);
+                printf("]\n");
                 aux = aux->prox;
             }while(aux != NULL);
-            printf ("]\n");
         }
     }
 }
