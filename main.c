@@ -24,6 +24,8 @@ void copiarPedidoCpC(pedidos *A, pedidos *B); // criar possivel funcao que copia
 pedidosglobais* inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidos pedido_atual, Cliente cliente_atual, int *qtd);
 pedidosglobais* removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador, float nota);
 pedidos* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente, int *num_pedidos);
+int buscarPedidoAndamentoEntregador (pedidosglobais *pg, int qtd, int codigo_entregador, pedidos *em_andamento);
+void mostrarPedidosGlobais (pedidosglobais *pg, int qtd);
 
 // FUNÇÕES EXTRAS
 
@@ -507,11 +509,12 @@ int main()
                                                 i = 0;
                                                 printf ("Digite o numero do pedido que chegou (1, 2, 3...): ");
                                                 scanf ("%d", &i);
+                                                i--;
 
                                                 printf ("\nQual nota voce da para o entregador (0 - 5)? ");
                                                 scanf ("%f", &nota);
 
-                                                controlePedidos = removerControleGlobal(controlePedidos, em_andamento[i-1].codigo, &qtdPratosPedidosAndamento, lista_principal_clientes, lista_principal_entregadores, nota);
+                                                controlePedidos = removerControleGlobal(controlePedidos, em_andamento[i].codigo, &qtdPratosPedidosAndamento, lista_principal_clientes, lista_principal_entregadores, nota);
 
                                                 free(em_andamento);
                                             }
@@ -1180,8 +1183,29 @@ int main()
                                         return 0;
                                     break;
 
-                                    case 1: // mostrar corrida atual (pedido em andamento)
+                                    case 1:; // mostrar corrida atual (pedido em andamento)
+                                        pedidos em_andamento_entregador;
+                                        int verify = 0, i;
 
+                                        verify = buscarPedidoAndamentoEntregador (controlePedidos, qtdPratosPedidosAndamento, logado_entregador.codigo, &em_andamento_entregador);
+
+                                        if (verify == 0)
+                                        {
+                                            printf ("\nVoce nao esta em uma corrida atualmente! ");
+                                        }
+                                        else
+                                        {
+                                            printf ("\nAqui estao as informacoes sobre sua corrida atual:\n");
+                                            printf ("Nome do restaurante: %s\n", em_andamento_entregador.nome_rest);
+                                            printf ("Itens do pedido:\n");
+                                            for (i = 0; i < em_andamento_entregador.qtdPratosPed; i++)
+                                            {
+                                                printf ("%d. %s\n", i+1, em_andamento_entregador.pratosPed[i].nome);
+                                            }
+                                            printf ("\n\nDigite enter para continuar...");
+                                            setbuf (stdin, NULL);
+                                            getchar();
+                                        }
                                     break;
 
                                     case 2: // mostrar nota
@@ -1406,6 +1430,17 @@ int main()
 
                         switch (option)
                         {
+                            case 0:
+                                return 0;
+                            break;
+
+                            case 1:
+                                mostrarPedidosGlobais(controlePedidos, qtdPratosPedidosAndamento);
+                            break;
+
+                            case 2:
+
+                            break;
                         }
                     }
                 }
@@ -1465,6 +1500,10 @@ pedidosglobais* inserirControleGlobal(pedidosglobais *pg, entregador entregador_
     copiarEntregador(&entregador_atual, &pg[i].entregador_do_pedido);
     copiarPedidoCpC(&pedido_atual, &pg[i].pedido_em_andamento);
     copiarCliente(&cliente_atual, &pg[i].comprador);
+
+    printf ("%s AQUI OH BUCETA\n", pg[i].pedido_em_andamento.nome_rest);
+    printf ("%s AQUI OH BUCETA2", pedido_atual.nome_rest);
+
     return pg;
 }
 
@@ -1522,6 +1561,33 @@ pedidos* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente,
         }
     }
     return em_andamento;
+}
+
+int buscarPedidoAndamentoEntregador (pedidosglobais *pg, int qtd, int codigo_entregador, pedidos *em_andamento)
+{
+    int i = 0;
+
+    for (i = 0; i < qtd; i++)
+    {
+        if (pg[i].entregador_do_pedido.codigo == codigo_entregador)
+        {
+            copiarPedidoCpC (&(pg[i].pedido_em_andamento), &(*em_andamento));
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void mostrarPedidosGlobais (pedidosglobais *pg, int qtd)
+{
+    int i;
+
+    for (i = 0; i < qtd; i++)
+    {
+        printf ("\n%d.\nNome restaurante: %s", i+1, pg[i].pedido_em_andamento.nome_rest);
+        printf ("\nNome entregador: %s", pg[i].entregador_do_pedido.nome);
+        printf ("\nNome cliente: %s\n", pg[i].comprador.nome);
+    }
 }
 
 // funções extras
