@@ -47,6 +47,7 @@ int menu_pedido_cliente(); // permite ao cliente escolher após logado
 int menu_config_cliente(); // permite ao cliente escolher após logado
 int menu_inicial_restaurante(); // permite ao restaurante escolher
 int menu_restaurante();
+int menu_categoria();
 int menu_cardapio_restaurante();
 int menu_pedidosPendentes_restaurante();
 int menu_historicoPedidos_restaurante();
@@ -806,122 +807,162 @@ int main()
 
                             if ((inserirFimRest(lista_principal_restaurantes, &novo_restaurante)) == 0)
                             {
-                                mostrarListaRest(lista_principal_restaurantes);
-                                printf("\nDigite ate duas categorias que o restaurante se encaixa:\n"
-                                       "separe as duas por '/' (max 30 digitos)\n" // colocar cinza
-                                       "Ex.: Acai e Sorvetes\nComida Japonesa/ Doces\n"); // colocar cinza
-                                setbuf(stdin, NULL);
-                                scanf("%[^\n]s", categoria);
+                                printf("\nEscolha duas categorias em que seu restaurante se encaixa.\nNao se preocupe! Voce podera alterar as categorias no futuro.\n\n");
+
+                                int op = menu_categoria();
+
+                                switch (op)
+                                {
+                                    case 1:
+                                        strcpy(categoria, "Comida brasileira");
+                                    break;
+
+                                    case 2:
+                                        strcpy(categoria, "Comida estrangeira");
+                                    break;
+
+                                    case 3:
+                                        strcpy(categoria, "FastFood");
+                                    break;
+
+                                    case 4:
+                                        strcpy(categoria, "Acai e sorvetes");
+                                    break;
+
+                                    case 5:
+                                        strcpy(categoria, "Padaria e cafeteria");
+                                    break;
+
+                                    case 6:
+                                        strcpy(categoria, "Pizzaria");
+                                    break;
+
+                                    case 7:
+                                        strcpy(categoria, "Doces");
+                                    break;
+
+                                    case 8:
+                                        strcpy(categoria, "Fitness");
+                                    break;
+
+                                    case 9:
+                                        strcpy(categoria, "Bebidas");
+                                    break;
+
+                                    case 10:
+                                        strcpy(categoria, "Outros");
+                                    break;
+                                }
 
                                 if (alterarCategoria(lista_principal_restaurantes, novo_restaurante.codigo, categoria, &novo_restaurante) == 0)
                                 {
                                     printf("\nCadastro realizado com sucesso!\n");
                                     //salvarListaRest(lista_principal_restaurantes);
-                                    printf("MEU PERFIL\n");
+                                    printf("\nMEU PERFIL\n");
                                     mostrarRestaurante(&novo_restaurante);
+                                    printf("Voce ja pode fazer seu login!\n");
                                 } else
                                     printf("Algo deu errado! Tente Novamente\n");
                             } else 
                                 printf("Algo deu errado! Tente Novamente\n");
                             
                             limpar_variavel_rest(&novo_restaurante);
-                            mostrarListaRest(lista_principal_restaurantes); // tirar dps
                         break;
 
-                    case 2:; // Ja tenho cadastro
-                        verify = -1;
+                        case 2:; // Ja tenho cadastro
+                            verify = -1;
 
-                        while (verify != 0)
-                        {
-                            printf("\nDigite o e-mail: ");
-                            setbuf(stdin, NULL);
-                            scanf("%[^\n]s", &email);
+                            while (verify != 0)
+                            {
+                                printf("\nDigite o e-mail: ");
+                                setbuf(stdin, NULL);
+                                scanf("%[^\n]s", &email);
 
-                            printf("\nDigite a senha: ");
-                            setbuf(stdin, NULL);
-                            scanf("%[^\n]s", &senha);
+                                printf("\nDigite a senha: ");
+                                setbuf(stdin, NULL);
+                                scanf("%[^\n]s", &senha);
                             
-                            verify = loginRestaurante(lista_principal_restaurantes, email, senha, &logado_restaurante);
+                                verify = loginRestaurante(lista_principal_restaurantes, email, senha, &logado_restaurante);
 
-                            strcpy(email, " ");
-                            strcpy(senha, " ");
+                                strcpy(email, " ");
+                                strcpy(senha, " ");
 
-                            if (verify != 0)
-                            {
-                                printf("\nLogin ou senha invalidos. Tente novamente!\n");
-
-                            } else if (verify == 0)
-                            {
-                                printf("\nLogin efetuado com sucesso. Bem vindos de volta, %s!\n", logado_restaurante.nome);
-                                break;
-                            }
-
-                            printf("\nTentar Novamente (Digite 0)\n"
-                                   "Voltar (Digite 5)\n"
-                                   "Esqueceu a senha? (Digite 6)\n");
-                            scanf("%d", &verify);
-
-                            if (verify == 5) break;
-
-                            if (verify == 6)
-                            {
-                                printf("\n----------ALTERAR SENHA----------\n");
-                                while (verify != 0)
+                                if (verify != 0)
                                 {
-                                    printf("\nDigite o email: ");
-                                    setbuf(stdin, NULL);
-                                    scanf("%[^\n]s", email);
+                                    printf("\nLogin ou senha invalidos. Tente novamente!\n");
 
-                                    limpaBuffer();
-                                    printf("\nDigite o codigo do restaurante: ");
-                                    scanf("%d", &codigo_loginR);
+                                } else if (verify == 0)
+                                {
+                                    printf("\nLogin efetuado com sucesso. Bem vindos de volta, %s!\n", logado_restaurante.nome);
+                                    break;
+                                }
 
-                                    verify = buscarRestEmailCodigo(lista_principal_restaurantes, email, codigo_loginR, &login_restaurante);
+                                printf("\nTentar Novamente (Digite 0)\n"
+                                    "Voltar (Digite 5)\n"
+                                    "Esqueceu a senha? (Digite 6)\n");
+                                scanf("%d", &verify);
 
-                                    if (verify == 0)
+                                if (verify == 5) break;
+
+                                if (verify == 6)
+                                {
+                                    printf("\n----------ALTERAR SENHA----------\n");
+                                    while (verify != 0)
                                     {
-                                        verify = -1;
+                                        printf("\nDigite o email: ");
+                                        setbuf(stdin, NULL);
+                                        scanf("%[^\n]s", email);
 
-                                        while (verify != 0)
+                                        limpaBuffer();
+                                        printf("\nDigite o codigo do restaurante: ");
+                                        scanf("%d", &codigo_loginR);
+
+                                        verify = buscarRestEmailCodigo(lista_principal_restaurantes, email, codigo_loginR, &login_restaurante);
+
+                                        if (verify == 0)
                                         {
-                                            if (verify != 1) 
-                                                printf("\nTe encontramos!");
+                                            verify = -1;
 
-                                            printf("\nDigite sua nova senha: "); 
-                                            setbuf(stdin, NULL);
-                                            scanf("%[^\n]s", senha);
+                                            while (verify != 0)
+                                            {
+                                                if (verify != 1) 
+                                                    printf("\nTe encontramos!");
 
-                                            printf("\nDigite sua nova senha novamente: ");
-                                            setbuf(stdin, NULL);
-                                            scanf("%[^\n]s", confirmSenha);
+                                                printf("\nDigite sua nova senha: "); 
+                                                setbuf(stdin, NULL);
+                                                scanf("%[^\n]s", senha);
 
-                                            verify = alterarSenhaRest(lista_principal_restaurantes, codigo_loginR, senha, confirmSenha, &login_restaurante);
+                                                printf("\nDigite sua nova senha novamente: ");
+                                                setbuf(stdin, NULL);
+                                                scanf("%[^\n]s", confirmSenha);
 
-                                            if (verify == 0)
-                                                printf("\nSenha alterada com sucesso! ");
-                                            if (verify != 0)
-                                                printf("\nSenhas diferentes. Tente novamente! ");
+                                                verify = alterarSenhaRest(lista_principal_restaurantes, codigo_loginR, senha, confirmSenha, &login_restaurante);
+
+                                                if (verify == 0)
+                                                    printf("\nSenha alterada com sucesso! ");
+                                                if (verify != 0)
+                                                    printf("\nSenhas diferentes. Tente novamente! ");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            printf("\nAlgo deu errado. Tente novamente!");
+                                            printf("\nDigite 1 para continuar ou 0 para sair: ");
+                                            scanf ("%d", &verify);
                                         }
                                     }
-                                    else
-                                    {
-                                        printf("\nAlgo deu errado. Tente novamente!");
-                                        printf("\nDigite 1 para continuar ou 0 para sair: ");
-                                        scanf ("%d", &verify);
-                                    }
                                 }
+                                if (verify == 0) verify = 1;
                             }
-                            if (verify == 0) verify = 1;
-                        }
 
-                        if (verify == 5) break; // sair e voltar ao menu anterior
+                            if (verify == 5) break; // sair e voltar ao menu anterior
 
-                        while (option != 5) 
-                        {
-                            option = menu_restaurante();
-                           
-                            switch (option)
+                            while (option != 5) 
                             {
+                                option = menu_restaurante();
+                           
+                                switch (option)
+                                {
                                 case 0: // sair
                                     limparCliente(lista_principal_clientes);
                                     free(lista_principal_clientes);
@@ -1307,8 +1348,51 @@ int main()
                                                 break;
 
                                             printf("\nDigite sua nova categoria: ");
-                                            setbuf(stdin, NULL);
-                                            scanf("%[^\n]s", &categoria);
+                                            
+                                            int op = menu_categoria();
+
+                                            switch (op)
+                                            {
+                                                case 1:
+                                                    strcpy(categoria, "Comida brasileira");
+                                                break;
+
+                                                case 2:
+                                                    strcpy(categoria, "Comida estrangeira");
+                                                break;
+
+                                                case 3:
+                                                    strcpy(categoria, "FastFood");
+                                                break;
+
+                                                case 4:
+                                                    strcpy(categoria, "Acai e sorvetes");
+                                                break;
+
+                                                case 5:
+                                                    strcpy(categoria, "Padaria e cafeteria");
+                                                break;
+
+                                                case 6:
+                                                    strcpy(categoria, "Pizzaria");
+                                                break;
+
+                                                case 7:
+                                                    strcpy(categoria, "Doces");
+                                                break;
+
+                                                case 8:
+                                                    strcpy(categoria, "Fitness");
+                                                break;
+
+                                                case 9:
+                                                    strcpy(categoria, "Bebidas");
+                                                break;
+
+                                                case 10:
+                                                    strcpy(categoria, "Outros");
+                                                break;
+                                            }
 
                                             verify = alterarCategoria(lista_principal_restaurantes, logado_restaurante.codigo, categoria, &logado_restaurante);
 
@@ -2189,6 +2273,30 @@ int menu_inicial_restaurante() // permite ao restaurante escolher
         if (op < 0 || op > 3)
             printf("\nDigite uma opcao valida\n\n");
     } while (op < 0 || op > 3);
+    return op;
+}
+
+int menu_categoria()
+{
+    int op = -1;
+    do
+    {
+        // system ("cls");
+        printf("1. Comida brasileira (caipira, mineira, baiana...)\n");
+        printf("2. Comida estrangeira (japonesa, indiana...)\n");
+        printf("3. FastFood\n");
+        printf("4. Acai e sorvetes\n");
+        printf("5. Padaria e cafeteria\n");
+        printf("6. Pizzaria\n");
+        printf("7. Doces\n");
+        printf("8. Fitness\n");
+        printf("9. Bebidas\n");
+        printf("10. Outros\n");
+        printf("Opcao: ");
+        scanf("%d", &op);
+        if (op < 0 || op > 10)
+            printf("\nDigite uma opcao valida\n\n");
+    } while (op < 0 || op > 10);
     return op;
 }
 
