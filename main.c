@@ -153,7 +153,6 @@ int main()
 
     // AQUI COMEÇA O PROGRAMA EM SI
 
-
     while (option != 0) // mantém o programa rodando até que seja escolhido sair
     {
         option = menu_inicial();
@@ -165,10 +164,10 @@ int main()
                 free(lista_principal_clientes);
                 limparEntregador(lista_principal_entregadores);
                 free(lista_principal_entregadores);
-                //limparRest(lista_principal_restaurantes);
-                //free(lista_principal_restaurantes);
+                limparRest(lista_principal_restaurantes);
+                free(lista_principal_restaurantes);
                 
-                printf ("aqui sera inserido uma mensagem sobre o codigo, mas resumida");
+                printf ("Esperamos que sua experiencia tenha sido positiva. Volte sempre e muito obrigado! :)");
                 
                 return 0;
             break;
@@ -189,7 +188,7 @@ int main()
                             //limparRest(lista_principal_restaurantes);
                             //free(lista_principal_restaurantes);
 
-                            printf ("aqui sera inserido uma mensagem sobre o codigo, mas resumida");
+                            printf ("Esperamos que sua experiencia tenha sido positiva. Volte sempre e muito obrigado! :)");
                             
                             return 0;
                         break;
@@ -331,7 +330,7 @@ int main()
                                         //limparRest(lista_principal_restaurantes);
                                         //free(lista_principal_restaurantes);
                                         
-                                        printf ("aqui sera inserido uma mensagem sobre o codigo, mas resumida");
+                                        printf ("Esperamos que sua experiencia tenha sido positiva. Volte sempre e muito obrigado! :)");
                                         
                                         return 0;
                                     break;
@@ -352,8 +351,16 @@ int main()
                                                         printf ("\nAqui estao todos os restaurantes disponiveis: \n");
                                                         mostrarListaRest (lista_principal_restaurantes);
 
+                                                        printf ("\nDigite 0 para voltar ou 1 para acessar algum restaurante: ");
+                                                        scanf ("%d", &verify);
 
-                                                        
+                                                        if (verify != 0)
+                                                        {
+                                                            printf ("\nDigite qual o numero do restaurante que voce deseja visualizar: ");
+                                                            scanf ("%d", &verify);
+
+                                                            // aqui virar a buscar por pos
+                                                        }
                                                     }
                                                 
                                                     // conferir se tá funcionando e então fazer uma forma de buscar o restaurante X para fazer o pedido
@@ -756,7 +763,7 @@ int main()
                             //limparRest(lista_principal_restaurantes);
                             //free(lista_principal_restaurantes);
                             
-                            printf ("aqui sera inserido uma mensagem sobre o codigo, mas resumida");
+                            printf ("Esperamos que sua experiencia tenha sido positiva. Volte sempre e muito obrigado! :)");
                             
                             return 0;
                         break;
@@ -957,7 +964,7 @@ int main()
                                     //limparRest(lista_principal_restaurantes);
                                     //free(lista_principal_restaurantes);
 
-                                    printf ("aqui sera inserido uma mensagem sobre o codigo, mas resumida");
+                                    printf ("Esperamos que sua experiencia tenha sido positiva. Volte sempre e muito obrigado! :)");
 
                                     return 0;
                                 break;
@@ -1475,7 +1482,7 @@ int main()
                             //limparRest(lista_principal_restaurantes);
                             //free(lista_principal_restaurantes);
                             
-                            printf ("aqui sera inserido uma mensagem sobre o codigo, mas resumida");
+                            printf ("Esperamos que sua experiencia tenha sido positiva. Volte sempre e muito obrigado! :)");
                             
                             return 0;
                         break;
@@ -1593,7 +1600,7 @@ int main()
                                         //limparRest(lista_principal_restaurantes);
                                         //free(lista_principal_restaurantes);
                                         
-                                        printf ("aqui sera inserido uma mensagem sobre o codigo, mas resumida");
+                                        printf ("Esperamos que sua experiencia tenha sido positiva. Volte sempre e muito obrigado! :)");
 
                                         return 0;
                                     break;
@@ -1871,7 +1878,7 @@ int main()
                             //limparRest(lista_principal_restaurantes);
                             //free(lista_principal_restaurantes);
                             
-                            printf ("aqui sera inserido uma mensagem sobre o codigo, mas resumida");
+                            printf ("Esperamos que sua experiencia tenha sido positiva. Volte sempre e muito obrigado! :)");
                             
                             return 0;
                         break;
@@ -1908,6 +1915,16 @@ int main()
 
             case 5: // sobre
                 // aqui será inserido uma mensagem completa sobre o codigo e coisas do tipo
+                printf ("\n\nObrigado por se interessar mais sobre o processo de producao do app.");
+                printf ("\nEste aplicativo foi feito para o trabalho de conclusao de disciplina da materia de Algoritmos e Estruturas de Dados 1.");
+                printf ("\n\nO grupo eh composto por:");
+                printf (" Jean Souto Galvao Moreira @jean.soutoo");
+                printf ("\n                         Ester Camilly lalala");
+                printf ("\n                         Alice lalala");
+                printf ("\n                         Fernanda lalala");
+                printf ("\n\nO objetivo do trabalho eh aplicar todos os conceitos aprendidos em sala e garantir o pleno funcionamento do aplicativo.");
+                printf (" Alem disso, o tema deste aplicativo eh 'gerenciador de pedidos em restaurantes', algo como um 'ifood'.");
+                printf ("\nEsperamos que tenha gostado e tenha sido uma boa experiencia. Muito obrigado! :)");
             break;
             
         }
@@ -1917,10 +1934,10 @@ int main()
     free(lista_principal_clientes);
     limparEntregador(lista_principal_entregadores);
     free(lista_principal_entregadores);
-    //limparRest(lista_principal_restaurantes);
-    //free(lista_principal_restaurantes);
+    limparRest(lista_principal_restaurantes);
+    free(lista_principal_restaurantes);
     
-    printf ("aqui sera inserido uma mensagem sobre o codigo, mas resumida");
+    printf ("Esperamos que sua experiencia tenha sido positiva. Volte sempre e muito obrigado! :)");
 
     return 0;
 }
