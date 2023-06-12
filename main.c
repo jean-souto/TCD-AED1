@@ -21,7 +21,6 @@ typedef struct juncao
 // funções para o gerenciador global de pedidos em andamento
 
 void copiarPedidoCpC(pedidos *A, pedidos *B); // criar possivel funcao que copiará pedido para pedido entre tipos de pedidos e tals
-void copiarPpP (pratos *A, pratos *B, int tam);
 pedidosglobais* inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidos pedido_atual, Cliente cliente_atual, int *qtd);
 pedidosglobais* removerControleGlobal(pedidosglobais *pg, int numero_pedido, int *qtd, Lista_cliente *l_cliente, Lista_entregadores *l_entregador, Lista_restaurantes *l_restaurante, float nota); // deve remover do controle, liberar entregador e adicionar aos historicos
 pedidos* buscarPedidoAndamento (pedidosglobais *pg, int qtd, int codigo_cliente, int *num_pedidos);
@@ -118,6 +117,10 @@ int main()
     int codigo_pedido;
     float precoTotal_pedido;
 
+    // criando testes
+    restaurante base_rest;
+    pratos base_restPratos;
+
     // inicializações
     lista_principal_clientes = criarCliente();
     lista_principal_entregadores = criar_lista_entregadores();
@@ -131,9 +134,6 @@ int main()
     limpar_variavel_entregador (&esqueceu_senha_entregador);
     inicializar_restaurante(&login_restaurante);
     limparVariavelRest(&pedido_rest);
-
-    // criando testes
-    restaurante base_rest;
 
     // LOGIN ADM
     strcpy(loginADM, "souADM");
@@ -173,8 +173,8 @@ int main()
                             free(lista_principal_clientes);
                             limparEntregador(lista_principal_entregadores);
                             free(lista_principal_entregadores);
-                            //limparRest(lista_principal_restaurantes);
-                            //free(lista_principal_restaurantes);
+                            limparRest(lista_principal_restaurantes);
+                            free(lista_principal_restaurantes);
 
                             printf ("Esperamos que sua experiencia tenha sido positiva. Volte sempre e muito obrigado! :)\n");
                             
@@ -322,8 +322,8 @@ int main()
                                         free(lista_principal_clientes);
                                         limparEntregador(lista_principal_entregadores);
                                         free(lista_principal_entregadores);
-                                        //limparRest(lista_principal_restaurantes);
-                                        //free(lista_principal_restaurantes);
+                                        limparRest(lista_principal_restaurantes);
+                                        free(lista_principal_restaurantes);
                                         
                                         printf ("Esperamos que sua experiencia tenha sido positiva. Volte sempre e muito obrigado! :)");
                                         
@@ -346,7 +346,7 @@ int main()
                                                     while (verify != 0)
                                                     {
                                                         printf ("\nAqui estao todos os restaurantes disponiveis: \n");
-                                                        mostrarListaRest (lista_principal_restaurantes);
+                                                        mostrarInfoRest (lista_principal_restaurantes);
 
                                                         Sleep(2000);
 
@@ -796,6 +796,8 @@ int main()
                                                     }
                                                     else
                                                     {
+                                                        printf ("\nRestaurante encontrado!");
+                                                        printf ("\nAqui esta o cardapio: ");
                                                         mostrarCardapioItem (pedido_rest);
 
                                                         printf ("\nDigite 0 para voltar ou 1 para fazer um pedido: ");
@@ -1356,8 +1358,8 @@ int main()
                             free(lista_principal_clientes);
                             limparEntregador(lista_principal_entregadores);
                             free(lista_principal_entregadores);
-                            //limparRest(lista_principal_restaurantes);
-                            //free(lista_principal_restaurantes);
+                            limparRest(lista_principal_restaurantes);
+                            free(lista_principal_restaurantes);
                             
                             printf ("Esperamos que sua experiencia tenha sido positiva. Volte sempre e muito obrigado! :)");
                             
@@ -1561,8 +1563,8 @@ int main()
                                     free(lista_principal_clientes);
                                     limparEntregador(lista_principal_entregadores);
                                     free(lista_principal_entregadores);
-                                    //limparRest(lista_principal_restaurantes);
-                                    //free(lista_principal_restaurantes);
+                                    limparRest(lista_principal_restaurantes);
+                                    free(lista_principal_restaurantes);
 
                                     printf ("Esperamos que sua experiencia tenha sido positiva. Volte sempre e muito obrigado! :)");
 
@@ -1604,7 +1606,7 @@ int main()
                                                 printf("Entre com o preco: ");
                                                 setbuf(stdin, NULL);
                                                 scanf("%f", &novo_prato.preco);
- 
+
                                                 if (inserirPratoRest(lista_principal_restaurantes, novo_prato, logado_restaurante) == 0)
                                                 {
                                                     printf("Item adicionado com sucesso!\n");
@@ -2107,8 +2109,8 @@ int main()
                             free(lista_principal_clientes);
                             limparEntregador(lista_principal_entregadores);
                             free(lista_principal_entregadores);
-                            //limparRest(lista_principal_restaurantes);
-                            //free(lista_principal_restaurantes);
+                            limparRest(lista_principal_restaurantes);
+                            free(lista_principal_restaurantes);
                             
                             printf ("Esperamos que sua experiencia tenha sido positiva. Volte sempre e muito obrigado! :)");
                             
@@ -2233,8 +2235,8 @@ int main()
                                         free(lista_principal_clientes);
                                         limparEntregador(lista_principal_entregadores);
                                         free(lista_principal_entregadores);
-                                        //limparRest(lista_principal_restaurantes);
-                                        //free(lista_principal_restaurantes);
+                                        limparRest(lista_principal_restaurantes);
+                                        free(lista_principal_restaurantes);
                                         
                                         printf ("Esperamos que sua experiencia tenha sido positiva. Volte sempre e muito obrigado! :)");
 
@@ -2521,8 +2523,8 @@ int main()
                             free(lista_principal_clientes);
                             limparEntregador(lista_principal_entregadores);
                             free(lista_principal_entregadores);
-                            //limparRest(lista_principal_restaurantes);
-                            //free(lista_principal_restaurantes);
+                            limparRest(lista_principal_restaurantes);
+                            free(lista_principal_restaurantes);
                             
                             printf ("Esperamos que sua experiencia tenha sido positiva. Volte sempre e muito obrigado! :)");
                             
@@ -2546,29 +2548,47 @@ int main()
 
                         case 5: // inicializar restaurantes
 
-                        /*  restaurante teste;
-                            strcpy(teste.nome, "Fast Acai");
-                            strcpy(teste.email, "fast@gmail.com");
-                            strcpy(teste.senha, "bem vinde");
-                            inicializar_restaurante(&teste);
-                            inserirInicioRest(lista_principal_restaurantes, teste);
-                            mostrarListaRest(lista_principal_restaurantes);
-                            pratos r;
-                            strcpy(r.nome, "macarrao");
-                            strcpy(r.descricao, "molho branco");
-                            r.preco = 20.52;
-                            inserirPratoRest(lista_principal_restaurantes, r, &teste);
-                            printf("[ Cardapio ]\n");
-                            mostrarCardapio(lista_principal_restaurantes, &teste);
+                            limparVariavelRest(&base_rest); 
 
-                            restaurante retorno;
-                            int a = buscarRestEmail(lista_principal_restaurantes, teste.email, &retorno);
-                            if (!a)
-                            {
-                                mostrarCardapio(lista_principal_restaurantes, &retorno);
-                            }
-                        */
-                        
+                            strcpy(base_rest.nome, "Fast Acai");
+                            strcpy(base_rest.email, "fast@gmail.com");
+                            strcpy(base_rest.senha, "bem vindo");
+                            strcpy(base_rest.categoria, "Acai e sorvetes");
+
+                            inserirFimRest(lista_principal_restaurantes, &base_rest);
+                            buscarRestNome(lista_principal_restaurantes, base_rest.nome, &base_rest);
+
+                            strcpy(base_restPratos.nome, "Acai tropical");
+                            strcpy(base_restPratos.descricao, "tigela 500ml");
+                            base_restPratos.preco = 19.99;
+                            inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                            strcpy(base_restPratos.nome, "Acai tropical");
+                            strcpy(base_restPratos.descricao, "tigela 750ml");
+                            base_restPratos.preco = 24.99;
+                            inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                            strcpy(base_restPratos.nome, "Acai com Ninho e Morango");
+                            strcpy(base_restPratos.descricao, "tigela 500ml");
+                            base_restPratos.preco = 19.99;
+                            inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                            strcpy(base_restPratos.nome, "Acai com Ninho e Morango");
+                            strcpy(base_restPratos.descricao, "tigela 750ml");
+                            base_restPratos.preco = 24.99;
+                            inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                            strcpy(base_restPratos.nome, "Choco Acai");
+                            strcpy(base_restPratos.descricao, "tigela 500ml");
+                            base_restPratos.preco = 19.99;
+                            inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                            strcpy(base_restPratos.nome, "Choco Acai");
+                            strcpy(base_restPratos.descricao, "tigela 750ml");
+                            base_restPratos.preco = 24.99;
+                            inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                            limpar_variavel_rest(&base_rest);
 
                         break;
 
@@ -2585,13 +2605,17 @@ int main()
                 printf ("\n\nObrigado por se interessar mais sobre o processo de producao do app.");
                 printf ("\nEste aplicativo foi feito para o trabalho de conclusao de disciplina da materia de Algoritmos e Estruturas de Dados 1.");
                 printf ("\n\nO grupo eh composto por:\n");
-                printf ("\tJean Souto Galvao Moreira @jean.soutoo        ");
-                printf ("\tEster Camilly Simplicio de Freitas @esterzolas");
-                printf ("\tAna Alice Cordeiro de Souza @alicecordeiro    ");
-                printf ("\n                         Fernanda lalala     ");
+                printf ("                            Jean Souto Galvao Moreira @jean.soutoo");
+                printf ("\n                          Ester Camilly Simplicio de Freitas @esterzolas");
+                printf ("\n                          Ana Alice Cordeiro de Souza @alicecordeiro");
+                printf ("\n                          Fernanda Ferreira de Melo @nandamf_");
                 printf ("\n\nO objetivo do trabalho eh aplicar todos os conceitos aprendidos em sala e garantir o pleno funcionamento do aplicativo.");
                 printf (" Alem disso, o tema deste aplicativo eh 'gerenciador de pedidos em restaurantes', algo como um 'ifood'.");
-                printf ("\nEsperamos que tenha gostado e tenha sido uma boa experiencia. Muito obrigado! :)");
+                printf ("\nEsperamos que tenha gostado e tenha sido uma boa experiencia. Muito obrigado! :)\n\n");
+
+                printf ("Digite enter para continuar...");
+                setbuf (stdin, NULL);
+                getchar();
             break;
             
         }
@@ -2628,23 +2652,6 @@ void copiarPedidoCpC(pedidos *A, pedidos *B) // criar possivel funcao que copiar
         strcpy(B->pratosPed[i].nome, A->pratosPed[i].nome);
     }
 }
-
-/*pratos* copiarPpP (pratos *A, int tam)
-{
-    int i = 0;
-    tam = 0;
-
-    B = (pratos*) malloc (tam*sizeof(pratos));
-
-    for (i = 0; i < tam; i++)
-    {
-        B[i].preco = A[i].preco;
-        strcpy(B[i].nome, A[i].nome);
-        strcpy(B[i].descricao, A[i].descricao);
-    }
-
-    return 
-}*/
 
 pedidosglobais* inserirControleGlobal(pedidosglobais *pg, entregador entregador_atual, pedidos pedido_atual, Cliente cliente_atual, int *qtd)
 {
@@ -3124,7 +3131,7 @@ int menu_inicial_restaurante() // permite ao restaurante escolher
     return op;
 }
 
-int menu_categoria()
+int menu_categoria() // menu que permite o restaurante e o cliente selecionarem categorias
 {
     int op = -1;
     int i;
@@ -3174,13 +3181,12 @@ int menu_categoria()
     return op;
 }
 
-int menu_restaurante()
+int menu_restaurante() // menu inicial do restaurante
 {
     int op = -1;
     int i;
     do
     {
-        // system ("cls");
        printf("\n\n");
     printf("\xDA");
     for (i = 0; i < 27; i++) {
@@ -3219,7 +3225,7 @@ int menu_restaurante()
     return op;
 }
 
-int menu_cardapio_restaurante()
+int menu_cardapio_restaurante() // menu que permite o restaurante escolher sobre seu cardapio
 {
     int op = -1;
     int i;
@@ -3261,15 +3267,14 @@ int menu_cardapio_restaurante()
     return op;
 }
 
-int menu_pedidosPendentes_restaurante()
+int menu_pedidosPendentes_restaurante() // menu que permite ao restaurante escolher sobre seus pedidos pendentes
 {
     int op = -1;
     int i;
     do
     {
-        // system ("cls");
         printf("\n\n");
-    printf("\xDA");
+        printf("\xDA");
     for (i = 0; i < 42; i++) {
         printf("\xC4");
     }
@@ -3302,14 +3307,12 @@ int menu_pedidosPendentes_restaurante()
     return op;
 }
 
-int menu_historicoPedidos_restaurante()
+int menu_historicoPedidos_restaurante() // menu que permite ao restaurante escolher as formas de mostrar o historico
 {
     int op = -1;
     int i;
     do
     {
-        // system ("cls");
-         //mudar os nomes ne mona?
     printf("\n\n");
     printf("\xDA");
     for (i = 0; i < 45; i++) {
@@ -3345,7 +3348,7 @@ int menu_historicoPedidos_restaurante()
     return op;
 }
 
-int menu_configuracoes_restaurante()
+int menu_configuracoes_restaurante() // menu que permite ao restaurante escolher nas configuracoes
 {
     int op = -1;
     int i;
@@ -3417,10 +3420,8 @@ int menu_adm() // permite ao adm escolher
     printf("\xB3 2. Mostrar lista de entregadores    \xB3\n");
     printf("\xB3 3. Mostrar lista de restaurantes    \xB3\n");
     printf("\xB3 4. Mostrar pedidos em andamento     \xB3\n");
-    printf("\xB3 5. Inicializar clientes             \xB3\n");
-    printf("\xB3 6. Inicializar entregadores         \xB3\n");
-    printf("\xB3 7. Inicializar restaurantes         \xB3\n");
-    printf("\xB3 8. Sair da conta                    \xB3\n");
+    printf("\xB3 5. Inicializar restaurantes         \xB3\n");
+    printf("\xB3 6. Sair da conta                    \xB3\n");
     printf("\xB3 0. Sair do app                      \xB3\n");
 
     printf("\xC0");
