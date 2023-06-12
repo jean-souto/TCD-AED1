@@ -56,8 +56,6 @@ void limparRest(Lista_restaurantes *l)
 {
     while (listaVaziaRest(l) != 0)
         removerInicioRest(l);
-    free(l);
-    l = NULL;
 }
 
 // retorna o tamanho da lista
@@ -536,7 +534,6 @@ void mostrarRestaurante(restaurante *item)
     }
 }
 
-// mostra as principais informacoes de cada restaurante para cliente
 void mostrarInfoRest(Lista_restaurantes *l)
 {
     if (l != NULL)
@@ -620,63 +617,6 @@ void mostrarHistoricoRestPorNomePrato(restaurante *item, char *nomePrato)
         }
     }
 }
-
-/* void mostrarPedidosPorPreco(restaurante *item, float preco, char opcao)
-{
-    int i,j;
-
-    for (i = 0; i < item->qtdHistorico; i++)
-    {
-        pedidos pedido = item->historico[i];
-
-        if (opcao == '<' && pedido.precoTotal < preco)
-        {
-            printf("Código do pedido: %d\n", pedido.codigo);
-            printf("Preço total: %.2f\n", pedido.precoTotal);
-            printf("Nome do restaurante: %s\n", pedido.nome_rest);
-
-            printf("Pratos:\n");
-            for (j = 0; j < pedido.qtdPratosPed; j++)
-            {
-                pratos prato = pedido.pratosPed[j];
-                printf("Nome do prato: %s\n", prato.nome);
-                printf("Descrição do prato: %s\n", prato.descricao);
-                printf("Preço do prato: %.2f\n", prato.preco);
-            }
-        }
-        else if (opcao == '>' && pedido.precoTotal > preco)
-        {
-            printf("Código do pedido: %d\n", pedido.codigo);
-            printf("Preço total: %.2f\n", pedido.precoTotal);
-            printf("Nome do restaurante: %s\n", pedido.nome_rest);
-
-            printf("Pratos:\n");
-            for (j = 0; j < pedido.qtdPratosPed; j++)
-            {
-                pratos prato = pedido.pratosPed[j];
-                printf("Nome do prato: %s\n", prato.nome);
-                printf("Descrição do prato: %s\n", prato.descricao);
-                printf("Preço do prato: %.2f\n", prato.preco);
-            }
-        }
-        else if (opcao == '=' && pedido.precoTotal == preco)
-        {
-            printf("Código do pedido: %d\n", pedido.codigo);
-            printf("Preço total: %.2f\n", pedido.precoTotal);
-            printf("Nome do restaurante: %s\n", pedido.nome_rest);
-
-            printf("Pratos:\n");
-            for (j = 0; j < pedido.qtdPratosPed; j++)
-            {
-                pratos prato = pedido.pratosPed[j];
-                printf("Nome do prato: %s\n", prato.nome);
-                printf("Descrição do prato: %s\n", prato.descricao);
-                printf("Preço do prato: %.2f\n", prato.preco);
-            }
-        }
-    }
-}
-*/
 
 void mostrarPedidoPorCodigo(restaurante *item, int codigoPedido)
 {
