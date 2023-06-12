@@ -23,13 +23,13 @@ int criar_listaCategoria(Lista_restaurantes *l1, Lista_restaurantes *l2, char *c
 
     No_restaurante *no = l1->inicio;
 
-    while (no->prox != NULL)
+    while (no != NULL)
     {
-        no = no->prox;
-        if (no->valor.categoria == categoria)
+        if (strcmp(no->valor.categoria, categoria) == 0)
         {
             inserirFimRest(l2, &no->valor);
         }
+        no = no->prox;
     }
 
     return 0;
@@ -997,3 +997,4 @@ int inserirPedidoHistoricoRestNome (Lista_restaurantes *l, char *nome, pedidos n
     } 
     return 1;
 }
+

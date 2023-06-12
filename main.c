@@ -83,12 +83,14 @@ int main()
 
     // declarações relacionadas aos restaurantes
     Lista_restaurantes *lista_principal_restaurantes;
+    Lista_restaurantes *lista_categoria;
     restaurante novo_restaurante, logado_restaurante;
     restaurante login_restaurante, inicializados_restaurante;
     restaurante pedido_rest;
     int codigo_loginR;
     pratos novo_prato;
     char nome_prato[40];
+    char nome_rest[40];
     float preco_prato;
 
     // declaracoes relacionadas a fila de pedidos pendentes
@@ -120,6 +122,7 @@ int main()
     lista_principal_clientes = criarCliente();
     lista_principal_entregadores = criar_lista_entregadores();
     lista_principal_restaurantes = criar_listaRestaurantes();
+    lista_categoria = criar_listaRestaurantes();
     fila_pedidosPendentes = criar_filaPedidosPendentes();
 
     inicializar_cliente (&esqueceu_senha_cliente);
@@ -128,29 +131,6 @@ int main()
     limpar_variavel_entregador (&esqueceu_senha_entregador);
     inicializar_restaurante(&login_restaurante);
     limparVariavelRest(&pedido_rest);
-
-    // criando testes
-    /*restaurante teste;
-    strcpy(teste.nome, "Fast Acai");
-    strcpy(teste.email, "fast@gmail.com");
-    strcpy(teste.senha, "bem vinde");
-    inicializar_restaurante(&teste);
-    inserirInicioRest(lista_principal_restaurantes, teste);
-    mostrarListaRest(lista_principal_restaurantes);
-    pratos r;
-    strcpy(r.nome, "macarrao");
-    strcpy(r.descricao, "molho branco");
-    r.preco = 20.52;
-    inserirPratoRest(lista_principal_restaurantes, r, &teste);
-    printf("[ Cardapio ]\n");
-    mostrarCardapio(lista_principal_restaurantes, &teste);
-
-    restaurante retorno;
-    int a = buscarRestEmail(lista_principal_restaurantes, teste.email, &retorno);
-    if (!a)
-    {
-        mostrarCardapio(lista_principal_restaurantes, &retorno);
-    }*/
 
     // LOGIN ADM
     strcpy(loginADM, "souADM");
@@ -385,12 +365,12 @@ int main()
 
                                                             if (verify != 0)
                                                             {
-                                                                //if (pedido_rest.status != 1)
-                                                                //{
-                                                                //    printf ("\nInfelizmente o restaurante esta fechado. Volta novamente mais tarde. ");
-                                                                //    verify = 0; 
-                                                                //    break;
-                                                                //} 
+                                                                if (pedido_rest.status != 1)
+                                                                {
+                                                                    printf ("\nInfelizmente o restaurante esta fechado. Volta novamente mais tarde. ");
+                                                                    verify = 0; 
+                                                                    break;
+                                                                } 
                                                                 while (verify != 0)
                                                                 {
                                                                     int coord = 0;
@@ -540,44 +520,258 @@ int main()
                                                             }
                                                         }
                                                     }
-                                                
-                                                    // conferir se tá funcionando e então fazer uma forma de buscar o restaurante X para fazer o pedido
-                                        
                                                 break;
 
                                                 case 2: // filtrar por categoria
                                                 printf("\n-------------------------------------------\n");
+                                                verify = -1;
+                                                verify = menu_categoria();
 
-                                                printf("\nCATEGORIA: %s\n", categoria);
+                                                switch (verify)
+                                                {
+                                                    case 1:
+                                                        strcpy(categoria, "Comida brasileira");
+                                                    break;
 
-                                                mostrar_entregador(lista_principal_entregadores);
-                                                buscarEntregador(lista_principal_entregadores, &novoped_entregador);
-                                                mostrar_entregador(lista_principal_entregadores);
+                                                    case 2:
+                                                        strcpy(categoria, "Comida estrangeira");
+                                                    break;
 
-                                                novoped_pedido.codigo = 456;
-                                                novoped_pedido.precoTotal = 100.25;
-                                                strcpy(novoped_pedido.nome_rest, "fernandaas");
-                                                novoped_pedido.qtdPratosPed = 3;
-                                                novoped_pedido.pratosPed = (pratos *)malloc(3 * sizeof(pratos));
-                                                strcpy(novoped_pedido.pratosPed[0].nome, "teste1");
-                                                strcpy(novoped_pedido.pratosPed[0].descricao, "teste descricao 1");
-                                                novoped_pedido.pratosPed[0].preco = 30;
-                                                strcpy(novoped_pedido.pratosPed[1].nome, "teste2");
-                                                strcpy(novoped_pedido.pratosPed[1].descricao, "teste descricao 2");
-                                                novoped_pedido.pratosPed[1].preco = 30.25;
-                                                strcpy(novoped_pedido.pratosPed[2].nome, "teste3");
-                                                strcpy(novoped_pedido.pratosPed[2].descricao, "teste descricao 3");
-                                                novoped_pedido.pratosPed[2].preco = 40;
+                                                    case 3:
+                                                        strcpy(categoria, "FastFood");
+                                                    break;
 
-                                                controlePedidos = inserirControleGlobal(controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPratosPedidosAndamento);
-                                                limpar_variavel_entregador(&novoped_entregador);
-                                                inicializar_entregador(&novoped_entregador);
+                                                    case 4:
+                                                        strcpy(categoria, "Acai e sorvetes");
+                                                    break;
 
+                                                    case 5:
+                                                        strcpy(categoria, "Padaria e cafeteria");
+                                                    break;
+
+                                                    case 6:
+                                                        strcpy(categoria, "Pizzaria");
+                                                    break;
+
+                                                    case 7:
+                                                        strcpy(categoria, "Doces");
+                                                    break;
+
+                                                    case 8:
+                                                        strcpy(categoria, "Fitness");
+                                                    break;
+
+                                                    case 9:
+                                                        strcpy(categoria, "Bebidas");
+                                                    break;
+
+                                                    case 10:
+                                                        strcpy(categoria, "Outros");
+                                                    break;
+                                                }
+
+                                                criar_listaCategoria (lista_principal_restaurantes, lista_categoria, categoria);
+
+                                                verify = -1;
+                                                buscarItemCliente (lista_principal_clientes, logado_cliente.codigo, &logado_cliente);
+                                                printf("\n----------RESTAURANTES----------\n");
+
+                                                while (verify != 0)
+                                                {
+                                                    printf ("\nAqui estao todos os restaurantes disponiveis: \n");
+                                                    mostrarListaRest (lista_categoria);
+
+                                                    Sleep(2000);
+
+                                                    printf("\nVoltar (Digite 0)\nPara acessar algum restaurante (Digite 1)\n");
+                                                    scanf ("%d", &verify);
+
+                                                    if (verify != 0)
+                                                    {
+                                                        printf ("\nDigite qual o numero do restaurante que voce deseja visualizar:\n");
+                                                        scanf ("%d", &verify);
+                                                        verify--; // verify = verify - 1
+
+                                                        buscarRestPos(lista_categoria, verify, &pedido_rest);
+                                                        buscarRestCodigo (lista_principal_restaurantes, pedido_rest.codigo, &pedido_rest);
+                                                        mostrarCardapioItem (pedido_rest);
+
+                                                        printf ("\nDigite 0 para voltar ou 1 para fazer um pedido: ");
+                                                        scanf ("%d", &verify);
+
+                                                        if (verify != 0)
+                                                        {
+                                                            if (pedido_rest.status != 1)
+                                                            {
+                                                                printf ("\nInfelizmente o restaurante esta fechado. Volta novamente mais tarde. ");
+                                                                verify = 0; 
+                                                                break;
+                                                            } 
+                                                            while (verify != 0)
+                                                            {
+                                                                int coord = 0;
+                                                                printf ("\n------------VAMOS FAZER UM PEDIDO------------\n");
+                                                                printf ("\nAqui esta o cardapio do restaurante selecionado:\n");
+                                                                mostrarCardapioItem(pedido_rest);
+
+                                                                printf ("\n\nDigite 0 para voltar ou digite o numero do prato que voce quer adicionar ao pedido: ");
+                                                                scanf ("%d", &coord);
+                                                                    
+                                                                if (coord < 0 || coord > pedido_rest.qtdCardapio) 
+                                                                {
+                                                                    printf ("\nNumero invalido!");
+                                                                    verify = 0;
+                                                                }
+
+                                                                if (verify == 0 || coord == 0) break;
+
+                                                                coord--;
+
+                                                                verify = buscarPratoRest(lista_principal_restaurantes, pedido_rest.codigo, coord, &novo_prato_simples);
+                                                                novo_prato_ped = adicionarPratoPed (&nun_novo_prato_ped, novo_prato_ped, novo_prato_simples);
+
+                                                                if (verify == 0)
+                                                                {
+                                                                    printf ("\nPrato adicionado com sucesso ao carrinho. Digite 1 para adicionar mais ou 2 para finalizar o pedido: ");
+                                                                    scanf ("%d", &verify);
+                                                                }
+                                                                else 
+                                                                {
+                                                                    printf ("\nHouve um erro. Tente novamente!");
+                                                                    verify = 0;
+                                                                    nun_novo_prato_ped = 0;
+                                                                    free(novo_prato_ped);
+                                                                    break;
+                                                                }
+                                                                if (verify == 0) break;
+
+                                                                if (verify != 0 && verify != 1)
+                                                                {
+                                                                    if (logado_cliente.quant_enderecos == 0)
+                                                                    {
+                                                                        printf ("\nVoce nao possui enderecos cadastrados. Cadastre algum para fazer seu pedido!");
+                                                                        verify = 0;
+                                                                        nun_novo_prato_ped = 0;
+                                                                        free(novo_prato_ped);
+                                                                        break;
+                                                                    }
+                                                                    if (verify == 0) break;
+
+                                                                    if (logado_cliente.quant_enderecos > 1)
+                                                                    {
+                                                                        verify = -1;
+                                                                        do 
+                                                                        { 
+                                                                            printf ("\nEm qual endereco voce quer receber seu pedido? \n");
+                                                                            mostrar_enderecos (logado_cliente);
+                                                                            printf ("Opcao (1, 2, 3...): ");
+                                                                            scanf ("%d", &verify);
+                                                                        }while(verify < logado_cliente.quant_enderecos && verify > logado_cliente.quant_enderecos);
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        printf ("\nVoce recebera seu pedido no unico endereco cadastrado. :)");
+                                                                    }
+                                                                        
+                                                                    verify = -1;
+
+                                                                    do
+                                                                    {
+                                                                        printf ("\nDigite qual sera a forma de pagamento: \n");
+                                                                        printf ("1. Dinheiro\n");
+                                                                        printf ("2. Cartao\n");
+                                                                        scanf ("%d", &verify);
+                                                                    }while(verify != 1 && verify != 2);
+
+                                                                    if (verify == 1) printf ("\nPerfeito! Seu pagamento sera feito na entrega.");
+                                                                    else
+                                                                    {
+                                                                        if (logado_cliente.quantidade_cartoes == 0)
+                                                                        {
+                                                                            do
+                                                                            {
+                                                                                printf ("\nInfelizmente voce nao possui cartoes cadastrados. Deseja pagar em dinheiro ou cancelar o pedido? \n");
+                                                                                printf ("1. Pagar em dinheiro\n");
+                                                                                printf ("2. Cancelar\n");
+                                                                                printf ("Opcao: ");
+                                                                                scanf ("%d", &verify);
+                                                                            }while(verify != 1 && verify != 2);
+
+                                                                            if (verify == 1)
+                                                                            {
+                                                                                printf ("\nPerfeito! Seu pagamento sera feito na entrega. ");
+                                                                                verify = 15;
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                printf ("\nPedido cancelado! ");
+                                                                                verify = 0;
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            if (logado_cliente.quantidade_cartoes > 1)
+                                                                            {
+                                                                                verify = -1;
+                                                                                do 
+                                                                                {
+                                                                                    printf ("\nEm qual cartao voce quer receber pagar pedido? \n");
+                                                                                    mostrar_pagamentos (logado_cliente);
+                                                                                    printf ("Opcao (1, 2, 3...): ");
+                                                                                    scanf ("%d", &verify);
+                                                                                }while(verify < logado_cliente.quantidade_cartoes && verify > logado_cliente.quantidade_cartoes);
+                                                                                printf ("\nPerfeito! Seu pedido sera cobrado no cartao selecionado. ");
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                printf ("\nVoce recebera seu pedido no unico cartao cadastrado. :)");
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    if (verify == 0) break;
+                                                                    novoped_pedido.pratosPed = (pratos*) malloc (nun_novo_prato_ped*sizeof(pratos));
+                                                                    novoped_pedido.pratosPed = novo_prato_ped;
+                                                                    
+                                                                    buscarEntregador (lista_principal_entregadores, &novoped_entregador);
+                                                                    
+                                                                    novoped_pedido.qtdPratosPed = nun_novo_prato_ped;
+                                                                    strcpy(novoped_pedido.nome_rest, pedido_rest.nome);
+                                                                    novoped_pedido.precoTotal = 0;
+                                                                    novoped_pedido.codigo = ++codigo_geral;
+
+                                                                    for (i = 0; i < nun_novo_prato_ped; i++)
+                                                                    {
+                                                                        novoped_pedido.precoTotal += novo_prato_ped[i].preco;
+                                                                    }
+                                                                        
+                                                                    controlePedidos = inserirControleGlobal (controlePedidos, novoped_entregador, novoped_pedido, logado_cliente, &qtdPratosPedidosAndamento);
+                                                                        
+                                                                    nun_novo_prato_ped = 0;
+                                                                    free (novo_prato_ped);
+                                                                    printf ("\nPedido efetuado com sucesso! ");
+                                                                    verify = 0;
+                                                                }
+                                                            }   
+                                                        }
+                                                    }
+                                                }
                                                 printf("\n-------------------------------------------\n");
 
                                                 break;
 
                                                 case 3: // procurar por nome
+                                                    printf("\n-------------------------------------------\n");
+
+                                                    printf ("\nDigite o nome do restaurante que voce deseja procurar: ");
+                                                    setbuf (stdin, NULL);
+                                                    scanf ("%[^\n]s", &nome_rest);
+
+                                                    buscarRestNome (lista_principal_restaurantes, nome_rest, &pedido_rest);
+
+
+
+                                                    printf("\n-------------------------------------------\n");
                                                 break;
 
                                                 case 4: // voltar
@@ -1204,11 +1398,11 @@ int main()
                                             case 2:
 
                                                 printf("Digite o nome:\n(max 40 caracteres)\n");
-                                                limpaBuffer();
+                                                setbuf(stdin, NULL);
                                                 scanf("%[^\n]s", novo_prato.nome);
 
                                                 printf("Descricao:\nEx.: Bedida, Ingredientes\n:\n");
-                                                limpaBuffer();
+                                                setbuf(stdin, NULL);
                                                 scanf("%[^\n]s", novo_prato.descricao);
 
                                                 printf("Entre com o preco: ");
@@ -1299,12 +1493,12 @@ int main()
 
                                     while ((option != 5) && (option != 15))
                                     {
+                                        printf("\n---------- HISTORICO ----------\n\n");
+
                                         option = menu_historicoPedidos_restaurante();
 
                                         switch (option)
                                         {
-                                            printf("\n---------- HISTORICO ----------\n\n");
-
                                             case 1: // todos os pedidos ja feitos no restaurante
 
                                             if (buscarRestCodigo(lista_principal_restaurantes, logado_restaurante.codigo, &logado_restaurante) == 0)
@@ -2468,21 +2662,21 @@ int menu_inicial() // permite a escolha entre os diferentes usuários
     {
         //system ("cls");
          printf("\xDA");
-    for (i = 0; i < 21; i++) {
+    for (i = 0; i < 23; i++) {
         printf("\xC4");
     }
     printf("\xBF\n");
 
-    printf("\xB3     Menu Inicial    \xB3\n");
+    printf("\xB3     Menu Inicial      \xB3\n");
 
     printf("\xC3");
-    for (i = 0; i < 21; i++) {
+    for (i = 0; i < 23; i++) {
         printf("\xC4");
     }
     printf("\xB4\n");
 
-    printf("\xB3 Selecione uma opcao \xB3\n");
-    printf("\xB3 1. Sou Cliente      \xB3\n");
+    printf("\xB3 Selecione uma opcao   \xB3\n");
+    printf("\xB3 1. Sou Cliente        \xB3\n");
     printf("\xB3 2. Sou Restaurante    \xB3\n");
     printf("\xB3 3. Sou Entregador     \xB3\n");
     printf("\xB3 4. Sou Administrador  \xB3\n");
@@ -2490,7 +2684,7 @@ int menu_inicial() // permite a escolha entre os diferentes usuários
     printf("\xB3 0. Sair               \xB3\n");
 
     printf("\xC0");
-    for (i = 0; i < 21; i++) {
+    for (i = 0; i < 23; i++) {
         printf("\xC4");
     }
     printf("\xD9\n");
@@ -3002,10 +3196,8 @@ int menu_adm() // permite ao adm escolher
     printf("\xB3 2. Mostrar lista de entregadores    \xB3\n");
     printf("\xB3 3. Mostrar lista de restaurantes    \xB3\n");
     printf("\xB3 4. Mostrar pedidos em andamento     \xB3\n");
-    printf("\xB3 5. Inicializar clientes             \xB3\n");
-    printf("\xB3 6. Inicializar entregadores         \xB3\n");
-    printf("\xB3 7. Inicializar restaurantes         \xB3\n");
-    printf("\xB3 8. Sair da conta                    \xB3\n");
+    printf("\xB3 5. Inicializar restaurantes         \xB3\n");
+    printf("\xB3 6. Sair da conta                    \xB3\n");
     printf("\xB3 0. Sair do app                      \xB3\n");
 
     printf("\xC0");
