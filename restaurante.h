@@ -12,7 +12,7 @@ typedef struct rest
     char senha[15];
     char categoria[30];
     int codigo;
-    int status; // se quer participar do programa de fidelidade
+    int status; // se ta aberto ou fechado
     pratos *cardapio;
     int qtdCardapio;
     pedidos *historico;
@@ -48,6 +48,7 @@ int inserirFimRest(Lista_restaurantes *l, restaurante *item);
 int inserirPosicaoRest(Lista_restaurantes *l, restaurante item, int pos);
 int inserirPratoRest(Lista_restaurantes *l, pratos novoPrato, restaurante item);
 int inserirPedidoHistoricoRest(Lista_restaurantes *l, pedidos novoPedido, restaurante *item);
+int inserirPedidoHistoricoRestNome (Lista_restaurantes *l, char *nome, pedidos novo_pedido);
 
 // remocao
 int removerInicioRest(Lista_restaurantes *l);
@@ -68,7 +69,6 @@ void mostrarRestaurante(restaurante *item);
 void mostrarInfoRest(Lista_restaurantes *l); 
 // void mostrarHistoricoPedidos(Lista_restaurantes *l, char *nome);
 void mostrarCardapio(Lista_restaurantes *l, restaurante item);
-void mostrarCardapioItem(restaurante item);
 void mostrarHistoricoRest(restaurante item);
 void mostrarHistoricoRestPorNomePrato(restaurante *item, char *nomePrato);
 void mostrarPedidoPorCodigo(restaurante *item, int codigoPedido);
@@ -89,4 +89,4 @@ int loginRestaurante(Lista_restaurantes *l, char *email, char *senha, restaurant
 int sortearCodigoRest(Lista_restaurantes *l);
 void copiarRestaurante(restaurante *A, restaurante *B);
 void limparVariavelRest(restaurante *item);
-void salvarListaRest(Lista_restaurantes *l);
+int buscarPratoRest (Lista_restaurantes *l, int cod_rest, int coord_prato, pratos *novo_prato);

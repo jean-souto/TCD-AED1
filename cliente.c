@@ -387,7 +387,7 @@ void mostrar_pedidos (Cliente item)
     printf ("( ");
     for (i = 0; i < item.quant_pedidos; i++)
     {
-        printf ("{%d, ", item.historico->codigo);
+        printf ("%d. {%d, ", i+1, item.historico->codigo);
         printf ("%s, ", item.historico->nome_rest);
         printf ("%.2f /", item.historico->precoTotal);
 
