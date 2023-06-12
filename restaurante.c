@@ -508,12 +508,13 @@ int buscarRestEmail(Lista_restaurantes *l, char *email, restaurante *item)
     }
     
 	//chegou aqui de fora deu certo
-	*item = no->valor;
-	//copiarRestaurante(&aux->valor, &(*item));
+	//*item = no->valor;
+	copiarRestaurante(&no->valor, &(*item));
 	
 	return 0;
 }
 
+//mostrar restaurante para restaurante
 void mostrarRestaurante(restaurante *item)
 {
     if (item != NULL)

@@ -135,6 +135,10 @@ int main()
     inicializar_restaurante(&login_restaurante);
     limparVariavelRest(&pedido_rest);
 
+    // criando testes
+    restaurante base_rest;
+    pratos base_restPratos;
+
     // LOGIN ADM
     strcpy(loginADM, "souADM");
     strcpy(senhaADM, "123ADM");
@@ -213,7 +217,9 @@ int main()
                             inicializar_cliente(&novo_cliente);
 
                             if ((inserirFimCliente(lista_principal_clientes, novo_cliente)) == 0) printf("\nCadastro realizado com sucesso!\n");
-                            
+
+                            printf("Voce ja pode fazer o Login!\n");
+
                             Sleep(1000);
                             
                             limpar_variavel_cliente(&novo_cliente);
@@ -591,7 +597,7 @@ int main()
                                                     while (verify != 0)
                                                     {
                                                         printf ("\nAqui estao todos os restaurantes disponiveis: \n");
-                                                        mostrarListaRest (lista_categoria);
+                                                        mostrarInfoRest(lista_categoria);
 
                                                         Sleep(2000);
 
@@ -2021,10 +2027,10 @@ int main()
                                                         printf("\n%s esta aberto!\n", logado_restaurante.nome);
                                                     else
                                                         printf("\n%s esta fechado!\n", logado_restaurante.nome);
-                                                }
-
-                                            }
-                                            
+                                                } else
+                                                    printf("Algo deu errado, tente novamente!\n");
+                                            } else
+                                                printf("Codigo errado, tente novamente!\n");
 
                                             break;
 
@@ -2550,45 +2556,212 @@ int main()
 
                             limparVariavelRest(&base_rest); 
 
-                            strcpy(base_rest.nome, "Fast Acai");
-                            strcpy(base_rest.email, "fast@gmail.com");
-                            strcpy(base_rest.senha, "bem vindo");
-                            strcpy(base_rest.categoria, "Acai e sorvetes");
+                        limparVariavelRest(&base_rest);
 
-                            inserirFimRest(lista_principal_restaurantes, &base_rest);
-                            buscarRestNome(lista_principal_restaurantes, base_rest.nome, &base_rest);
+                        strcpy(base_rest.nome, "Fast Acai");
+                        strcpy(base_rest.email, "fast@gmail.com");
+                        strcpy(base_rest.senha, "fast123");
+                        strcpy(base_rest.categoria, "Acai e sorvetes");
 
-                            strcpy(base_restPratos.nome, "Acai tropical");
-                            strcpy(base_restPratos.descricao, "tigela 500ml");
-                            base_restPratos.preco = 19.99;
-                            inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+                        inserirFimRest(lista_principal_restaurantes, &base_rest);
+                        buscarRestNome(lista_principal_restaurantes, base_rest.nome, &base_rest);
 
-                            strcpy(base_restPratos.nome, "Acai tropical");
-                            strcpy(base_restPratos.descricao, "tigela 750ml");
-                            base_restPratos.preco = 24.99;
-                            inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+                        strcpy(base_restPratos.nome, "Acai tropical");
+                        strcpy(base_restPratos.descricao, "tigela 500ml");
+                        base_restPratos.preco = 19.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
 
-                            strcpy(base_restPratos.nome, "Acai com Ninho e Morango");
-                            strcpy(base_restPratos.descricao, "tigela 500ml");
-                            base_restPratos.preco = 19.99;
-                            inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+                        strcpy(base_restPratos.nome, "Acai tropical");
+                        strcpy(base_restPratos.descricao, "tigela 750ml");
+                        base_restPratos.preco = 24.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
 
-                            strcpy(base_restPratos.nome, "Acai com Ninho e Morango");
-                            strcpy(base_restPratos.descricao, "tigela 750ml");
-                            base_restPratos.preco = 24.99;
-                            inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+                        strcpy(base_restPratos.nome, "Acai com Ninho e Morango");
+                        strcpy(base_restPratos.descricao, "tigela 500ml");
+                        base_restPratos.preco = 19.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
 
-                            strcpy(base_restPratos.nome, "Choco Acai");
-                            strcpy(base_restPratos.descricao, "tigela 500ml");
-                            base_restPratos.preco = 19.99;
-                            inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+                        strcpy(base_restPratos.nome, "Acai com Ninho e Morango");
+                        strcpy(base_restPratos.descricao, "tigela 750ml");
+                        base_restPratos.preco = 24.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
 
-                            strcpy(base_restPratos.nome, "Choco Acai");
-                            strcpy(base_restPratos.descricao, "tigela 750ml");
-                            base_restPratos.preco = 24.99;
-                            inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+                        strcpy(base_restPratos.nome, "Choco Acai");
+                        strcpy(base_restPratos.descricao, "tigela 500ml");
+                        base_restPratos.preco = 19.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
 
-                            limpar_variavel_rest(&base_rest);
+                        strcpy(base_restPratos.nome, "Choco Acai");
+                        strcpy(base_restPratos.descricao, "tigela 750ml");
+                        base_restPratos.preco = 24.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        limpar_variavel_rest(&base_rest);
+
+                        strcpy(base_rest.nome, "Estacao Acai");
+                        strcpy(base_rest.email, "estacao@gmail.com");
+                        strcpy(base_rest.senha, "estacao123");
+                        strcpy(base_rest.categoria, "Acai e sorvetes");
+
+                        inserirFimRest(lista_principal_restaurantes, &base_rest);
+                        buscarRestNome(lista_principal_restaurantes, base_rest.nome, &base_rest);
+
+                        strcpy(base_restPratos.nome, "Acai Oreo");
+                        strcpy(base_restPratos.descricao, "tigela 500ml");
+                        base_restPratos.preco = 22.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        strcpy(base_restPratos.nome, "Acai Oreo");
+                        strcpy(base_restPratos.descricao, "tigela 750ml");
+                        base_restPratos.preco = 26.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        strcpy(base_restPratos.nome, "Acai Tradicional");
+                        strcpy(base_restPratos.descricao, "tigela 500ml");
+                        base_restPratos.preco = 22.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        strcpy(base_restPratos.nome, "Acai Tradicional");
+                        strcpy(base_restPratos.descricao, "tigela 750ml");
+                        base_restPratos.preco = 26.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        strcpy(base_restPratos.nome, "Vitamina de Morango");
+                        strcpy(base_restPratos.descricao, "500ml");
+                        base_restPratos.preco = 22.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        strcpy(base_restPratos.nome, "Vitamina de Morango");
+                        strcpy(base_restPratos.descricao, "750ml");
+                        base_restPratos.preco = 26.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        limpar_variavel_rest(&base_rest);
+
+                        strcpy(base_rest.nome, "Kaisen Sushi");
+                        strcpy(base_rest.email, "kaisen@gmail.com");
+                        strcpy(base_rest.senha, "kaisen123");
+                        strcpy(base_rest.categoria, "Comida Estrangeira");
+
+                        inserirFimRest(lista_principal_restaurantes, &base_rest);
+                        buscarRestNome(lista_principal_restaurantes, base_rest.nome, &base_rest);
+
+                        strcpy(base_restPratos.nome, "Hot Rolls");
+                        strcpy(base_restPratos.descricao, "10 pecas");
+                        base_restPratos.preco = 19.50;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        strcpy(base_restPratos.nome, "Sashimi");
+                        strcpy(base_restPratos.descricao, "10 pecas");
+                        base_restPratos.preco = 29.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        strcpy(base_restPratos.nome, "Ramen");
+                        strcpy(base_restPratos.descricao, "macarrao, molho de carne, ovo, carne");
+                        base_restPratos.preco = 29.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        limpar_variavel_rest(&base_rest);
+
+                        strcpy(base_rest.nome, "Mc Donalds");
+                        strcpy(base_rest.email, "mc@gmail.com");
+                        strcpy(base_rest.senha, "mc123");
+                        strcpy(base_rest.categoria, "FastFood");
+
+                        inserirFimRest(lista_principal_restaurantes, &base_rest);
+                        buscarRestNome(lista_principal_restaurantes, base_rest.nome, &base_rest);
+
+                        strcpy(base_restPratos.nome, "Big Mac");
+                        strcpy(base_restPratos.descricao, "2 hamburguers, alface, tomate, molho maionese");
+                        base_restPratos.preco = 30.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        strcpy(base_restPratos.nome, "Big Tasty");
+                        strcpy(base_restPratos.descricao, "hamburguer, alface, tomate, molho especial");
+                        base_restPratos.preco = 40.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        strcpy(base_restPratos.nome, "Nuggets");
+                        strcpy(base_restPratos.descricao, "10 unidades");
+                        base_restPratos.preco = 21.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        limpar_variavel_rest(&base_rest);
+
+                        strcpy(base_rest.nome, "Burguer King");
+                        strcpy(base_rest.email, "bk@gmail.com");
+                        strcpy(base_rest.senha, "bk123");
+                        strcpy(base_rest.categoria, "FastFood");
+
+                        inserirFimRest(lista_principal_restaurantes, &base_rest);
+                        buscarRestNome(lista_principal_restaurantes, base_rest.nome, &base_rest);
+
+                        strcpy(base_restPratos.nome, "Stacker Duplo");
+                        strcpy(base_restPratos.descricao, "1 hamburguer, bacon, cheddar, alface");
+                        base_restPratos.preco = 15.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        strcpy(base_restPratos.nome, "Coca Cola");
+                        strcpy(base_restPratos.descricao, "bebida");
+                        base_restPratos.preco = 6.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        strcpy(base_restPratos.nome, "Whopper");
+                        strcpy(base_restPratos.descricao, "1 hamburguer, picles, alface, tomate");
+                        base_restPratos.preco = 19.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+
+                        limpar_variavel_rest(&base_rest);
+
+                        strcpy(base_rest.nome, "Casa Mexicana");
+                        strcpy(base_rest.email, "mexico@gmail.com");
+                        strcpy(base_rest.senha, "mexico123");
+                        strcpy(base_rest.categoria, "Comida Estrangeira");
+
+                        inserirFimRest(lista_principal_restaurantes, &base_rest);
+                        buscarRestNome(lista_principal_restaurantes, base_rest.nome, &base_rest);
+
+                        strcpy(base_restPratos.nome, "Tacos");
+                        strcpy(base_restPratos.descricao, "carne moida, chips, queijo, guacamole, salsa");
+                        base_restPratos.preco = 32.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        strcpy(base_restPratos.nome, "Burrito");
+                        strcpy(base_restPratos.descricao, "tortilha, carne moida, milho, salsa queijo");
+                        base_restPratos.preco = 19.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        strcpy(base_restPratos.nome, "Fanta");
+                        strcpy(base_restPratos.descricao, "bebida");
+                        base_restPratos.preco = 19.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        limpar_variavel_rest(&base_rest);
+                        strcpy(base_rest.nome, "Porto Alegre");
+                        strcpy(base_rest.email, "PA@gmail.com");
+                        strcpy(base_rest.senha, "PA123");
+                        strcpy(base_rest.categoria, "Pizzaria");
+
+                        inserirFimRest(lista_principal_restaurantes, &base_rest);
+                        buscarRestNome(lista_principal_restaurantes, base_rest.nome, &base_rest);
+
+                        strcpy(base_restPratos.nome, "Frango Catupiry");
+                        strcpy(base_restPratos.descricao, "Tamanho Familia");
+                        base_restPratos.preco = 30.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        strcpy(base_restPratos.nome, "Da Casa");
+                        strcpy(base_restPratos.descricao, "Grande");
+                        base_restPratos.preco = 24.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        strcpy(base_restPratos.nome, "Romeu e Julieta");
+                        strcpy(base_restPratos.descricao, "Grande");
+                        base_restPratos.preco = 19.99;
+                        inserirPratoRest(lista_principal_restaurantes, base_restPratos, base_rest);
+
+                        limpar_variavel_rest(&base_rest);
 
                         break;
 
