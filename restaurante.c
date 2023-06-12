@@ -166,7 +166,7 @@ int inserirPosicaoRest(Lista_restaurantes *l, restaurante item, int pos) // att 
     return i;
 }
 
-int inserirPratoRest(Lista_restaurantes *l, pratos novoPrato, restaurante *item)
+int inserirPratoRest(Lista_restaurantes *l, pratos novoPrato, restaurante item)
 {
     if (l == NULL)
         return NULL_LIST;
@@ -174,22 +174,29 @@ int inserirPratoRest(Lista_restaurantes *l, pratos novoPrato, restaurante *item)
     if (listaVaziaRest(l) == 0)
         return EMPTY_LIST;
 
-    if (buscarRestNome(l, item->nome, item) == 0) // verifica se o nome está na lista
+    No_restaurante *aux = l->inicio;
+
+    while (aux != NULL && aux->valor.codigo != item.codigo)
     {
+        aux = aux->prox;
+    }
+
+    if (aux->valor.codigo == item.codigo)
+    { 
         // verifica se é a primeira inserção e da um malloc.
-        if (item->cardapio == NULL)
+        if (aux->valor.cardapio == NULL)
         {
-            item->cardapio = (pratos *)malloc(sizeof(pratos));
+            aux->valor.cardapio = (pratos *)malloc(sizeof(pratos));
         }
         else
         {
-            item->cardapio = (pratos *)realloc(item->cardapio, (item->qtdCardapio + 1) * sizeof(pratos));
+            aux->valor.cardapio = (pratos *)realloc(aux->valor.cardapio, (aux->valor.qtdCardapio + 1) * sizeof(pratos));
         }
 
-        if (item->cardapio != NULL)
+        if (aux->valor.cardapio != NULL)
         {
-            item->cardapio[item->qtdCardapio] = novoPrato;
-            item->qtdCardapio++;
+            aux->valor.cardapio[aux->valor.qtdCardapio] = novoPrato;
+            aux->valor.qtdCardapio++;
             return 0;
         }
     }
@@ -396,32 +403,29 @@ int removerPratoRest(Lista_restaurantes *l, char *nomePrato, float precoPrato, r
 
 int buscarRestPos(Lista_restaurantes *l, int pos, restaurante *item)
 {
-    if (l == NULL)
-        return NULL_LIST;
+    if (l == NULL) return NULL_LIST;
+    if (listaVaziaRest(l) == 0) return EMPTY_LIST;
 
-    if (listaVaziaRest(l) == 0)
-        return EMPTY_LIST;
+    No_restaurante *aux = l->inicio;
 
-    if (pos < 0)
-        return 1;
-
-    No_restaurante *no = l->inicio;
-    int count = 0;
-
-    while (no != NULL && count < pos)
+    if (pos == 0) 
     {
-        no = no->prox;
-        count++;
-    }
-
-    if (count < pos)
-    {
-        *item = no->valor;
+        copiarRestaurante(&(aux->valor), &(*item));
         return 0;
     }
+    if (pos >= tamanhoRest(l)-1)
+    {
+        return 1;
+    }
 
-    return 1;
-    
+    while (pos > 0)
+    {
+        aux = aux->prox;
+        pos--;
+    }
+
+    copiarRestaurante(&(aux->valor), &(*item));
+    return 0;
 }
 
 int buscarRestCodigo(Lista_restaurantes *l, int codigo, restaurante *item)
@@ -545,20 +549,36 @@ void mostrarInfoRest(Lista_restaurantes *l)
     }
 }
 
-void mostrarCardapio(Lista_restaurantes *l, restaurante *item)
+void mostrarCardapio(Lista_restaurantes *l, restaurante item)
 {
+    No_restaurante *aux = l->inicio;
 
-    if (buscarRestNome(l, item->nome, item) == 0)
+    while (aux != NULL && aux->valor.codigo != item.codigo)
     {
+        aux = aux->prox;
+    }
 
-        for (int i = 0; i < item->qtdCardapio; i++)
+    if (aux->valor.codigo == item.codigo)
+    {
+        for (int i = 0; i < aux->valor.qtdCardapio; i++)
         {
             printf("%s\n"
                    "%s\n"
                    "%0.2f\n",
-                   item->cardapio[i].nome, item->cardapio[i].descricao, item->cardapio[i].preco);
+                   aux->valor.cardapio[i].nome, aux->valor.cardapio[i].descricao, aux->valor.cardapio[i].preco);
         }
     }
+}
+
+void mostrarCardapioItem(restaurante item)
+{
+    for (int i = 0; i < item.qtdCardapio; i++)
+    {
+        printf("%s\n"
+               "%s\n"
+               "%0.2f\n",
+               item.cardapio[i].nome, item.cardapio[i].descricao, item.cardapio[i].preco);
+    }  
 }
 
 void mostrarHistoricoRest(restaurante item)
@@ -874,17 +894,17 @@ void copiarRestaurante(restaurante *A, restaurante *B)
     strcpy(B->categoria, A->categoria);
     B->codigo = A->codigo;
     B->status = A->status;
+    //B->qtdCardapio = A->qtdCardapio;
+    //B->qtdHistorico = A->qtdHistorico;
 
     int i, j;
 
     if (A->qtdCardapio != 0)
     {
-        // copiar o cardápio
         B->cardapio = (pratos *)malloc(sizeof(pratos) * A->qtdCardapio);
 
         for (i = 0; i < A->qtdCardapio; i++)
         {
-            printf("20\n"); // ERRO AQUI
             strcpy(B->cardapio[i].nome, A->cardapio[i].nome);
             strcpy(B->cardapio[i].descricao, A->cardapio[i].descricao);
             B->cardapio[i].preco = A->cardapio[i].preco;
@@ -897,7 +917,6 @@ void copiarRestaurante(restaurante *A, restaurante *B)
         B->historico = (pedidos *)malloc(sizeof(pedidos) * A->qtdHistorico);
         for (i = 0; i < A->qtdHistorico; i++)
         {
-            printf("40\n"); // ERRO AQUI
             B->historico[i].codigo = A->historico[i].codigo;
             B->historico[i].precoTotal = A->historico[i].precoTotal;
             strcpy(B->historico[i].nome_rest, A->historico[i].nome_rest);
@@ -907,7 +926,6 @@ void copiarRestaurante(restaurante *A, restaurante *B)
             B->historico[i].pratosPed = (pratos *)malloc(sizeof(pratos) * A->historico[i].qtdPratosPed);
             for (j = 0; j < A->historico[i].qtdPratosPed; j++)
             {
-                printf("50\n"); // ERRO AQUI
                 strcpy(B->historico[i].pratosPed[j].nome, A->historico[i].pratosPed[j].nome);
                 strcpy(B->historico[i].pratosPed[j].descricao, A->historico[i].pratosPed[j].descricao);
                 B->historico[i].pratosPed[j].preco = A->historico[i].pratosPed[j].preco;
@@ -915,7 +933,7 @@ void copiarRestaurante(restaurante *A, restaurante *B)
         }
     }
 
-    // Copiar a fila de pedidos pendentes
+    // Copiar a fila de pedidos pendentes 
     B->pedidosPendentes = criar_filaPedidosPendentes();
     copiarFilaPedidosPendentes(A->pedidosPendentes, B->pedidosPendentes);
 }
