@@ -56,8 +56,6 @@ void limparRest(Lista_restaurantes *l)
 {
     while (listaVaziaRest(l) != 0)
         removerInicioRest(l);
-    free(l);
-    l = NULL;
 }
 
 // retorna o tamanho da lista
