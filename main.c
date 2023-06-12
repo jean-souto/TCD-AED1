@@ -79,6 +79,7 @@ int main()
     Lista_restaurantes *lista_principal_restaurantes;
     restaurante novo_restaurante, logado_restaurante;
     restaurante login_restaurante, inicializados_restaurante;
+    restaurante fazer_pedido_rest;
     int codigo_loginR;
     pratos novo_prato;
     char nome_prato[40];
@@ -115,6 +116,13 @@ int main()
     lista_principal_restaurantes = criar_listaRestaurantes();
     fila_pedidosPendentes = criar_filaPedidosPendentes();
 
+    inicializar_cliente (&esqueceu_senha_cliente);
+    inicializar_entregador (&esqueceu_senha_entregador);
+    inicializar_entregador (&novoped_entregador);
+    limpar_variavel_entregador (&esqueceu_senha_entregador);
+    inicializar_restaurante(&login_restaurante);
+    limparVariavelRest(&fazer_pedido_rest);
+
     // criando testes
     /*restaurante teste;
     strcpy(teste.nome, "Fast Acai");
@@ -141,12 +149,6 @@ int main()
     // LOGIN ADM
     strcpy(loginADM, "souADM");
     strcpy(senhaADM, "123ADM");
-
-    inicializar_cliente (&esqueceu_senha_cliente);
-    inicializar_entregador (&esqueceu_senha_entregador);
-    inicializar_entregador (&novoped_entregador);
-    limpar_variavel_entregador (&esqueceu_senha_entregador);
-    inicializar_restaurante(&login_restaurante);
 
     // AQUI COMEÇA O PROGRAMA EM SI
 
@@ -365,8 +367,13 @@ int main()
                                                         {
                                                             printf ("\nDigite qual o numero do restaurante que voce deseja visualizar:\n");
                                                             scanf ("%d", &verify);
+                                                            verify--; // verify = verify - 1
 
-                                                            // aqui virar a buscar por pos
+                                                            verify = buscarRestPos(lista_principal_restaurantes, verify, &fazer_pedido_rest);
+                                                            printf ("aaaaa %d ", verify);
+                                                            printf ("%s", fazer_pedido_rest.nome);
+                                                            printf ("   %s   ", fazer_pedido_rest.cardapio[0].nome);
+                                                            //mostrarCardapioItem (fazer_pedido_rest);
                                                         }
                                                     }
                                                 
@@ -1024,33 +1031,33 @@ int main()
 
                                             printf("\n----------CARDAPIO----------\n");
 
-                                            mostrarCardapio(lista_principal_restaurantes, &logado_restaurante);
+                                            buscarRestCodigo(lista_principal_restaurantes, logado_restaurante.codigo, &logado_restaurante);
+                                            mostrarCardapio(lista_principal_restaurantes, logado_restaurante);
                                             Sleep(2000);
 
                                             break;
 
                                             case 2:
 
-                                            printf("\n----------INSERINDO PRATO----------\n");
+                                                printf("\n----------INSERINDO PRATO----------\n");
 
-                                            printf("\nMuito bem!Vamos inserir um novo prato\n");
+                                                printf("\nMuito bem!Vamos inserir um novo prato\n");
 
-                                            printf("Digite o nome:\n");
-                                            limpaBuffer();
-                                            scanf("%[^\n]s", novo_prato.nome);
+                                                printf("Digite o nome:\n");
+                                                limpaBuffer();
+                                                scanf("%[^\n]s", novo_prato.nome);
 
-                                            printf("Descricao:\nEx.: Bedida, Ingredientes\n:\n");
-                                            limpaBuffer();
-                                            scanf("%[^\n]s", novo_prato.descricao);
+                                                printf("Descricao:\nEx.: Bedida, Ingredientes\n:\n");
+                                                limpaBuffer();
+                                                scanf("%[^\n]s", novo_prato.descricao);
 
-                                            printf("Entre com o preco: ");
-                                            limpaBuffer();
-                                            scanf("%f", &novo_prato.preco);
-
-                                            if (inserirPratoRest(lista_principal_restaurantes, novo_prato, &logado_restaurante) == 0)
-                                            {
-                                                printf("Item adicionado com sucesso!\n");
-
+                                                printf("Entre com o preco: ");
+                                                limpaBuffer();
+                                                scanf("%f", &novo_prato.preco);
+ 
+                                                if (inserirPratoRest(lista_principal_restaurantes, novo_prato, logado_restaurante) == 0)
+                                                {
+                                                    printf("Item adicionado com sucesso!\n");
                                                 } else {
                                                     printf("Algum erro inesperado aconteceu. Tente Novamente\n");
                                                     break;
