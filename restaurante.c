@@ -520,9 +520,13 @@ void mostrarRestaurante(restaurante *item)
         printf("%s\n" // colocar em negrito
                "Email: %s\n"                
                "Codigo: %d\n"
-               "Categoria: %s\n"
-               "Status: %d\n",
-               item->nome, item->email, item->codigo, item->categoria, item->status);
+               "Categoria: %s\n",
+               item->nome, item->email, item->codigo, item->categoria);
+
+        if (item->status == 1)
+            printf("Status: Restaurante aberto\n");
+        else
+            printf("Status: Restaurante fechado\n");
         printf("---------------------------------------------\n");
     }
 }
