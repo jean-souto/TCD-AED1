@@ -124,27 +124,7 @@ int main()
     limparVariavelRest(&fazer_pedido_rest);
 
     // criando testes
-    /*restaurante teste;
-    strcpy(teste.nome, "Fast Acai");
-    strcpy(teste.email, "fast@gmail.com");
-    strcpy(teste.senha, "bem vinde");
-    inicializar_restaurante(&teste);
-    inserirInicioRest(lista_principal_restaurantes, teste);
-    mostrarListaRest(lista_principal_restaurantes);
-    pratos r;
-    strcpy(r.nome, "macarrao");
-    strcpy(r.descricao, "molho branco");
-    r.preco = 20.52;
-    inserirPratoRest(lista_principal_restaurantes, r, &teste);
-    printf("[ Cardapio ]\n");
-    mostrarCardapio(lista_principal_restaurantes, &teste);
-
-    restaurante retorno;
-    int a = buscarRestEmail(lista_principal_restaurantes, teste.email, &retorno);
-    if (!a)
-    {
-        mostrarCardapio(lista_principal_restaurantes, &retorno);
-    }*/
+    restaurante base_rest;
 
     // LOGIN ADM
     strcpy(loginADM, "souADM");
@@ -845,9 +825,8 @@ int main()
 
                             if ((inserirFimRest(lista_principal_restaurantes, &novo_restaurante)) == 0)
                             {
-                                printf("\nEscolha duas categorias em que seu restaurante se encaixa.\nNao se preocupe! Voce podera alterar as categorias no futuro.\n\n");
+                                printf("\nEscolha duas categorias em que seu restaurante se encaixa.\nNao se preocupe! Voce podera alterar as categorias no futuro.");
 
-                                Sleep(2000);
 
                                 int op = menu_categoria();
 
@@ -897,8 +876,7 @@ int main()
                                 if (alterarCategoria(lista_principal_restaurantes, novo_restaurante.codigo, categoria, &novo_restaurante) == 0)
                                 {
                                     printf("\nCadastro realizado com sucesso!\n\n");
-                                    //salvarListaRest(lista_principal_restaurantes);
-                                    Sleep(2000);
+                                    Sleep(700);
 
                                     printf("\nMEU PERFIL\n");
                                     mostrarRestaurante(&novo_restaurante);
@@ -1137,15 +1115,15 @@ int main()
 
                                 case 3:; // historico de pedidos
 
-                                    while ((option != 5) && (option != 15))
+                                    while ((option != 4) && (option != 15))
                                     {
                                         option = menu_historicoPedidos_restaurante();
 
                                         switch (option)
                                         {
-                                            printf("\n---------- HISTORICO ----------\n\n");
 
                                             case 1: // todos os pedidos ja feitos no restaurante
+                                            printf("\n---------- HISTORICO ----------\n\n");
 
                                             if (buscarRestCodigo(lista_principal_restaurantes, logado_restaurante.codigo, &logado_restaurante) == 0)
                                             {
@@ -1201,32 +1179,7 @@ int main()
                                                 }
                                             break;
 
-                                            case 4: // filtrar por preco total (menor que, maior que e exato)
-
-                                                /*
-                                                if (buscarRestCodigo(lista_principal_restaurantes, logado_restaurante.codigo, &logado_restaurante) == 0)
-                                                {
-                                                    if (logado_restaurante.historico != NULL)
-                                                    {
-                                                        printf("Entre com o preco do pedido: ");
-                                                        limpaBuffer();
-                                                        scanf("%d", &precoTotal_pedido);
-
-                                                        printf("Deseja ver pedidos com precos maiores, menores ou iguais: ");
-                                                        limpaBuffer();
-                                                        scanf("%[^\n]s", &nome_prato);
-
-                                                        printf("Aqui esta o pedido com codigo %d\n", codigo_pedido);
-                                                        mostrarPedidoPorCodigo(&logado_restaurante, codigo_pedido);
-                                                    }
-                                                    else
-                                                        printf("%s ainda nao tem pedidos concluidos\n", logado_restaurante.nome);
-                                                }
-                                                */
-
-                                            break;
-
-                                            case 5:
+                                            case 4:
                                             option = 15;
                                             break;
                                         }
@@ -1237,7 +1190,7 @@ int main()
 
                                 case 4: // configuracoes
 
-                                while ((option != 7) && (option != 17))
+                                while ((option != 8) && (option != 17))
                                 {
                                         option = menu_configuracoes_restaurante();
 
@@ -1470,7 +1423,38 @@ int main()
 
                                             break;
 
-                                            case 6: // apagar conta
+                                            case 6:
+
+                                            printf("\n---------- STATUS ----------\n\n");
+
+                                            printf("\nMuito bem. Digite o codigo do restaurante: ");
+                                            setbuf(stdin, NULL);
+                                            scanf("%d", &codigo_loginR);
+
+                                            if (buscarRestCodigo(lista_principal_restaurantes, codigo_loginR, &logado_restaurante) == 0)
+                                            {
+                                                if (logado_restaurante.status == 1)
+                                                    printf("\n%s esta aberto!\n", logado_restaurante.nome);
+                                                else
+                                                    printf("\n%s esta fechado!\n", logado_restaurante.nome);
+
+                                                printf("\n1. Abrir restaurante\n2. Fechar restaurante\nOpcao: ");
+                                                scanf("%d", &verify);
+
+                                                if (alterarStatusRest(lista_principal_restaurantes, logado_restaurante.codigo, verify, &logado_restaurante.status) == 0)
+                                                {
+                                                    if (logado_restaurante.status == 1)
+                                                        printf("\n%s esta aberto!\n", logado_restaurante.nome);
+                                                    else
+                                                        printf("\n%s esta fechado!\n", logado_restaurante.nome);
+                                                }
+
+                                            }
+                                            
+
+                                            break;
+
+                                            case 7: // apagar conta
                                             printf("\n----------APAGAR CONTA----------\n");
 
                                             printf("\nVoce esta prestes a apagar esta conta e tudo que esta contido nela. Voce tem certeza? ");
@@ -1491,13 +1475,13 @@ int main()
 
                                                     if (verify == 0)
                                                     {
-                                                                printf("\nFoi um prazer ter voce conosco! Sua conta foi excluida com sucesso.");
-                                                                limpar_variavel_rest(&logado_restaurante);
-                                                                option = 17;
+                                                        printf("\nFoi um prazer ter voce conosco! Sua conta foi excluida com sucesso.");
+                                                        limpar_variavel_rest(&logado_restaurante);
+                                                        option = 17;
                                                     }
                                                     else
                                                     {
-                                                                printf("\nHouve algum erro. Tente novamente.");
+                                                        printf("\nHouve algum erro. Tente novamente.");
                                                     }
                                                 }
                                                 else
@@ -1515,8 +1499,7 @@ int main()
                                                 }
                                             break;
 
-                                            case 7: // voltar
-                                            option = 17;
+                                            case 8: // voltar
                                             break;
                                         }
                                     }
@@ -1989,16 +1972,35 @@ int main()
                             mostrarPedidosGlobais (controlePedidos, qtdPratosPedidosAndamento);
                         break;
 
-                        case 5: // inicializar clientes
+                        case 5: // inicializar restaurantes
+
+                        /*  restaurante teste;
+                            strcpy(teste.nome, "Fast Acai");
+                            strcpy(teste.email, "fast@gmail.com");
+                            strcpy(teste.senha, "bem vinde");
+                            inicializar_restaurante(&teste);
+                            inserirInicioRest(lista_principal_restaurantes, teste);
+                            mostrarListaRest(lista_principal_restaurantes);
+                            pratos r;
+                            strcpy(r.nome, "macarrao");
+                            strcpy(r.descricao, "molho branco");
+                            r.preco = 20.52;
+                            inserirPratoRest(lista_principal_restaurantes, r, &teste);
+                            printf("[ Cardapio ]\n");
+                            mostrarCardapio(lista_principal_restaurantes, &teste);
+
+                            restaurante retorno;
+                            int a = buscarRestEmail(lista_principal_restaurantes, teste.email, &retorno);
+                            if (!a)
+                            {
+                                mostrarCardapio(lista_principal_restaurantes, &retorno);
+                            }
+                        */
+                        
+
                         break;
 
-                        case 6: // inicializar entregadores
-                        break;
-
-                        case 7: // inicializar restaurante
-                        break;
-
-                        case 8: // voltar
+                        case 6: // voltar
                         break;
                     }
                 }
@@ -2011,10 +2013,10 @@ int main()
                 printf ("\n\nObrigado por se interessar mais sobre o processo de producao do app.");
                 printf ("\nEste aplicativo foi feito para o trabalho de conclusao de disciplina da materia de Algoritmos e Estruturas de Dados 1.");
                 printf ("\n\nO grupo eh composto por:");
-                printf (" Jean Souto Galvao Moreira @jean.soutoo");
+                printf (" Jean Souto Galvao Moreira @jean.soutoo        ");
                 printf ("\n                         Ester Camilly lalala");
-                printf ("\n                         Alice lalala");
-                printf ("\n                         Fernanda lalala");
+                printf (" Ana Alice Cordeiro de Souza @alicecordeiro    ");
+                printf ("\n                         Fernanda lalala     ");
                 printf ("\n\nO objetivo do trabalho eh aplicar todos os conceitos aprendidos em sala e garantir o pleno funcionamento do aplicativo.");
                 printf (" Alem disso, o tema deste aplicativo eh 'gerenciador de pedidos em restaurantes', algo como um 'ifood'.");
                 printf ("\nEsperamos que tenha gostado e tenha sido uma boa experiencia. Muito obrigado! :)");
@@ -2259,7 +2261,7 @@ int menu_inicial() // permite a escolha entre os diferentes usuários
     }
     printf("\xBF\n");
 
-    printf("\xB3     Menu Inicial    \xB3\n");
+    printf("\xB3      Menu Inicial   \xB3\n");
 
     printf("\xC3");
     for (i = 0; i < 21; i++) {
@@ -2269,11 +2271,11 @@ int menu_inicial() // permite a escolha entre os diferentes usuários
 
     printf("\xB3 Selecione uma opcao \xB3\n");
     printf("\xB3 1. Sou Cliente      \xB3\n");
-    printf("\xB3 2. Sou Restaurante    \xB3\n");
-    printf("\xB3 3. Sou Entregador     \xB3\n");
-    printf("\xB3 4. Sou Administrador  \xB3\n");
-    printf("\xB3 5. Sobre o app        \xB3\n");
-    printf("\xB3 0. Sair               \xB3\n");
+    printf("\xB3 2. Sou Restaurante  \xB3\n");
+    printf("\xB3 3. Sou Entregador   \xB3\n");
+    printf("\xB3 4. Sou Administrador\xB3\n");
+    printf("\xB3 5. Sobre o app      \xB3\n");
+    printf("\xB3 0. Sair             \xB3\n");
 
     printf("\xC0");
     for (i = 0; i < 21; i++) {
@@ -2503,8 +2505,9 @@ int menu_categoria()
     do
     {
         // system ("cls");
-        printf("\xDA");
-    for (i = 0; i < 53; i++) {
+       printf("\n\n");
+    printf("\xDA");
+    for (i = 0; i < 52; i++) {
         printf("\xC4");
     }
     printf("\xBF\n");
@@ -2512,7 +2515,7 @@ int menu_categoria()
     printf("\xB3                      Categorias                    \xB3\n");
 
     printf("\xC3");
-    for (i = 0; i < 53; i++) {
+    for (i = 0; i < 52; i++) {
         printf("\xC4");
     }
     printf("\xB4\n");
@@ -2531,7 +2534,7 @@ int menu_categoria()
     printf("\xB3 10. Outros                                         \xB3\n");
 
     printf("\xC0");
-    for (i = 0; i < 53; i++) {
+    for (i = 0; i < 52; i++) {
         printf("\xC4");
     }
     printf("\xD9\n");
@@ -2700,8 +2703,7 @@ int menu_historicoPedidos_restaurante()
     printf("\xB3 1. Todos os pedidos ja feitos no restaurante\xB3\n");
     printf("\xB3 2. Filtrar por nome do prato                \xB3\n");
     printf("\xB3 3. Mostrar pedido buscado por codigo        \xB3\n");
-    printf("\xB3 4. Filtrar por preco total                  \xB3\n");
-    printf("\xB3 5. Voltar                                   \xB3\n");
+    printf("\xB3 4. Voltar                                   \xB3\n");
 
     printf("\xC0");
     for (i = 0; i < 45; i++) {
@@ -2711,9 +2713,9 @@ int menu_historicoPedidos_restaurante()
 
     printf("Opcao: ");
         scanf("%d", &op);
-        if (op < 0 || op > 5)
+        if (op < 0 || op > 4)
             printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 5);
+    } while (op < 0 || op > 4);
     return op;
 }
 
@@ -2745,8 +2747,9 @@ int menu_configuracoes_restaurante()
     printf("\xB3 3. Alterar Senha            \xB3\n");
     printf("\xB3 4. Alterar e-mail           \xB3\n");
     printf("\xB3 5. Alterar categoria        \xB3\n");
-    printf("\xB3 6. Apagar conta             \xB3\n");
-    printf("\xB3 7. Voltar                   \xB3\n");
+    printf("\xB3 6. Alterar status           \xB3\n");
+    printf("\xB3 7. Apagar conta             \xB3\n");
+    printf("\xB3 8. Voltar                   \xB3\n");
 
     printf("\xC0");
     for (i = 0; i < 29; i++) {
@@ -2756,9 +2759,9 @@ int menu_configuracoes_restaurante()
 
     printf("Opcao: ");
         scanf("%d", &op);
-        if (op < 0 || op > 7)
+        if (op < 0 || op > 8)
             printf("\nDigite uma opcao valida\n\n");
-    } while (op < 0 || op > 7);
+    } while (op < 0 || op > 8);
     return op;
 }
 

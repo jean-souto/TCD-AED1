@@ -81,6 +81,7 @@ int alterarCodigoRest(Lista_restaurantes *l, int codigoAtual, int *novoCodigo);
 int alterarSenhaRest(Lista_restaurantes *l, int codigo, char *novaSenha, char *confirmNovaSenha, restaurante *item);
 int alterarEmailRest(Lista_restaurantes *l, int codigo, char *novoEmail, restaurante *item);
 int alterarCategoria(Lista_restaurantes *l, int codigo, char *categoria, restaurante *item);
+int alterarStatusRest(Lista_restaurantes *l, int codigo, int statusAtual, int *novoStatus);
 
 // outros
 int loginRestaurante(Lista_restaurantes *l, char *email, char *senha, restaurante *item);
