@@ -2366,9 +2366,9 @@ int main()
                 printf ("\nEste aplicativo foi feito para o trabalho de conclusao de disciplina da materia de Algoritmos e Estruturas de Dados 1.");
                 printf ("\n\nO grupo eh composto por:");
                 printf (" Jean Souto Galvao Moreira @jean.soutoo");
-                printf ("\n                         Ester Camilly lalala");
-                printf ("\n                         Alice lalala");
-                printf ("\n                         Fernanda lalala");
+                printf ("\n                         Ester Camilly Simplicio de Freitas @esterzolas");
+                printf ("\n                         Ana Alice Cordeiro de Souza @alicecordeiro__");
+                printf ("\n                         Fernanda Ferreira de Melo @nandaamf_");
                 printf ("\n\nO objetivo do trabalho eh aplicar todos os conceitos aprendidos em sala e garantir o pleno funcionamento do aplicativo.");
                 printf (" Alem disso, o tema deste aplicativo eh 'gerenciador de pedidos em restaurantes', algo como um 'ifood'.");
                 printf ("\nEsperamos que tenha gostado e tenha sido uma boa experiencia. Muito obrigado! :)");

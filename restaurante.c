@@ -204,7 +204,7 @@ int inserirPratoRest(Lista_restaurantes *l, pratos novoPrato, restaurante item)
     return 1;
 }
 
-int inserirPedidoHistoricoRest(Lista_restaurantes *l, pedidos novoPedido, restaurante *item) //BUCETA ARRUMA AQUI 
+int inserirPedidoHistoricoRest(Lista_restaurantes *l, pedidos novoPedido, restaurante *item)
 {
     if (l == NULL)
         return NULL_LIST;
