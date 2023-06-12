@@ -827,6 +827,31 @@ int alterarCategoria(Lista_restaurantes *l, int codigo, char *categoria, restaur
     return 1;
 }
 
+int alterarStatusRest(Lista_restaurantes *l, int codigo, int statusAtual, int *novoStatus)
+{
+    if (l == NULL)
+        return NULL_LIST;
+
+    if (listaVaziaRest(l) == 0)
+        return EMPTY_LIST;
+
+    No_restaurante *no = l->inicio;
+
+    while ((no != NULL) && (no->valor.codigo != codigo))
+    {
+        no = no->prox;
+    }
+
+    if (no->valor.codigo == codigo)
+    {
+        no->valor.status = statusAtual;
+        *novoStatus = statusAtual;
+        return 0;
+    }
+
+    return 1;
+}
+
 int loginRestaurante(Lista_restaurantes *l, char *email, char *senha, restaurante *item)
 {
     if (l == NULL)
