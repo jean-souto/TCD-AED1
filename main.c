@@ -117,10 +117,6 @@ int main()
     int codigo_pedido;
     float precoTotal_pedido;
 
-    // criando testes
-    restaurante base_rest;
-    pratos base_restPratos;
-
     // inicializações
     lista_principal_clientes = criarCliente();
     lista_principal_entregadores = criar_lista_entregadores();
