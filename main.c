@@ -594,6 +594,7 @@ int main()
                                                     {
                                                         printf ("\nAqui estao todos os restaurantes disponiveis: \n");
                                                         mostrarInfoRest(lista_categoria);
+                                                        
 
                                                         Sleep(2000);
 
