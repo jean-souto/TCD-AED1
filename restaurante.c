@@ -510,12 +510,13 @@ int buscarRestEmail(Lista_restaurantes *l, char *email, restaurante *item)
     }
     
 	//chegou aqui de fora deu certo
-	*item = no->valor;
-	//copiarRestaurante(&aux->valor, &(*item));
+	//*item = no->valor;
+	copiarRestaurante(&no->valor, &(*item));
 	
 	return 0;
 }
 
+//mostrar restaurante para restaurante
 void mostrarRestaurante(restaurante *item)
 {
     if (item != NULL)
@@ -545,8 +546,11 @@ void mostrarInfoRest(Lista_restaurantes *l)
         while (no != NULL)
         {
             printf("%s\n", no->valor.nome);
-            printf("Codigo: %d\n", no->valor.codigo);
             printf("Categoria: %s\n", no->valor.categoria);
+            if (no->valor.status == 1)
+                printf("Status: Restaurante aberto\n");
+            else
+                printf("Status: Restaurante fechado\n");
             printf("---------------------------------------------\n");
             no = no->prox;
         }
