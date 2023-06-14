@@ -966,4 +966,3 @@ int inserirPedidoHistoricoRestNome (Lista_restaurantes *l, char *nome, pedidos n
     } 
     return 1;
 }
-

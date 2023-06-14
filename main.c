@@ -2514,7 +2514,7 @@ int main()
 
                 printf("\nBem-vindo, ADM!");
 
-                while (option != 8)
+                while (option != 6)
                 {
                     option = menu_adm();
 
@@ -2637,7 +2637,7 @@ int main()
                         strcpy(base_rest.nome, "Kaisen Sushi");
                         strcpy(base_rest.email, "kaisen@gmail.com");
                         strcpy(base_rest.senha, "kaisen123");
-                        strcpy(base_rest.categoria, "Comida Estrangeira");
+                        strcpy(base_rest.categoria, "Comida estrangeira");
 
                         inserirFimRest(lista_principal_restaurantes, &base_rest);
                         buscarRestNome(lista_principal_restaurantes, base_rest.nome, &base_rest);
@@ -2713,7 +2713,7 @@ int main()
                         strcpy(base_rest.nome, "Casa Mexicana");
                         strcpy(base_rest.email, "mexico@gmail.com");
                         strcpy(base_rest.senha, "mexico123");
-                        strcpy(base_rest.categoria, "Comida Estrangeira");
+                        strcpy(base_rest.categoria, "Comida estrangeira");
 
                         inserirFimRest(lista_principal_restaurantes, &base_rest);
                         buscarRestNome(lista_principal_restaurantes, base_rest.nome, &base_rest);
